@@ -1,6 +1,7 @@
 package com.cloud_tecnological.mednova.controller;
 
 import com.cloud_tecnological.mednova.dto.auth.*;
+import com.cloud_tecnological.mednova.dto.auth.ChangePasswordRequestDto;
 import com.cloud_tecnological.mednova.services.AuthService;
 import com.cloud_tecnological.mednova.util.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
@@ -51,6 +52,28 @@ public class AuthController {
                 extractClientIp(httpRequest), httpRequest.getHeader("User-Agent"));
         return ResponseEntity.ok(new ApiResponse<>(
                 HttpStatus.OK.value(), "Sede seleccionada", false, result));
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<ApiResponse<AuthTokensDto>> refresh(
+            @RequestHeader("Authorization") String bearer) {
+        String token = bearer.startsWith("Bearer ") ? bearer.substring(7) : bearer;
+        AuthTokensDto result = authService.refresh(token);
+        return ResponseEntity.ok(new ApiResponse<>(
+                HttpStatus.OK.value(), "Token renovado", false, result));
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<ApiResponse<Boolean>> changePassword(
+            @RequestHeader("Authorization") String bearer,
+            @Valid @RequestBody ChangePasswordRequestDto request,
+            HttpServletRequest httpRequest) {
+        String token = bearer.startsWith("Bearer ") ? bearer.substring(7) : bearer;
+        authService.changePassword(
+                token, request,
+                extractClientIp(httpRequest), httpRequest.getHeader("User-Agent"));
+        return ResponseEntity.ok(new ApiResponse<>(
+                HttpStatus.OK.value(), "Contraseña actualizada exitosamente", false, true));
     }
 
     @PostMapping("/logout")

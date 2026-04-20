@@ -19,46 +19,29 @@ public class IntentoAutenticacionEntity {
     @Column(name = "empresa_id")
     private Long empresa_id;
 
-    @Column(name = "usuario_id")
-    private Long usuario_id;
+    @Column(name = "nombre_usuario", length = 100)
+    private String nombre_usuario;
 
     @Column(name = "paso", nullable = false, length = 20)
     private String paso;
 
-    @Column(name = "ip", length = 45)
-    private String ip;
-
-    @Column(name = "user_agent", length = 512)
-    private String user_agent;
-
     @Column(name = "exitoso", nullable = false)
     private Boolean exitoso;
 
-    @Column(name = "motivo_fallo", length = 100)
+    @Column(name = "motivo_fallo", length = 200)
     private String motivo_fallo;
 
-    // Campo de dominio: fecha exacta del intento
-    @Column(name = "fecha", nullable = false)
-    private LocalDateTime fecha;
+    @Column(name = "ip_origen", length = 45)
+    private String ip_origen;
 
-    // Auditoría estándar v3
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime created_at;
+    @Column(name = "user_agent", length = 500)
+    private String user_agent;
 
-    @Column(name = "updated_at")
-    private LocalDateTime updated_at;
-
-    @Column(name = "deleted_at")
-    private LocalDateTime deleted_at;
+    @Column(name = "fecha_intento", nullable = false)
+    private LocalDateTime fecha_intento;
 
     @PrePersist
     protected void onCreate() {
-        created_at = LocalDateTime.now();
-        if (fecha == null) fecha = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        updated_at = LocalDateTime.now();
+        if (fecha_intento == null) fecha_intento = LocalDateTime.now();
     }
 }

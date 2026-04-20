@@ -22,8 +22,32 @@ public class SedeEntity {
     @Column(name = "codigo", nullable = false, length = 20)
     private String codigo;
 
-    @Column(name = "nombre", nullable = false)
+    @Column(name = "codigo_habilitacion_reps", length = 20)
+    private String codigo_habilitacion_reps;
+
+    @Column(name = "nombre", nullable = false, length = 200)
     private String nombre;
+
+    @Column(name = "pais_id", nullable = false)
+    private Long pais_id;
+
+    @Column(name = "departamento_id", nullable = false)
+    private Long departamento_id;
+
+    @Column(name = "municipio_id", nullable = false)
+    private Long municipio_id;
+
+    @Column(name = "direccion", length = 300)
+    private String direccion;
+
+    @Column(name = "telefono", length = 30)
+    private String telefono;
+
+    @Column(name = "correo", length = 150)
+    private String correo;
+
+    @Column(name = "es_principal", nullable = false)
+    private Boolean es_principal;
 
     @Column(name = "activo", nullable = false)
     private Boolean activo;
@@ -47,6 +71,7 @@ public class SedeEntity {
     protected void onCreate() {
         created_at = LocalDateTime.now();
         if (activo == null) activo = true;
+        if (es_principal == null) es_principal = false;
     }
 
     @PreUpdate

@@ -23,13 +23,13 @@ public class UsuarioQueryRepository {
 
     public Optional<UsuarioEntity> findByUsernameAndEmpresa(String username, Long empresaId) {
         String sql = """
-                SELECT id, empresa_id, nombre_usuario, hash_password, nombre_completo,
-                       activo, bloqueado, intentos_fallidos, requiere_cambio_password,
-                       fecha_ultimo_ingreso, ip_ultimo_ingreso, fecha_bloqueo, motivo_bloqueo
+                SELECT id, empresa_id, tercero_id, nombre_usuario, correo, hash_password,
+                       es_super_admin, requiere_cambio_password, intentos_fallidos,
+                       bloqueado, fecha_bloqueo, motivo_bloqueo,
+                       fecha_ultimo_ingreso, ip_ultimo_ingreso, activo
                 FROM usuario
                 WHERE nombre_usuario = :username
                   AND empresa_id = :empresa_id
-                  AND deleted_at IS NULL
                 LIMIT 1
                 """;
         MapSqlParameterSource params = new MapSqlParameterSource()
@@ -81,21 +81,42 @@ public class UsuarioQueryRepository {
         return jdbc.queryForList(sql, params, String.class);
     }
 
+    public Optional<UsuarioEntity> findSuperAdminByUsername(String username) {
+        String sql = """
+                SELECT id, empresa_id, tercero_id, nombre_usuario, correo, hash_password,
+                       es_super_admin, requiere_cambio_password, intentos_fallidos,
+                       bloqueado, fecha_bloqueo, motivo_bloqueo,
+                       fecha_ultimo_ingreso, ip_ultimo_ingreso, activo
+                FROM usuario
+                WHERE nombre_usuario = :username
+                  AND es_super_admin = true
+                  AND empresa_id IS NULL
+                LIMIT 1
+                """;
+        MapSqlParameterSource params = new MapSqlParameterSource()
+                .addValue("username", username);
+        List<Map<String, Object>> rows = jdbc.query(sql, params, new ColumnMapRowMapper());
+        if (rows.isEmpty()) return Optional.empty();
+        return Optional.of(mapRowToEntity(rows.get(0)));
+    }
+
     private UsuarioEntity mapRowToEntity(Map<String, Object> row) {
         UsuarioEntity u = new UsuarioEntity();
         u.setId(toLong(row.get("id")));
         u.setEmpresa_id(toLong(row.get("empresa_id")));
+        u.setTercero_id(toLong(row.get("tercero_id")));
         u.setNombre_usuario((String) row.get("nombre_usuario"));
+        u.setCorreo((String) row.get("correo"));
         u.setHash_password((String) row.get("hash_password"));
-        u.setNombre_completo((String) row.get("nombre_completo"));
-        u.setActivo((Boolean) row.get("activo"));
-        u.setBloqueado((Boolean) row.get("bloqueado"));
-        u.setIntentos_fallidos(toInt(row.get("intentos_fallidos")));
+        u.setEs_super_admin((Boolean) row.get("es_super_admin"));
         u.setRequiere_cambio_password((Boolean) row.get("requiere_cambio_password"));
-        u.setFecha_ultimo_ingreso(toLocalDateTime(row.get("fecha_ultimo_ingreso")));
-        u.setIp_ultimo_ingreso((String) row.get("ip_ultimo_ingreso"));
+        u.setIntentos_fallidos(toInt(row.get("intentos_fallidos")));
+        u.setBloqueado((Boolean) row.get("bloqueado"));
         u.setFecha_bloqueo(toLocalDateTime(row.get("fecha_bloqueo")));
         u.setMotivo_bloqueo((String) row.get("motivo_bloqueo"));
+        u.setFecha_ultimo_ingreso(toLocalDateTime(row.get("fecha_ultimo_ingreso")));
+        u.setIp_ultimo_ingreso((String) row.get("ip_ultimo_ingreso"));
+        u.setActivo((Boolean) row.get("activo"));
         return u;
     }
 

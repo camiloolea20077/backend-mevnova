@@ -19,17 +19,44 @@ public class EmpresaEntity {
     @Column(name = "codigo", nullable = false, unique = true, length = 20)
     private String codigo;
 
-    @Column(name = "nit", unique = true, length = 20)
+    @Column(name = "nit", nullable = false, unique = true, length = 20)
     private String nit;
 
-    @Column(name = "nombre_comercial", nullable = false)
-    private String nombre_comercial;
+    @Column(name = "digito_verificacion", length = 2)
+    private String digito_verificacion;
 
-    @Column(name = "razon_social")
+    @Column(name = "razon_social", nullable = false, length = 200)
     private String razon_social;
 
-    @Column(name = "logo_url")
+    @Column(name = "nombre_comercial", length = 200)
+    private String nombre_comercial;
+
+    @Column(name = "representante_legal", length = 200)
+    private String representante_legal;
+
+    @Column(name = "telefono", length = 30)
+    private String telefono;
+
+    @Column(name = "correo", length = 150)
+    private String correo;
+
+    @Column(name = "pais_id")
+    private Long pais_id;
+
+    @Column(name = "departamento_id")
+    private Long departamento_id;
+
+    @Column(name = "municipio_id")
+    private Long municipio_id;
+
+    @Column(name = "direccion", length = 300)
+    private String direccion;
+
+    @Column(name = "logo_url", length = 500)
     private String logo_url;
+
+    @Column(name = "observaciones", columnDefinition = "text")
+    private String observaciones;
 
     @Column(name = "activo", nullable = false)
     private Boolean activo;

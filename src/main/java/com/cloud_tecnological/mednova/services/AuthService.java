@@ -11,4 +11,10 @@ public interface AuthService {
     AuthTokensDto selectSede(String sessionToken, SelectSedeRequestDto request, String ip, String userAgent);
 
     void logout(String accessToken, String ip, String userAgent);
+
+    AuthTokensDto superAdminLogin(SuperAdminLoginRequestDto request, String ip, String userAgent);
+
+    AuthTokensDto refresh(String refreshToken);
+
+    void changePassword(String token, ChangePasswordRequestDto request, String ip, String userAgent);
 }

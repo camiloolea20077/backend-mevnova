@@ -1,8 +1,13 @@
 package com.cloud_tecnological.mednova.services.impl;
 
 import com.cloud_tecnological.mednova.dto.auth.*;
+import com.cloud_tecnological.mednova.dto.auth.ChangePasswordRequestDto;
+import com.cloud_tecnological.mednova.dto.auth.SuperAdminLoginRequestDto;
 import com.cloud_tecnological.mednova.entity.*;
+import com.cloud_tecnological.mednova.entity.HistorialPasswordEntity;
 import com.cloud_tecnological.mednova.repositories.auth.*;
+import com.cloud_tecnological.mednova.repositories.auth.HistorialPasswordJpaRepository;
+import com.cloud_tecnological.mednova.repositories.auth.HistorialPasswordQueryRepository;
 import com.cloud_tecnological.mednova.repositories.empresa.EmpresaQueryRepository;
 import com.cloud_tecnological.mednova.repositories.sede.SedeQueryRepository;
 import com.cloud_tecnological.mednova.repositories.usuario.UsuarioJpaRepository;
@@ -43,17 +48,19 @@ public class AuthServiceImpl implements AuthService {
     @Value("${jwt.access.expiration-seconds:86400}")   private long accessExp;
     @Value("${jwt.refresh.expiration-seconds:2592000}") private long refreshExp;
 
-    private final EmpresaQueryRepository            empresaQueryRepository;
-    private final UsuarioJpaRepository              usuarioJpaRepository;
-    private final UsuarioQueryRepository            usuarioQueryRepository;
-    private final SesionUsuarioJpaRepository        sesionJpaRepository;
-    private final SesionUsuarioQueryRepository      sesionQueryRepository;
-    private final IntentoAutenticacionJpaRepository intentoJpaRepository;
-    private final AuditoriaJpaRepository            auditoriaJpaRepository;
-    private final SedeQueryRepository               sedeQueryRepository;
-    private final JwtTokenProvider                  jwtTokenProvider;
-    private final PasswordEncoder                   passwordEncoder;
-    private final IpRateLimiter                     ipRateLimiter;
+    private final EmpresaQueryRepository              empresaQueryRepository;
+    private final UsuarioJpaRepository                usuarioJpaRepository;
+    private final UsuarioQueryRepository              usuarioQueryRepository;
+    private final SesionUsuarioJpaRepository          sesionJpaRepository;
+    private final SesionUsuarioQueryRepository        sesionQueryRepository;
+    private final IntentoAutenticacionJpaRepository   intentoJpaRepository;
+    private final AuditoriaJpaRepository              auditoriaJpaRepository;
+    private final SedeQueryRepository                 sedeQueryRepository;
+    private final HistorialPasswordJpaRepository      historialPasswordJpaRepository;
+    private final HistorialPasswordQueryRepository    historialPasswordQueryRepository;
+    private final JwtTokenProvider                    jwtTokenProvider;
+    private final PasswordEncoder                     passwordEncoder;
+    private final IpRateLimiter                       ipRateLimiter;
 
     public AuthServiceImpl(
             EmpresaQueryRepository empresaQueryRepository,
@@ -64,20 +71,24 @@ public class AuthServiceImpl implements AuthService {
             IntentoAutenticacionJpaRepository intentoJpaRepository,
             AuditoriaJpaRepository auditoriaJpaRepository,
             SedeQueryRepository sedeQueryRepository,
+            HistorialPasswordJpaRepository historialPasswordJpaRepository,
+            HistorialPasswordQueryRepository historialPasswordQueryRepository,
             JwtTokenProvider jwtTokenProvider,
             PasswordEncoder passwordEncoder,
             IpRateLimiter ipRateLimiter) {
-        this.empresaQueryRepository = empresaQueryRepository;
-        this.usuarioJpaRepository   = usuarioJpaRepository;
-        this.usuarioQueryRepository = usuarioQueryRepository;
-        this.sesionJpaRepository    = sesionJpaRepository;
-        this.sesionQueryRepository  = sesionQueryRepository;
-        this.intentoJpaRepository   = intentoJpaRepository;
-        this.auditoriaJpaRepository = auditoriaJpaRepository;
-        this.sedeQueryRepository    = sedeQueryRepository;
-        this.jwtTokenProvider       = jwtTokenProvider;
-        this.passwordEncoder        = passwordEncoder;
-        this.ipRateLimiter          = ipRateLimiter;
+        this.empresaQueryRepository          = empresaQueryRepository;
+        this.usuarioJpaRepository            = usuarioJpaRepository;
+        this.usuarioQueryRepository          = usuarioQueryRepository;
+        this.sesionJpaRepository             = sesionJpaRepository;
+        this.sesionQueryRepository           = sesionQueryRepository;
+        this.intentoJpaRepository            = intentoJpaRepository;
+        this.auditoriaJpaRepository          = auditoriaJpaRepository;
+        this.sedeQueryRepository             = sedeQueryRepository;
+        this.historialPasswordJpaRepository  = historialPasswordJpaRepository;
+        this.historialPasswordQueryRepository = historialPasswordQueryRepository;
+        this.jwtTokenProvider                = jwtTokenProvider;
+        this.passwordEncoder                 = passwordEncoder;
+        this.ipRateLimiter                   = ipRateLimiter;
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -153,31 +164,31 @@ public class AuthServiceImpl implements AuthService {
         boolean passMatches = passwordEncoder.matches(request.getPassword(), hashToCheck);
 
         if (usuarioOpt.isEmpty()) {
-            registrarIntento(empresaId, null, ip, userAgent, PASO_LOGIN, false, "usuario_no_encontrado");
+            registrarIntento(empresaId, request.getUsername(), ip, userAgent, PASO_LOGIN, false, "usuario_no_encontrado");
             throw new GlobalException(HttpStatus.UNAUTHORIZED, "Credenciales inválidas");
         }
 
         UsuarioEntity usuario = usuarioOpt.get();
 
         if (Boolean.FALSE.equals(usuario.getActivo())) {
-            registrarIntento(empresaId, usuario.getId(), ip, userAgent, PASO_LOGIN, false, "usuario_inactivo");
+            registrarIntento(empresaId, usuario.getNombre_usuario(), ip, userAgent, PASO_LOGIN, false, "usuario_inactivo");
             throw new GlobalException(HttpStatus.UNAUTHORIZED, "Credenciales inválidas");
         }
         if (Boolean.TRUE.equals(usuario.getBloqueado())) {
-            registrarIntento(empresaId, usuario.getId(), ip, userAgent, PASO_LOGIN, false, "usuario_bloqueado");
+            registrarIntento(empresaId, usuario.getNombre_usuario(), ip, userAgent, PASO_LOGIN, false, "usuario_bloqueado");
             throw new GlobalException(HttpStatus.UNAUTHORIZED,
                     "Usuario bloqueado. Contacte al administrador.");
         }
 
         if (!passMatches) {
             incrementarIntentosFallidos(usuario);
-            registrarIntento(empresaId, usuario.getId(), ip, userAgent, PASO_LOGIN, false, "password_invalido");
+            registrarIntento(empresaId, usuario.getNombre_usuario(), ip, userAgent, PASO_LOGIN, false, "password_invalido");
             throw new GlobalException(HttpStatus.UNAUTHORIZED, "Credenciales inválidas");
         }
 
         resetearIntentosFallidos(usuario, ip);
         marcarSesionUsada(sesionPreAuth);
-        registrarIntento(empresaId, usuario.getId(), ip, userAgent, PASO_LOGIN, true, null);
+        registrarIntento(empresaId, usuario.getNombre_usuario(), ip, userAgent, PASO_LOGIN, true, null);
 
         if (Boolean.TRUE.equals(usuario.getRequiere_cambio_password())) {
             String pwdToken = jwtTokenProvider.generatePasswordChangeToken(usuario.getId(), empresaId);
@@ -264,7 +275,7 @@ public class AuthServiceImpl implements AuthService {
                 .orElseThrow(() -> new GlobalException(HttpStatus.UNAUTHORIZED,
                         "Usuario no encontrado"));
 
-        if (usuario.getDeleted_at() != null || Boolean.FALSE.equals(usuario.getActivo())) {
+        if (Boolean.FALSE.equals(usuario.getActivo())) {
             throw new GlobalException(HttpStatus.UNAUTHORIZED, "Credenciales inválidas");
         }
 
@@ -309,6 +320,274 @@ public class AuthServiceImpl implements AuthService {
     }
 
     // ─────────────────────────────────────────────────────────────────────────
+    // HU-FASE1-001D: Refresh del access token (con rotación)
+    // ─────────────────────────────────────────────────────────────────────────
+
+    @Override
+    @Transactional
+    public AuthTokensDto refresh(String refreshToken) {
+        Claims claims;
+        try {
+            claims = jwtTokenProvider.validateAndParse(refreshToken, TIPO_REFRESH);
+        } catch (Exception e) {
+            throw new GlobalException(HttpStatus.UNAUTHORIZED, "Refresh token inválido o expirado");
+        }
+
+        String jti       = claims.getId();
+        Long   usuarioId = claims.get("usuario_id", Long.class);
+        Long   empresaId = claims.get("empresa_id", Long.class);
+        Long   sedeId    = claims.get("sede_id",    Long.class);
+
+        SesionUsuarioEntity sesion = sesionQueryRepository.findByJti(jti)
+                .orElseThrow(() -> new GlobalException(HttpStatus.UNAUTHORIZED, "Sesión no encontrada"));
+
+        if (sesion.getFecha_revocacion() != null) {
+            // Posible robo de token — revocar todas las sesiones del usuario
+            sesionQueryRepository.revocarTodasLasSesiones(usuarioId);
+            throw new GlobalException(HttpStatus.UNAUTHORIZED,
+                    "Refresh token revocado. Todas las sesiones fueron cerradas por seguridad.");
+        }
+
+        UsuarioEntity usuario = usuarioJpaRepository.findById(usuarioId)
+                .orElseThrow(() -> new GlobalException(HttpStatus.UNAUTHORIZED, "Usuario no encontrado"));
+
+        if (Boolean.FALSE.equals(usuario.getActivo()) || Boolean.TRUE.equals(usuario.getBloqueado())) {
+            throw new GlobalException(HttpStatus.UNAUTHORIZED, "Credenciales inválidas");
+        }
+
+        // Rotar: revocar refresh anterior y su access vinculado
+        revocarSesion(sesion);
+        if (sesion.getParent_jti() != null) {
+            sesionQueryRepository.findByJti(sesion.getParent_jti()).ifPresent(this::revocarSesion);
+        }
+
+        // Recalcular roles y permisos
+        List<String> roles, permisos;
+        if (empresaId != null && sedeId != null) {
+            roles    = usuarioQueryRepository.findRolesByUserEmpresaSede(usuarioId, empresaId, sedeId);
+            permisos = usuarioQueryRepository.findPermissionsByUserEmpresaSede(usuarioId, empresaId, sedeId);
+        } else {
+            roles    = List.of("SUPER_ADMIN");
+            permisos = List.of();
+        }
+
+        TenantInfo tenantInfo = TenantInfo.builder()
+                .usuario_id(usuarioId)
+                .empresa_id(empresaId)
+                .sede_id(sedeId)
+                .username(usuario.getNombre_usuario())
+                .roles(roles)
+                .permisos(permisos)
+                .build();
+
+        String newAccess  = jwtTokenProvider.generateAccessToken(tenantInfo);
+        String newRefresh = jwtTokenProvider.generateRefreshToken(tenantInfo);
+
+        Claims newAccessClaims  = jwtTokenProvider.validateAndParse(newAccess,  TIPO_ACCESS);
+        Claims newRefreshClaims = jwtTokenProvider.validateAndParse(newRefresh, TIPO_REFRESH);
+
+        String newAccessJti  = newAccessClaims.getId();
+        String newRefreshJti = newRefreshClaims.getId();
+
+        guardarSesion(newAccessJti,  null,        TIPO_ACCESS,  empresaId, usuarioId, sedeId, sesion.getIp(), accessExp);
+        guardarSesion(newRefreshJti, newAccessJti, TIPO_REFRESH, empresaId, usuarioId, sedeId, sesion.getIp(), refreshExp);
+
+        UserInfoDto userInfo = UserInfoDto.builder()
+                .id(usuarioId)
+                .username(usuario.getNombre_usuario())
+                .companyId(empresaId)
+                .branchId(sedeId)
+                .fullName(null)
+                .roles(roles)
+                .build();
+
+        return AuthTokensDto.builder()
+                .accessToken(newAccess)
+                .refreshToken(newRefresh)
+                .tokenType("Bearer")
+                .expiresInSeconds(accessExp)
+                .user(userInfo)
+                .build();
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // HU-FASE1-001F: Cambio de contraseña (primer login y voluntario)
+    // ─────────────────────────────────────────────────────────────────────────
+
+    private static final String TIPO_PWD_CHANGE = "PASSWORD_CHANGE";
+
+    @Override
+    @Transactional
+    public void changePassword(String token, ChangePasswordRequestDto request,
+                                String ip, String userAgent) {
+        // Determinar tipo de token
+        Claims claims;
+        boolean esPrimerLogin;
+        try {
+            try {
+                claims = jwtTokenProvider.validateAndParse(token, TIPO_ACCESS);
+                esPrimerLogin = false;
+            } catch (Exception e) {
+                claims = jwtTokenProvider.validateAndParse(token, TIPO_PWD_CHANGE);
+                esPrimerLogin = true;
+            }
+        } catch (Exception e) {
+            throw new GlobalException(HttpStatus.UNAUTHORIZED, "Token inválido");
+        }
+
+        Long usuarioId = claims.get("usuario_id", Long.class);
+        Long empresaId = claims.get("empresa_id", Long.class);
+
+        // Para ACCESS token, verificar no revocado
+        if (!esPrimerLogin && sesionQueryRepository.isRevoked(claims.getId())) {
+            throw new GlobalException(HttpStatus.UNAUTHORIZED, "Token revocado");
+        }
+
+        UsuarioEntity usuario = usuarioJpaRepository.findById(usuarioId)
+                .orElseThrow(() -> new GlobalException(HttpStatus.UNAUTHORIZED, "Usuario no encontrado"));
+
+        // Cambio voluntario: validar contraseña actual
+        if (!esPrimerLogin) {
+            if (request.getCurrentPassword() == null || request.getCurrentPassword().isBlank()) {
+                throw new GlobalException(HttpStatus.BAD_REQUEST, "La contraseña actual es requerida");
+            }
+            if (!passwordEncoder.matches(request.getCurrentPassword(), usuario.getHash_password())) {
+                throw new GlobalException(HttpStatus.BAD_REQUEST, "Contraseña actual incorrecta");
+            }
+        }
+
+        // Validar política de contraseña
+        validarPoliticaPassword(request.getNewPassword());
+
+        // No puede ser igual a las últimas 3
+        List<String> historial = historialPasswordQueryRepository.findRecentHashes(usuarioId, 3);
+        if (passwordEncoder.matches(request.getNewPassword(), usuario.getHash_password())) {
+            throw new GlobalException(HttpStatus.BAD_REQUEST,
+                    "La nueva contraseña no puede ser igual a la contraseña actual");
+        }
+        for (String oldHash : historial) {
+            if (passwordEncoder.matches(request.getNewPassword(), oldHash)) {
+                throw new GlobalException(HttpStatus.BAD_REQUEST,
+                        "La nueva contraseña no puede ser igual a una de las últimas 3 contraseñas usadas");
+            }
+        }
+
+        // Guardar hash actual en historial
+        HistorialPasswordEntity entrada = new HistorialPasswordEntity();
+        entrada.setUsuario_id(usuarioId);
+        entrada.setHash_password(usuario.getHash_password());
+        historialPasswordJpaRepository.save(entrada);
+
+        // Actualizar contraseña
+        usuario.setHash_password(passwordEncoder.encode(request.getNewPassword()));
+        usuario.setRequiere_cambio_password(false);
+        usuarioJpaRepository.save(usuario);
+
+        // Revocar todas las sesiones activas
+        sesionQueryRepository.revocarTodasLasSesiones(usuarioId);
+
+        registrarAuditoria(empresaId, null, usuarioId, "UPDATE", ip, userAgent);
+    }
+
+    private void validarPoliticaPassword(String password) {
+        if (password == null || password.length() < 8)
+            throw new GlobalException(HttpStatus.BAD_REQUEST, "La contraseña debe tener al menos 8 caracteres");
+        if (!password.matches(".*[A-Z].*"))
+            throw new GlobalException(HttpStatus.BAD_REQUEST, "La contraseña debe tener al menos una mayúscula");
+        if (!password.matches(".*[a-z].*"))
+            throw new GlobalException(HttpStatus.BAD_REQUEST, "La contraseña debe tener al menos una minúscula");
+        if (!password.matches(".*\\d.*"))
+            throw new GlobalException(HttpStatus.BAD_REQUEST, "La contraseña debe tener al menos un número");
+        if (!password.matches(".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?].*"))
+            throw new GlobalException(HttpStatus.BAD_REQUEST, "La contraseña debe tener al menos un carácter especial");
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // HU-SUPER-ADMIN: Login directo sin pre-auth ni selección de sede
+    // ─────────────────────────────────────────────────────────────────────────
+
+    @Override
+    @Transactional
+    public AuthTokensDto superAdminLogin(SuperAdminLoginRequestDto request,
+                                         String ip, String userAgent) {
+        if (ipRateLimiter.isBlocked(ip, RATE_LIMIT_MAX, RATE_LIMIT_WIN)) {
+            registrarIntento(null, request.getUsername(), ip, userAgent, PASO_LOGIN, false, "rate_limit_excedido");
+            throw new GlobalException(HttpStatus.TOO_MANY_REQUESTS,
+                    "Demasiados intentos. Intente de nuevo en unos minutos.");
+        }
+
+        Optional<UsuarioEntity> usuarioOpt = usuarioQueryRepository
+                .findSuperAdminByUsername(request.getUsername());
+
+        String hashToCheck = usuarioOpt.map(UsuarioEntity::getHash_password).orElse(DUMMY_HASH);
+        boolean passMatches = passwordEncoder.matches(request.getPassword(), hashToCheck);
+
+        if (usuarioOpt.isEmpty()) {
+            registrarIntento(null, request.getUsername(), ip, userAgent, PASO_LOGIN, false, "usuario_no_encontrado");
+            throw new GlobalException(HttpStatus.UNAUTHORIZED, "Credenciales inválidas");
+        }
+
+        UsuarioEntity usuario = usuarioOpt.get();
+
+        if (Boolean.FALSE.equals(usuario.getActivo())) {
+            registrarIntento(null, usuario.getNombre_usuario(), ip, userAgent, PASO_LOGIN, false, "usuario_inactivo");
+            throw new GlobalException(HttpStatus.UNAUTHORIZED, "Credenciales inválidas");
+        }
+        if (Boolean.TRUE.equals(usuario.getBloqueado())) {
+            registrarIntento(null, usuario.getNombre_usuario(), ip, userAgent, PASO_LOGIN, false, "usuario_bloqueado");
+            throw new GlobalException(HttpStatus.UNAUTHORIZED, "Usuario bloqueado. Contacte al administrador.");
+        }
+        if (!passMatches) {
+            incrementarIntentosFallidos(usuario);
+            registrarIntento(null, usuario.getNombre_usuario(), ip, userAgent, PASO_LOGIN, false, "password_invalido");
+            throw new GlobalException(HttpStatus.UNAUTHORIZED, "Credenciales inválidas");
+        }
+
+        resetearIntentosFallidos(usuario, ip);
+        registrarIntento(null, usuario.getNombre_usuario(), ip, userAgent, PASO_LOGIN, true, null);
+
+        TenantInfo tenantInfo = TenantInfo.builder()
+                .usuario_id(usuario.getId())
+                .empresa_id(null)
+                .sede_id(null)
+                .username(usuario.getNombre_usuario())
+                .roles(List.of("SUPER_ADMIN"))
+                .permisos(List.of())
+                .build();
+
+        String accessToken  = jwtTokenProvider.generateAccessToken(tenantInfo);
+        String refreshToken = jwtTokenProvider.generateRefreshToken(tenantInfo);
+
+        Claims accessClaims  = jwtTokenProvider.validateAndParse(accessToken, TIPO_ACCESS);
+        Claims refreshClaims = jwtTokenProvider.validateAndParse(refreshToken, TIPO_REFRESH);
+
+        String accessJti  = accessClaims.getId();
+        String refreshJti = refreshClaims.getId();
+
+        guardarSesion(accessJti,  null,      TIPO_ACCESS,  null, usuario.getId(), null, ip, accessExp);
+        guardarSesion(refreshJti, accessJti, TIPO_REFRESH, null, usuario.getId(), null, ip, refreshExp);
+
+        registrarAuditoria(null, null, usuario.getId(), "LOGIN", ip, userAgent);
+
+        UserInfoDto userInfo = UserInfoDto.builder()
+                .id(usuario.getId())
+                .username(usuario.getNombre_usuario())
+                .companyId(null)
+                .branchId(null)
+                .fullName(null)
+                .roles(List.of("SUPER_ADMIN"))
+                .build();
+
+        return AuthTokensDto.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .tokenType("Bearer")
+                .expiresInSeconds(accessExp)
+                .user(userInfo)
+                .build();
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
     // Helpers privados
     // ─────────────────────────────────────────────────────────────────────────
 
@@ -346,7 +625,7 @@ public class AuthServiceImpl implements AuthService {
                 .username(usuario.getNombre_usuario())
                 .companyId(empresaId)
                 .branchId(sedeId)
-                .fullName(usuario.getNombre_completo())
+                .fullName(null)
                 .roles(roles)
                 .build();
 
@@ -413,13 +692,13 @@ public class AuthServiceImpl implements AuthService {
         usuarioJpaRepository.save(usuario);
     }
 
-    private void registrarIntento(Long empresaId, Long usuarioId, String ip, String userAgent,
+    private void registrarIntento(Long empresaId, String nombreUsuario, String ip, String userAgent,
                                    String paso, boolean exitoso, String motivoFallo) {
         IntentoAutenticacionEntity intento = new IntentoAutenticacionEntity();
         intento.setEmpresa_id(empresaId);
-        intento.setUsuario_id(usuarioId);
+        intento.setNombre_usuario(nombreUsuario);
         intento.setPaso(paso);
-        intento.setIp(ip);
+        intento.setIp_origen(ip);
         intento.setUser_agent(userAgent);
         intento.setExitoso(exitoso);
         intento.setMotivo_fallo(motivoFallo);
@@ -432,8 +711,9 @@ public class AuthServiceImpl implements AuthService {
         auditoria.setEmpresa_id(empresaId);
         auditoria.setSede_id(sedeId);
         auditoria.setUsuario_id(usuarioId);
+        auditoria.setTabla_afectada("sesion_usuario");
         auditoria.setAccion(accion);
-        auditoria.setIp(ip);
+        auditoria.setIp_origen(ip);
         auditoria.setUser_agent(userAgent);
         auditoriaJpaRepository.save(auditoria);
     }

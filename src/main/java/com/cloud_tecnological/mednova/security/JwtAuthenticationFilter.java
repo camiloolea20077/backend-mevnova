@@ -40,34 +40,41 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             String token = extractBearerToken(request);
             if (token != null) {
-                Claims claims = jwtTokenProvider.validateAndParse(token, "ACCESS");
-                String jti    = claims.getId();
-
-                // Verificar que el token no esté revocado en DB
-                if (sesionQueryRepository.isRevoked(jti)) {
-                    throw new GlobalException(HttpStatus.UNAUTHORIZED, "Token revocado");
+                Claims claims = null;
+                try {
+                    claims = jwtTokenProvider.validateAndParse(token, "ACCESS");
+                } catch (Exception ignored) {
+                    // Token no es de tipo ACCESS (ej: PASSWORD_CHANGE, REFRESH en endpoint público)
                 }
 
-                TenantInfo info = TenantInfo.builder()
-                        .usuario_id(claims.get("usuario_id", Long.class))
-                        .empresa_id(claims.get("empresa_id", Long.class))
-                        .sede_id(claims.get("sede_id", Long.class))
-                        .username(claims.get("username", String.class))
-                        .roles(claims.get("roles", List.class))
-                        .permisos(claims.get("permisos", List.class))
-                        .jti(jti)
-                        .build();
+                if (claims != null) {
+                    String jti = claims.getId();
 
-                TenantContext.set(info);
+                    if (sesionQueryRepository.isRevoked(jti)) {
+                        throw new GlobalException(HttpStatus.UNAUTHORIZED, "Token revocado");
+                    }
 
-                UsernamePasswordAuthenticationToken auth =
-                        new UsernamePasswordAuthenticationToken(
-                                info.getUsername(), null,
-                                info.getRoles().stream()
-                                        .map(r -> new SimpleGrantedAuthority("ROLE_" + r))
-                                        .collect(Collectors.toList())
-                        );
-                SecurityContextHolder.getContext().setAuthentication(auth);
+                    TenantInfo info = TenantInfo.builder()
+                            .usuario_id(claims.get("usuario_id", Long.class))
+                            .empresa_id(claims.get("empresa_id", Long.class))
+                            .sede_id(claims.get("sede_id", Long.class))
+                            .username(claims.get("username", String.class))
+                            .roles(claims.get("roles", List.class))
+                            .permisos(claims.get("permisos", List.class))
+                            .jti(jti)
+                            .build();
+
+                    TenantContext.set(info);
+
+                    UsernamePasswordAuthenticationToken auth =
+                            new UsernamePasswordAuthenticationToken(
+                                    info.getUsername(), null,
+                                    info.getRoles().stream()
+                                            .map(r -> new SimpleGrantedAuthority("ROLE_" + r))
+                                            .collect(Collectors.toList())
+                            );
+                    SecurityContextHolder.getContext().setAuthentication(auth);
+                }
             }
             chain.doFilter(request, response);
         } finally {

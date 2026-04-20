@@ -44,7 +44,9 @@ public class SecurityConfig {
                                 "/api/auth/pre-auth",
                                 "/api/auth/login",
                                 "/api/auth/select-sede",
-                                "/api/auth/refresh"
+                                "/api/auth/refresh",
+                                "/api/auth/change-password",
+                                "/api/auth/super-admin/login"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

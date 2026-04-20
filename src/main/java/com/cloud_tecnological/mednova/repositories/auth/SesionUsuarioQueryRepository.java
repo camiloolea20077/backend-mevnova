@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Collections;
 
 @Repository
 public class SesionUsuarioQueryRepository {
@@ -48,6 +49,19 @@ public class SesionUsuarioQueryRepository {
                 new MapSqlParameterSource("parent_jti", parentJti), new ColumnMapRowMapper());
         if (rows.isEmpty()) return Optional.empty();
         return Optional.of(mapRowToEntity(rows.get(0)));
+    }
+
+    public void revocarTodasLasSesiones(Long usuarioId) {
+        String sql = """
+                UPDATE sesion_usuario
+                SET fecha_revocacion = :ahora
+                WHERE usuario_id = :usuario_id
+                  AND fecha_revocacion IS NULL
+                """;
+        MapSqlParameterSource params = new MapSqlParameterSource()
+                .addValue("usuario_id", usuarioId)
+                .addValue("ahora", LocalDateTime.now());
+        jdbc.update(sql, params);
     }
 
     // Usado por JwtAuthenticationFilter en cada request autenticado
