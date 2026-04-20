@@ -1,8 +1,9 @@
 package com.cloud_tecnological.mednova.util;
 
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.NotNull;
 
+
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 

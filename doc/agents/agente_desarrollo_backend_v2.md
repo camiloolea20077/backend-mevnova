@@ -1,26 +1,141 @@
-# Agente de Desarrollo Backend — Spring Boot (Estilo Cloud Technological) v2
+# Agente de Desarrollo Backend — Spring Boot (Estilo Cloud Technological) v3
 
 ## Rol del agente
 
-Este agente actúa como **Desarrollador Backend Senior** especializado en Spring Boot con el stack y las convenciones del proyecto del equipo (base: `com.cloud_technological.el_aventurero`, extendido al Sistema de Gestión Hospitalaria).
+Este agente actúa como **Desarrollador Backend Senior** especializado en Spring Boot con el stack y las convenciones del equipo.
 
-Genera código backend **consistente con el estilo y los patrones ya probados**, respetando una regla clave nueva:
+Genera código backend consistente con el estilo probado, respetando **tres reglas clave**:
 
-> **La base de datos y las entidades JPA están en español. Todo lo demás (DTOs, servicios, controllers, interfaces, variables en código nuevo) está en inglés.**
+> 1. **La BD y las entidades JPA están en español.** DTOs, servicios, controllers y variables nuevas están en inglés.
+> 2. **Los campos de auditoría están en inglés** (`created_at`, `updated_at`, `deleted_at`) para coincidir con el estilo Java.
+> 3. **JPA es minimalista.** Solo métodos simples (`findById`, `save`, etc.). Todo filtro de soft-delete + multi-tenant va en **QueryRepository con SQL nativo**.
 
 ---
 
-## Cambios clave respecto a la versión anterior
+## Cambios clave respecto a v2
 
-1. **DTOs en inglés**: `CreateProductRequestDto`, `ProductResponseDto`, `ProductTableDto`, `UpdateProductRequestDto`, `PageableRequestDto`, `LoginRequestDto`, etc.
-2. **Controllers en inglés**: `ProductController`, `PatientController`, `AuthController`, endpoints en inglés: `/api/products`, `/api/patients`, `/api/auth`.
-3. **Services en inglés**: `ProductService`, `PatientService`, `AuthService`, con métodos en inglés: `create`, `update`, `findById`, `listByType`, `search`.
-4. **Repositorios en inglés**: `ProductJpaRepository`, `ProductQueryRepository`.
-5. **Mappers en inglés**: `ProductMapper`, `PatientMapper`.
-6. **Entidades JPA en español**: `TerceroEntity`, `PacienteEntity`, `AdmisionEntity` (reflejan el esquema BD).
-7. **Campos de entidades en español**: `empresa_id`, `sede_id`, `fecha_creacion`, `usuario_creacion` (reflejan columnas BD).
-8. **Campos de DTOs en inglés** con mapeo explícito al campo de entidad en español.
-9. **Multi-tenancy obligatorio**: `empresa_id` y `sede_id` se toman del `TenantContext`, nunca del DTO.
+### 1. Campos de auditoría estandarizados (en inglés)
+
+Toda tabla tiene:
+- `created_at` — timestamp NOT NULL, default `CURRENT_TIMESTAMP`, no actualizable
+- `updated_at` — timestamp nullable, se setea en `@PreUpdate`
+- `deleted_at` — timestamp nullable (soft-delete)
+- `usuario_creacion` — Long, se setea desde `TenantContext.getUsuarioId()`
+- `usuario_modificacion` — Long, se setea desde `TenantContext.getUsuarioId()`
+- `activo` — Boolean (bandera de negocio, complementa el soft-delete)
+- `empresa_id` — Long NOT NULL (multi-tenant)
+- `sede_id` — Long NULL/NOT NULL según el dominio
+
+### 2. Regla de oro: JPA minimalista
+
+**Métodos JPA permitidos**:
+```java
+public interface EmpresaJpaRepository extends JpaRepository<EmpresaEntity, Long> {
+    // Nada más. Todo lo demás va en QueryRepository.
+}
+```
+
+**Métodos JPA prohibidos** (ejemplos de lo que NO hacer):
+```java
+// ❌ NUNCA - nombres largos, frágiles, ilegibles
+Optional<EmpresaEntity> findByCodigoAndActivoTrueAndDeleted_atIsNull(String codigo);
+Optional<EmpresaEntity> findByIdAndEmpresa_idAndDeleted_atIsNull(Long id, Long empresa_id);
+List<T> findAllByEmpresa_idAndActivoTrueAndDeleted_atIsNullOrderByCreated_atDesc(...);
+```
+
+**Motivos**:
+- Los nombres largos son frágiles (cualquier renombre rompe el repositorio).
+- Spring Data JPA genera SQL inferior al que puedes escribir tú.
+- Mezclar filtros de soft-delete, multi-tenant y búsqueda en un solo método viola el principio de responsabilidad única.
+- Son difíciles de leer, refactorizar y probar.
+
+**Regla práctica**:
+- Si el filtro es `findById` solo → JpaRepository.
+- Si requiere `deleted_at IS NULL`, `empresa_id = ?`, `sede_id = ?`, joins, búsquedas, paginación → QueryRepository.
+
+### 3. QueryRepository como único punto de filtrado
+
+Todas las consultas con filtros de negocio van ahí, con SQL nativo:
+
+```java
+public Optional<EmpresaDto> findActiveByCodigo(String codigo) {
+    String sql = """
+        SELECT id, codigo, nit, razon_social, activo
+        FROM empresa
+        WHERE codigo = :codigo
+          AND activo = true
+          AND deleted_at IS NULL
+    """;
+    // ...
+}
+```
+
+### 4. Patrón de soft-delete
+
+**Entity**:
+```java
+@Column(name = "deleted_at")
+private LocalDateTime deleted_at;
+```
+
+**En el Service al eliminar**:
+```java
+@Transactional
+public Boolean delete(Long id) {
+    EmpresaEntity entity = empresaJpaRepository.findById(id)
+        .orElseThrow(() -> new GlobalException(HttpStatus.NOT_FOUND, "No encontrado"));
+
+    // Validar tenant ANTES de tocar nada
+    validateTenant(entity);
+
+    // Validar que no esté ya eliminado
+    if (entity.getDeleted_at() != null) {
+        throw new GlobalException(HttpStatus.BAD_REQUEST, "Registro ya eliminado");
+    }
+
+    entity.setDeleted_at(LocalDateTime.now());
+    entity.setUsuario_modificacion(TenantContext.getUsuarioId());
+    empresaJpaRepository.save(entity);
+    return true;
+}
+```
+
+**En el Service al leer por ID**:
+```java
+public EmpresaResponseDto findById(Long id) {
+    EmpresaEntity entity = empresaJpaRepository.findById(id)
+        .orElseThrow(() -> new GlobalException(HttpStatus.NOT_FOUND, "No encontrado"));
+
+    // Validaciones en código, no en la query
+    if (entity.getDeleted_at() != null) {
+        throw new GlobalException(HttpStatus.NOT_FOUND, "No encontrado");
+    }
+    validateTenant(entity);
+
+    return empresaMapper.toResponseDto(entity);
+}
+```
+
+**Helper de validación tenant**:
+```java
+private void validateTenant(EmpresaEntity entity) {
+    Long userEmpresaId = TenantContext.getEmpresaId();
+    // Para tabla empresa, si no es super-admin, solo puede ver la suya
+    if (!TenantContext.isSuperAdmin() && !entity.getId().equals(userEmpresaId)) {
+        throw new GlobalException(HttpStatus.NOT_FOUND, "No encontrado");
+    }
+}
+```
+
+Para tablas con `empresa_id`:
+```java
+private void validateTenant(PacienteEntity entity) {
+    Long userEmpresaId = TenantContext.getEmpresaId();
+    if (!entity.getEmpresa_id().equals(userEmpresaId)) {
+        throw new GlobalException(HttpStatus.NOT_FOUND, "No encontrado");
+    }
+}
+```
 
 ---
 
@@ -28,11 +143,11 @@ Genera código backend **consistente con el estilo y los patrones ya probados**,
 
 - **Lenguaje**: Java 17+
 - **Framework**: Spring Boot 3.x
-- **Persistencia**: Spring Data JPA + NamedParameterJdbcTemplate (modelo dual)
-- **Motor BD**: PostgreSQL 16+
-- **Mapeo DTO ↔ Entity**: MapStruct (`componentModel = "spring"`)
-- **Validación**: `jakarta.validation` / Bean Validation
-- **Lombok**: `@Getter`, `@Setter` (nunca `@Data`)
+- **Persistencia**: Spring Data JPA (mínimo) + NamedParameterJdbcTemplate (principal)
+- **BD**: PostgreSQL 16+
+- **Mapeo**: MapStruct (`componentModel = "spring"`)
+- **Validación**: `jakarta.validation`
+- **Lombok**: `@Getter`, `@Setter` (no `@Data`)
 - **Seguridad**: JWT multi-tenant (ver `agente_jwt_multitenant.md`)
 - **Respuesta HTTP**: wrapper `ApiResponse<T>`
 
@@ -40,113 +155,65 @@ Genera código backend **consistente con el estilo y los patrones ya probados**,
 
 ## Convenciones NO NEGOCIABLES
 
-### 1. Idioma
-| Capa | Idioma | Ejemplo |
-|------|--------|---------|
-| Tablas y columnas BD | Español | `tercero`, `fecha_creacion`, `empresa_id` |
-| Entidades JPA | Español (coincide con BD) | `TerceroEntity`, `private Long empresa_id` |
-| Nombres de clases de servicios, controllers, DTOs | Inglés | `ProductService`, `PatientController`, `CreatePatientRequestDto` |
-| Campos de DTOs | Inglés | `firstName`, `documentNumber`, `birthDate` |
-| Variables locales, métodos | Inglés | `findByCompany`, `validateUniqueness` |
-| Comentarios de negocio | Español (entendible por el equipo) | // Valida que el paciente pertenezca a la empresa |
+### 1. Idioma por capa
 
-### 2. Nombres de campos
-- **Entidades JPA**: `snake_case` para coincidir con columnas BD.
-  ```java
-  private Long empresa_id;
-  private String tipo_documento;
-  private LocalDateTime fecha_creacion;
-  ```
-- **DTOs**: `camelCase` estándar Java.
-  ```java
-  private Long companyId;
-  private String documentType;
-  private LocalDateTime createdAt;
-  ```
-- **Mapeo explícito** en MapStruct para traducir `fecha_creacion` ↔ `createdAt`.
+| Capa | Idioma |
+|------|--------|
+| Tablas y columnas BD | Español (`tercero`, `empresa_id`) excepto auditoría (`created_at`) |
+| Entidades JPA | Español con `snake_case` (`private String nombre_completo`) |
+| DTOs | Inglés con `camelCase` (`private String fullName`) |
+| Servicios/controllers | Inglés (`PatientService`, `PatientController`) |
+| Variables locales | Inglés |
+| Mensajes de error al usuario | Español |
 
-### 3. Estructura de paquetes
+### 2. Estructura de paquetes
+
 ```
 com.<org>.<proyecto>
-├── controller/                    # PatientController, AuthController
+├── controller/                    # PatientController.java
 ├── dto/
-│   ├── patient/                   # módulo en inglés
+│   ├── patient/
 │   │   ├── CreatePatientRequestDto.java
 │   │   ├── UpdatePatientRequestDto.java
 │   │   ├── PatientResponseDto.java
 │   │   └── PatientTableDto.java
 │   ├── auth/
-│   │   ├── LoginRequestDto.java
-│   │   ├── LoginResponseDto.java
-│   │   └── ...
 │   └── common/
 │       ├── ApiResponse.java
-│       ├── PageableRequestDto.java
-│       └── ErrorResponseDto.java
-├── entity/                        # Entidades JPA en español
-│   ├── TerceroEntity.java
-│   ├── PacienteEntity.java
-│   └── ...
+│       └── PageableRequestDto.java
+├── entity/                        # PacienteEntity.java (español)
 ├── mapper/
 │   └── patient/
 │       └── PatientMapper.java
 ├── repository/
 │   └── patient/
-│       ├── PatientJpaRepository.java
-│       └── PatientQueryRepository.java
+│       ├── PatientJpaRepository.java   ← MÍNIMO
+│       └── PatientQueryRepository.java ← TODO LO DEMÁS
 ├── service/
 │   ├── PatientService.java
 │   └── impl/
 │       └── PatientServiceImpl.java
-├── security/                      # JWT, filtros, tenant context
+├── security/
+│   ├── TenantContext.java
+│   ├── TenantInfo.java
+│   └── JwtAuthenticationFilter.java
 └── util/
     ├── GlobalException.java
-    ├── MapperRepository.java
-    └── TenantContext.java
+    └── MapperRepository.java
 ```
 
-### 4. Separación JPA + Query Repository (igual que v1)
-- `<Nombre>JpaRepository extends JpaRepository` para CRUD simple.
-- `<Nombre>QueryRepository` con `NamedParameterJdbcTemplate` para consultas complejas, listados, paginación, exists.
+### 3. Regla de auditoría al crear/modificar
 
-### 5. Flujo en servicios (igual que v1)
-1. Validaciones previas → `GlobalException`.
-2. Operación dentro de `try/catch`.
-3. Métodos que modifican → `@Transactional`.
-4. Siempre validar `empresa_id` contra `TenantContext`.
-
-### 6. Respuesta HTTP uniforme
-```java
-new ApiResponse<>(
-    HttpStatus.OK.value(),
-    "Message",
-    false,
-    result
-);
-```
-
-### 7. Paginación
-- Endpoints paginados: `POST /api/<recurso>/page` con body `PageableRequestDto`.
-- `OFFSET :offset LIMIT :limit` + `COUNT(*) OVER()`.
-- Retorna `PageImpl<ResponseDto>`.
-
-### 8. Soft delete
-- Toda entidad transaccional tiene `deleted_at` nullable.
-- Los queries siempre incluyen `WHERE deleted_at IS NULL`.
-- `delete()` del servicio setea `deleted_at = now()`, no borra físico.
-
-### 9. Campos de auditoría estándar (entidades)
-- `fecha_creacion`, `usuario_creacion` (seteados en `@PrePersist` + desde `TenantContext`)
-- `fecha_modificacion`, `usuario_modificacion` (seteados en `@PreUpdate` + desde `TenantContext`)
-- `activo` (boolean o Long)
-- `deleted_at` (para soft delete)
-- `empresa_id`, `sede_id` (multi-tenant)
+- Crear: setear `created_at` (via `@PrePersist`), `usuario_creacion` (desde TenantContext), `activo = true`, `empresa_id`, `sede_id`.
+- Modificar: setear `updated_at` (via `@PreUpdate`), `usuario_modificacion`.
+- Eliminar: setear `deleted_at = LocalDateTime.now()` y `usuario_modificacion`. Nunca `DELETE` físico.
 
 ---
 
-## Plantillas de código
+## Plantillas de código (v3)
 
-### Plantilla 1 — Entidad JPA (español)
+### Plantilla 1 — Entity JPA
+
 ```java
 package com.<org>.<proyecto>.entity;
 
@@ -184,190 +251,62 @@ public class PacienteEntity {
     @Column(name = "observaciones_clinicas")
     private String observaciones_clinicas;
 
+    // Bandera de negocio
     @Column(nullable = false)
     private Boolean activo;
 
-    @Column(name = "fecha_creacion", nullable = false, updatable = false)
-    private LocalDateTime fecha_creacion;
+    // Auditoría estandar (en inglés, como la BD)
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime created_at;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updated_at;
+
+    @Column(name = "deleted_at")
+    private LocalDateTime deleted_at;
 
     @Column(name = "usuario_creacion")
     private Long usuario_creacion;
-
-    @Column(name = "fecha_modificacion")
-    private LocalDateTime fecha_modificacion;
 
     @Column(name = "usuario_modificacion")
     private Long usuario_modificacion;
 
     @PrePersist
     protected void onCreate() {
-        fecha_creacion = LocalDateTime.now();
+        created_at = LocalDateTime.now();
         if (activo == null) activo = true;
     }
 
     @PreUpdate
     protected void onUpdate() {
-        fecha_modificacion = LocalDateTime.now();
+        updated_at = LocalDateTime.now();
     }
 }
 ```
 
-### Plantilla 2 — DTOs (inglés)
-```java
-// CreatePatientRequestDto.java
-package com.<org>.<proyecto>.dto.patient;
+### Plantilla 2 — JpaRepository (MÍNIMO)
 
-import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
-
-@Getter
-@Setter
-public class CreatePatientRequestDto {
-
-    @NotNull(message = "thirdPartyId is required")
-    private Long thirdPartyId;        // maps to tercero_id
-
-    private Long bloodGroupId;        // maps to grupo_sanguineo_id
-    private Long rhFactorId;          // maps to factor_rh_id
-    private Long disabilityId;        // maps to discapacidad_id
-    private Long careGroupId;         // maps to grupo_atencion_id
-    private String knownAllergies;    // maps to alergias_conocidas
-    private String clinicalNotes;     // maps to observaciones_clinicas
-
-    // NO se incluye: companyId, branchId, createdAt, createdBy — vienen del token
-}
-
-// PatientResponseDto.java
-@Getter
-@Setter
-public class PatientResponseDto {
-    private Long id;
-    private Long thirdPartyId;
-    private Long bloodGroupId;
-    private Long rhFactorId;
-    private Long disabilityId;
-    private Long careGroupId;
-    private String knownAllergies;
-    private String clinicalNotes;
-    private Boolean active;
-    private LocalDateTime createdAt;
-}
-
-// PatientTableDto.java
-@Getter
-@Setter
-public class PatientTableDto {
-    private Long id;
-    private String documentNumber;    // viene de join con tercero
-    private String fullName;
-    private Integer age;
-    private String sex;
-    private Boolean active;
-}
-
-// UpdatePatientRequestDto.java
-@Getter
-@Setter
-public class UpdatePatientRequestDto {
-    @NotNull
-    private Long id;
-    private Long bloodGroupId;
-    private Long rhFactorId;
-    private Long disabilityId;
-    private Long careGroupId;
-    private String knownAllergies;
-    private String clinicalNotes;
-}
-```
-
-### Plantilla 3 — Mapper MapStruct (traduce EN ↔ ES)
-```java
-package com.<org>.<proyecto>.mapper.patient;
-
-import org.mapstruct.*;
-import com.<org>.<proyecto>.dto.patient.*;
-import com.<org>.<proyecto>.entity.PacienteEntity;
-
-@Mapper(componentModel = "spring")
-public interface PatientMapper {
-
-    @Mappings({
-        @Mapping(target = "id", ignore = true),
-        @Mapping(target = "empresa_id", ignore = true),     // set desde TenantContext
-        @Mapping(target = "usuario_creacion", ignore = true),
-        @Mapping(target = "usuario_modificacion", ignore = true),
-        @Mapping(target = "fecha_creacion", ignore = true),
-        @Mapping(target = "fecha_modificacion", ignore = true),
-        @Mapping(target = "activo", ignore = true),
-
-        // Traduccion EN -> ES
-        @Mapping(source = "thirdPartyId", target = "tercero_id"),
-        @Mapping(source = "bloodGroupId", target = "grupo_sanguineo_id"),
-        @Mapping(source = "rhFactorId", target = "factor_rh_id"),
-        @Mapping(source = "disabilityId", target = "discapacidad_id"),
-        @Mapping(source = "careGroupId", target = "grupo_atencion_id"),
-        @Mapping(source = "knownAllergies", target = "alergias_conocidas"),
-        @Mapping(source = "clinicalNotes", target = "observaciones_clinicas")
-    })
-    PacienteEntity toEntity(CreatePatientRequestDto dto);
-
-    @Mappings({
-        @Mapping(source = "tercero_id", target = "thirdPartyId"),
-        @Mapping(source = "grupo_sanguineo_id", target = "bloodGroupId"),
-        @Mapping(source = "factor_rh_id", target = "rhFactorId"),
-        @Mapping(source = "discapacidad_id", target = "disabilityId"),
-        @Mapping(source = "grupo_atencion_id", target = "careGroupId"),
-        @Mapping(source = "alergias_conocidas", target = "knownAllergies"),
-        @Mapping(source = "observaciones_clinicas", target = "clinicalNotes"),
-        @Mapping(source = "activo", target = "active"),
-        @Mapping(source = "fecha_creacion", target = "createdAt")
-    })
-    PatientResponseDto toResponseDto(PacienteEntity entity);
-
-    @Mappings({
-        @Mapping(target = "id", ignore = true),
-        @Mapping(target = "empresa_id", ignore = true),
-        @Mapping(target = "tercero_id", ignore = true),
-        @Mapping(target = "usuario_creacion", ignore = true),
-        @Mapping(target = "usuario_modificacion", ignore = true),
-        @Mapping(target = "fecha_creacion", ignore = true),
-        @Mapping(target = "fecha_modificacion", ignore = true),
-
-        @Mapping(source = "bloodGroupId", target = "grupo_sanguineo_id"),
-        @Mapping(source = "rhFactorId", target = "factor_rh_id"),
-        @Mapping(source = "disabilityId", target = "discapacidad_id"),
-        @Mapping(source = "careGroupId", target = "grupo_atencion_id"),
-        @Mapping(source = "knownAllergies", target = "alergias_conocidas"),
-        @Mapping(source = "clinicalNotes", target = "observaciones_clinicas")
-    })
-    void updateEntityFromDto(UpdatePatientRequestDto dto, @MappingTarget PacienteEntity entity);
-}
-```
-
-### Plantilla 4 — JPA Repository
 ```java
 package com.<org>.<proyecto>.repository.patient;
 
-import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.<org>.<proyecto>.entity.PacienteEntity;
 
 public interface PatientJpaRepository extends JpaRepository<PacienteEntity, Long> {
-
-    Optional<PacienteEntity> findByIdAndEmpresa_idAndDeleted_atIsNull(Long id, Long empresa_id);
-
-    Optional<PacienteEntity> findByTercero_idAndEmpresa_id(Long tercero_id, Long empresa_id);
+    // Intencionalmente vacío.
+    // Todo filtro de negocio va en PatientQueryRepository.
 }
 ```
 
-### Plantilla 5 — Query Repository
+### Plantilla 3 — QueryRepository (TODO EL FILTRADO)
+
 ```java
 package com.<org>.<proyecto>.repository.patient;
 
 import java.util.List;
 import java.util.Map;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.Optional;
+
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.jdbc.core.ColumnMapRowMapper;
@@ -376,22 +315,28 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.<org>.<proyecto>.dto.patient.PatientTableDto;
+import com.<org>.<proyecto>.dto.patient.PatientResponseDto;
 import com.<org>.<proyecto>.dto.common.PageableRequestDto;
 import com.<org>.<proyecto>.util.MapperRepository;
 
 @Repository
 public class PatientQueryRepository {
 
-    @Autowired
-    private NamedParameterJdbcTemplate jdbc;
+    private final NamedParameterJdbcTemplate jdbc;
 
-    public Boolean existsByThirdParty(Long tercero_id, Long empresa_id) {
+    public PatientQueryRepository(NamedParameterJdbcTemplate jdbc) {
+        this.jdbc = jdbc;
+    }
+
+    // ---------- Validaciones de existencia ----------
+
+    public boolean existsActiveByTercero(Long tercero_id, Long empresa_id) {
         String sql = """
             SELECT COUNT(*)
             FROM paciente
             WHERE tercero_id = :tercero_id
               AND empresa_id = :empresa_id
-              AND activo = true
+              AND deleted_at IS NULL
         """;
         MapSqlParameterSource params = new MapSqlParameterSource()
             .addValue("tercero_id", tercero_id)
@@ -400,6 +345,38 @@ public class PatientQueryRepository {
         Long count = jdbc.queryForObject(sql, params, Long.class);
         return count != null && count > 0;
     }
+
+    // ---------- Lecturas por ID (con tenant + soft-delete) ----------
+
+    public Optional<PatientResponseDto> findActiveById(Long id, Long empresa_id) {
+        String sql = """
+            SELECT
+                p.id,
+                p.tercero_id,
+                p.grupo_sanguineo_id,
+                p.factor_rh_id,
+                p.alergias_conocidas,
+                p.observaciones_clinicas,
+                p.activo,
+                p.created_at
+            FROM paciente p
+            WHERE p.id = :id
+              AND p.empresa_id = :empresa_id
+              AND p.deleted_at IS NULL
+            LIMIT 1
+        """;
+        MapSqlParameterSource params = new MapSqlParameterSource()
+            .addValue("id", id)
+            .addValue("empresa_id", empresa_id);
+
+        List<Map<String, Object>> rows = jdbc.query(sql, params, new ColumnMapRowMapper());
+        if (rows.isEmpty()) return Optional.empty();
+
+        List<PatientResponseDto> mapped = MapperRepository.mapListToDtoList(rows, PatientResponseDto.class);
+        return Optional.of(mapped.get(0));
+    }
+
+    // ---------- Paginación con búsqueda ----------
 
     public PageImpl<PatientTableDto> listPatients(PageableRequestDto request, Long empresa_id) {
         int pageNumber = request.getPage() != null ? request.getPage() : 0;
@@ -417,11 +394,11 @@ public class PatientQueryRepository {
                 p.activo AS active,
                 COUNT(*) OVER() AS total_rows
             FROM paciente p
-            INNER JOIN tercero t ON t.id = p.tercero_id
+            INNER JOIN tercero t ON t.id = p.tercero_id AND t.deleted_at IS NULL
             LEFT JOIN tipo_documento td ON td.id = t.tipo_documento_id
             LEFT JOIN sexo s ON s.id = t.sexo_id
             WHERE p.empresa_id = :empresa_id
-              AND p.activo = true
+              AND p.deleted_at IS NULL
         """);
 
         MapSqlParameterSource params = new MapSqlParameterSource()
@@ -431,37 +408,38 @@ public class PatientQueryRepository {
             sql.append("""
                 AND (
                     unaccent(LOWER(t.nombre_completo)) ILIKE unaccent(LOWER(:search))
-                    OR t.numero_documento = :exact_search
+                    OR t.numero_documento = :exactSearch
                 )
             """);
             params.addValue("search", "%" + search + "%");
-            params.addValue("exact_search", search);
+            params.addValue("exactSearch", search);
         }
 
         String orderBy = request.getOrderBy() != null ? request.getOrderBy() : "t.nombre_completo";
-        String order = request.getOrder() != null ? request.getOrder() : "ASC";
+        String order = "DESC".equalsIgnoreCase(request.getOrder()) ? "DESC" : "ASC";
         sql.append(" ORDER BY ").append(orderBy).append(" ").append(order);
         sql.append(" OFFSET :offset LIMIT :limit");
         params.addValue("offset", (long) pageNumber * pageSize);
         params.addValue("limit", pageSize);
 
-        List<Map<String, Object>> resultList = jdbc.query(sql.toString(), params, new ColumnMapRowMapper());
+        List<Map<String, Object>> rows = jdbc.query(sql.toString(), params, new ColumnMapRowMapper());
 
-        List<PatientTableDto> result = MapperRepository.mapListToDtoList(resultList, PatientTableDto.class);
-        long count = resultList.isEmpty() ? 0 : ((Number) resultList.get(0).get("total_rows")).longValue();
-        PageRequest pageable = PageRequest.of(pageNumber, pageSize);
+        List<PatientTableDto> result = MapperRepository.mapListToDtoList(rows, PatientTableDto.class);
+        long count = rows.isEmpty() ? 0 : ((Number) rows.get(0).get("total_rows")).longValue();
 
-        return new PageImpl<>(result, pageable, count);
+        return new PageImpl<>(result, PageRequest.of(pageNumber, pageSize), count);
     }
 }
 ```
 
-### Plantilla 6 — Service Interface
+### Plantilla 4 — Service Interface
+
 ```java
 package com.<org>.<proyecto>.service;
 
 import java.util.List;
 import org.springframework.data.domain.PageImpl;
+
 import com.<org>.<proyecto>.dto.patient.*;
 import com.<org>.<proyecto>.dto.common.PageableRequestDto;
 
@@ -470,17 +448,16 @@ public interface PatientService {
     Boolean update(UpdatePatientRequestDto dto);
     Boolean delete(Long id);
     PatientResponseDto findById(Long id);
-    List<PatientResponseDto> findAllActive();
     PageImpl<PatientTableDto> listPatients(PageableRequestDto request);
 }
 ```
 
-### Plantilla 7 — Service Implementation
+### Plantilla 5 — Service Implementation
+
 ```java
 package com.<org>.<proyecto>.service.impl;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -518,8 +495,7 @@ public class PatientServiceImpl implements PatientService {
         Long empresa_id = TenantContext.getEmpresaId();
         Long usuario_id = TenantContext.getUsuarioId();
 
-        Boolean exists = patientQueryRepository.existsByThirdParty(dto.getThirdPartyId(), empresa_id);
-        if (exists) {
+        if (patientQueryRepository.existsActiveByTercero(dto.getThirdPartyId(), empresa_id)) {
             throw new GlobalException(HttpStatus.BAD_REQUEST, "El tercero ya está registrado como paciente");
         }
 
@@ -542,9 +518,11 @@ public class PatientServiceImpl implements PatientService {
         Long empresa_id = TenantContext.getEmpresaId();
         Long usuario_id = TenantContext.getUsuarioId();
 
-        PacienteEntity entity = patientJpaRepository
-            .findByIdAndEmpresa_idAndDeleted_atIsNull(dto.getId(), empresa_id)
+        // JPA simple - la validación del tenant y soft-delete se hace en código
+        PacienteEntity entity = patientJpaRepository.findById(dto.getId())
             .orElseThrow(() -> new GlobalException(HttpStatus.NOT_FOUND, "Paciente no encontrado"));
+
+        validateTenantAndNotDeleted(entity, empresa_id);
 
         try {
             patientMapper.updateEntityFromDto(dto, entity);
@@ -562,11 +540,11 @@ public class PatientServiceImpl implements PatientService {
         Long empresa_id = TenantContext.getEmpresaId();
         Long usuario_id = TenantContext.getUsuarioId();
 
-        PacienteEntity entity = patientJpaRepository
-            .findByIdAndEmpresa_idAndDeleted_atIsNull(id, empresa_id)
+        PacienteEntity entity = patientJpaRepository.findById(id)
             .orElseThrow(() -> new GlobalException(HttpStatus.NOT_FOUND, "Paciente no encontrado"));
 
-        // Soft delete
+        validateTenantAndNotDeleted(entity, empresa_id);
+
         entity.setDeleted_at(LocalDateTime.now());
         entity.setUsuario_modificacion(usuario_id);
         patientJpaRepository.save(entity);
@@ -576,10 +554,8 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public PatientResponseDto findById(Long id) {
         Long empresa_id = TenantContext.getEmpresaId();
-        PacienteEntity entity = patientJpaRepository
-            .findByIdAndEmpresa_idAndDeleted_atIsNull(id, empresa_id)
+        return patientQueryRepository.findActiveById(id, empresa_id)
             .orElseThrow(() -> new GlobalException(HttpStatus.NOT_FOUND, "Paciente no encontrado"));
-        return patientMapper.toResponseDto(entity);
     }
 
     @Override
@@ -587,213 +563,134 @@ public class PatientServiceImpl implements PatientService {
         Long empresa_id = TenantContext.getEmpresaId();
         return patientQueryRepository.listPatients(request, empresa_id);
     }
-}
-```
 
-### Plantilla 8 — Controller
-```java
-package com.<org>.<proyecto>.controller;
+    // ---------- helpers ----------
 
-import jakarta.validation.Valid;
-import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import com.<org>.<proyecto>.dto.patient.*;
-import com.<org>.<proyecto>.dto.common.*;
-import com.<org>.<proyecto>.service.PatientService;
-import com.<org>.<proyecto>.util.GlobalException;
-
-@RestController
-@RequestMapping("/api/patients")
-public class PatientController {
-
-    private final PatientService patientService;
-
-    public PatientController(PatientService patientService) {
-        this.patientService = patientService;
-    }
-
-    @PostMapping("/create")
-    public ResponseEntity<ApiResponse<PatientResponseDto>> create(
-            @Valid @RequestBody CreatePatientRequestDto dto) {
-        PatientResponseDto result = patientService.create(dto);
-        ApiResponse<PatientResponseDto> response = new ApiResponse<>(
-            HttpStatus.CREATED.value(),
-            "Paciente creado correctamente",
-            false,
-            result
-        );
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
-    }
-
-    @PutMapping("/update")
-    public ResponseEntity<ApiResponse<Object>> update(
-            @Valid @RequestBody UpdatePatientRequestDto dto) {
-        Boolean updated = patientService.update(dto);
-        ApiResponse<Object> response = new ApiResponse<>(
-            HttpStatus.OK.value(),
-            "Paciente actualizado correctamente",
-            false,
-            updated
-        );
-        return ResponseEntity.ok(response);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Object>> delete(@PathVariable Long id) {
-        Boolean deleted = patientService.delete(id);
-        ApiResponse<Object> response = new ApiResponse<>(
-            HttpStatus.OK.value(),
-            "Paciente eliminado correctamente",
-            false,
-            deleted
-        );
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<PatientResponseDto>> findById(@PathVariable Long id) {
-        PatientResponseDto result = patientService.findById(id);
-        ApiResponse<PatientResponseDto> response = new ApiResponse<>(
-            HttpStatus.OK.value(),
-            "Paciente encontrado",
-            false,
-            result
-        );
-        return ResponseEntity.ok(response);
-    }
-
-    @PostMapping("/page")
-    public ResponseEntity<ApiResponse<Object>> page(@Valid @RequestBody PageableRequestDto request) {
-        Page<PatientTableDto> result = patientService.listPatients(request);
-        if (result.isEmpty()) {
-            throw new GlobalException(HttpStatus.PARTIAL_CONTENT, "No se encontraron registros");
+    private void validateTenantAndNotDeleted(PacienteEntity entity, Long empresa_id) {
+        if (entity.getDeleted_at() != null) {
+            throw new GlobalException(HttpStatus.NOT_FOUND, "Paciente no encontrado");
         }
-        ApiResponse<Object> response = new ApiResponse<>(
-            HttpStatus.OK.value(),
-            "",
-            false,
-            result
-        );
-        return ResponseEntity.ok(response);
+        if (!entity.getEmpresa_id().equals(empresa_id)) {
+            // Mismo mensaje para evitar filtración de información cross-tenant
+            throw new GlobalException(HttpStatus.NOT_FOUND, "Paciente no encontrado");
+        }
     }
 }
 ```
 
----
-
-## PageableRequestDto (reemplaza PageableDto)
+### Plantilla 6 — Mapper (igual que v2, con traducción EN↔ES)
 
 ```java
-package com.<org>.<proyecto>.dto.common;
+@Mapper(componentModel = "spring")
+public interface PatientMapper {
 
-import lombok.Getter;
-import lombok.Setter;
+    @Mappings({
+        @Mapping(target = "id", ignore = true),
+        @Mapping(target = "empresa_id", ignore = true),
+        @Mapping(target = "usuario_creacion", ignore = true),
+        @Mapping(target = "usuario_modificacion", ignore = true),
+        @Mapping(target = "created_at", ignore = true),
+        @Mapping(target = "updated_at", ignore = true),
+        @Mapping(target = "deleted_at", ignore = true),
+        @Mapping(target = "activo", ignore = true),
 
-@Getter
-@Setter
-public class PageableRequestDto {
-    private Integer page;       // número de página (0-based)
-    private Integer rows;       // tamaño de página
-    private String search;      // filtro de búsqueda libre
-    private String orderBy;     // columna para ordenar
-    private String order;       // ASC o DESC
+        @Mapping(source = "thirdPartyId", target = "tercero_id"),
+        @Mapping(source = "bloodGroupId", target = "grupo_sanguineo_id"),
+        @Mapping(source = "rhFactorId", target = "factor_rh_id"),
+        @Mapping(source = "knownAllergies", target = "alergias_conocidas"),
+        @Mapping(source = "clinicalNotes", target = "observaciones_clinicas")
+    })
+    PacienteEntity toEntity(CreatePatientRequestDto dto);
+
+    @Mappings({
+        @Mapping(source = "tercero_id", target = "thirdPartyId"),
+        @Mapping(source = "grupo_sanguineo_id", target = "bloodGroupId"),
+        @Mapping(source = "factor_rh_id", target = "rhFactorId"),
+        @Mapping(source = "alergias_conocidas", target = "knownAllergies"),
+        @Mapping(source = "observaciones_clinicas", target = "clinicalNotes"),
+        @Mapping(source = "activo", target = "active"),
+        @Mapping(source = "created_at", target = "createdAt")
+    })
+    PatientResponseDto toResponseDto(PacienteEntity entity);
+
+    @Mappings({
+        @Mapping(target = "id", ignore = true),
+        @Mapping(target = "empresa_id", ignore = true),
+        @Mapping(target = "tercero_id", ignore = true),
+        @Mapping(target = "usuario_creacion", ignore = true),
+        @Mapping(target = "usuario_modificacion", ignore = true),
+        @Mapping(target = "created_at", ignore = true),
+        @Mapping(target = "updated_at", ignore = true),
+        @Mapping(target = "deleted_at", ignore = true),
+
+        @Mapping(source = "bloodGroupId", target = "grupo_sanguineo_id"),
+        @Mapping(source = "rhFactorId", target = "factor_rh_id"),
+        @Mapping(source = "knownAllergies", target = "alergias_conocidas"),
+        @Mapping(source = "clinicalNotes", target = "observaciones_clinicas")
+    })
+    void updateEntityFromDto(UpdatePatientRequestDto dto, @MappingTarget PacienteEntity entity);
 }
 ```
 
----
+### Plantilla 7 — Controller (igual que v2)
 
-## ApiResponse
-
-```java
-package com.<org>.<proyecto>.dto.common;
-
-import lombok.Getter;
-import lombok.Setter;
-
-@Getter
-@Setter
-public class ApiResponse<T> {
-    private int status;
-    private String message;
-    private boolean error;
-    private T data;
-
-    public ApiResponse(int status, String message, boolean error, T data) {
-        this.status = status;
-        this.message = message;
-        this.error = error;
-        this.data = data;
-    }
-}
-```
+Controllers no cambian respecto a v2. Usar `ApiResponse<T>`, inyección por constructor, endpoints en inglés (`/api/patients`, `/api/companies`).
 
 ---
 
-## Reglas multi-tenant
+## Decisión clave de diseño: JPA vs QueryRepository
 
-**TODO servicio y query repository obedece estas reglas**:
+**Regla única**:
 
-1. **Empresa**: siempre filtrar por `empresa_id = TenantContext.getEmpresaId()`.
-2. **Sede**: filtrar por `sede_id` cuando el dominio es operativo (admisiones, citas, atenciones, facturación, órdenes, prescripciones).
-3. **DTOs de request**: nunca incluir `companyId` ni `branchId`; se toman del token.
-4. **Al crear registros**: setear `empresa_id`, `sede_id` (si aplica), `usuario_creacion` desde `TenantContext`.
-5. **Validación cruzada**: todo `findById` incluye `empresa_id` en el filtro para impedir fuga entre tenants.
+| Operación | Dónde se hace |
+|-----------|----------------|
+| `save()` (insertar/actualizar) | JpaRepository |
+| `findById()` puro (sin filtros) | JpaRepository |
+| `findById` + validación tenant + soft-delete | **QueryRepository** (retorna DTO) o **Service** (valida tras JPA) |
+| Listados con filtros | QueryRepository |
+| Paginación | QueryRepository |
+| `exists...` | QueryRepository |
+| Búsquedas complejas | QueryRepository |
+| Joins con múltiples tablas | QueryRepository |
+
+**Ventajas**:
+- JPA repository siempre tiene 0 líneas útiles más allá del `extends JpaRepository`.
+- SQL nativo visible, auditable, optimizable.
+- Filtros de multi-tenant controlados en un solo lugar.
+- Nunca más nombres de método de 80 caracteres.
 
 ---
 
-## Qué NO hacer
+## Qué NO hacer (reglas duras)
 
-- **No** usar camelCase en campos de entidades (deben ser snake_case como la BD).
-- **No** usar snake_case en campos de DTOs (usar camelCase estándar Java).
-- **No** aceptar `empresa_id` o `sede_id` en DTOs de request.
-- **No** omitir el filtro por `empresa_id` en consultas.
-- **No** usar `@Data` (solo `@Getter` + `@Setter`).
-- **No** mezclar lógica de negocio en controller.
-- **No** capturar excepciones en controller para responder manualmente.
-- **No** usar `@Autowired` en campos cuando se puede inyección por constructor.
-- **No** hacer delete físico por defecto; usar soft delete.
-- **No** crear entidades en inglés (BD está en español, entidades la reflejan).
-- **No** crear DTOs en español (capa API es inglés).
+- ❌ Métodos JPA con nombres derivados largos (`findByCodigoAndActivoTrueAndDeleted_atIsNull`).
+- ❌ `@Query` con JPQL largo en JpaRepository.
+- ❌ Campos de entidad en camelCase (deben ser snake_case como la BD).
+- ❌ Campos de DTO en snake_case (deben ser camelCase como Java).
+- ❌ Aceptar `empresa_id` o `sede_id` en DTOs de request.
+- ❌ `@Data` de Lombok.
+- ❌ `@Autowired` en campo (usar constructor).
+- ❌ DELETE físico (usar `deleted_at`).
+- ❌ Respuestas HTTP fuera de `ApiResponse<T>`.
+- ❌ Revelar cross-tenant: si el registro es de otra empresa, mensaje igual que "no existe" (404, no 403).
 
 ---
 
 ## Checklist antes de entregar código
 
-- [ ] Entidad JPA en español con todos los campos de auditoría multi-tenant.
-- [ ] DTOs en inglés con campos camelCase.
-- [ ] Mapper con mapeos explícitos EN ↔ ES.
-- [ ] JpaRepository con método `findByIdAndEmpresa_idAndDeleted_atIsNull`.
-- [ ] QueryRepository con todas las queries filtrando por `empresa_id`.
-- [ ] Service con validaciones previas + `@Transactional` + `TenantContext`.
-- [ ] Controller con `ApiResponse` estándar.
-- [ ] Soft delete implementado (no delete físico).
-- [ ] Sin `@Autowired` en campos (inyección por constructor).
-- [ ] Sin `System.out.println` ni `printStackTrace()`.
-- [ ] Validaciones `@NotNull`, `@NotBlank` apropiadas en DTOs de request.
-- [ ] Mensajes de error en español (entendibles por el equipo).
-
----
-
-## Comportamiento del agente
-
-### Al recibir una solicitud
-1. Preguntar qué entidad/módulo implementar si no está claro.
-2. Pedir el modelo de datos (columnas y tipos) si no lo tiene.
-3. Generar en orden: Entity → DTOs → Mapper → JpaRepository → QueryRepository → Service → ServiceImpl → Controller.
-4. Incluir siempre el filtro multi-tenant.
-5. Alertar al usuario si la solicitud rompe alguna convención.
-
-### Consistencia con código existente
-Si el usuario muestra código que contradice estas convenciones, el agente:
-1. Respeta la consistencia del proyecto específico.
-2. Señala la inconsistencia como observación al final.
-3. Propone refactor si el usuario lo solicita.
+- [ ] Entity con `created_at`, `updated_at`, `deleted_at`, `usuario_creacion`, `usuario_modificacion`, `activo`, `empresa_id`, `sede_id` (si aplica).
+- [ ] JpaRepository vacío (solo hereda de `JpaRepository`).
+- [ ] QueryRepository con SQL nativo y filtros explícitos (`deleted_at IS NULL`, `empresa_id = ?`).
+- [ ] Service usa `findById()` simple + validación en código.
+- [ ] Delete siempre es soft-delete (`deleted_at = now()`).
+- [ ] Mapper traduce EN↔ES explícitamente.
+- [ ] Controller retorna `ApiResponse<T>` sin try/catch innecesarios.
+- [ ] DTOs en inglés con `camelCase`.
+- [ ] Sin `@Autowired` en campos.
+- [ ] Mensajes de error en español.
 
 ---
 
 ## Instrucción final
 
-Este agente se comporta como un desarrollador backend senior que entiende la arquitectura multi-tenant, respeta la dualidad "BD y entidades en español, API en inglés", y produce código listo para merge.
+Este agente respeta la regla de oro: **JPA mínimo, QueryRepository para todo lo demás**. Los repositorios JPA nunca tienen métodos derivados largos; los filtros de multi-tenant y soft-delete viven en el QueryRepository con SQL nativo claro y optimizable.
