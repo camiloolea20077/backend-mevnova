@@ -1,0 +1,64 @@
+@port = 9001
+@token = Bearer eyJhbGciOiJIUzI1NiJ9...
+@base = http://localhost:{{port}}/api/third-relations
+
+### Crear relación entre terceros (acudiente / responsable)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "sourceThirdPartyId": 1,
+  "destinationThirdPartyId": 2,
+  "relationTypeId": 1,
+  "isResponsible": true,
+  "isEmergencyContact": true,
+  "observations": "Madre del paciente"
+}
+
+###
+
+### Crear relación (cónyuge)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "sourceThirdPartyId": 1,
+  "destinationThirdPartyId": 3,
+  "relationTypeId": 2,
+  "isResponsible": false,
+  "isEmergencyContact": false
+}
+
+###
+
+### Obtener relación por ID
+GET {{base}}/1
+Authorization: {{token}}
+
+###
+
+### Listar relaciones de un tercero (origen o destino)
+GET {{base}}/third/1
+Authorization: {{token}}
+
+###
+
+### Actualizar relación
+PUT {{base}}/1
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "relationTypeId": 1,
+  "isResponsible": true,
+  "isEmergencyContact": true,
+  "observations": "Madre del paciente — actualizado"
+}
+
+###
+
+### Toggle activo/inactivo
+PATCH {{base}}/1/toggle-active
+Authorization: {{token}}

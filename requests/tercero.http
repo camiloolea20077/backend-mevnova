@@ -1,50 +1,82 @@
 @port = 9001
 @token = eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwidGlwb190b2tlbiI6IkFDQ0VTUyIsInVzdWFyaW9faWQiOjIsImVtcHJlc2FfaWQiOjQsInNlZGVfaWQiOjEsInVzZXJuYW1lIjoiYWRtaW5faG9zcGl0YWwiLCJyb2xlcyI6WyJTdXBlci1BZG1pbmlzdHJhZG9yIGRlbCBTaXN0ZW1hIl0sInBlcm1pc29zIjpbIkFjdHVhbGl6YXIgdGVyY2VybyIsIkFudWxhciBmYWN0dXJhIiwiQW51bGFyIG9yZGVuIGNsaW5pY2EiLCJBbnVsYXIgcHJlc2NyaXBjaW9uIiwiQXByb2JhciBmYWN0dXJhIiwiQXNpZ25hciBjaXRhIiwiQXNpZ25hciByb2xlcyBhIHVzdWFyaW9zIiwiQXRlbmRlciB1cmdlbmNpYXMiLCJDYW1iaWFyIGVzdGFkbyBkZSBhZG1pc2lvbiIsIkNhbmNlbGFyIGNpdGEiLCJDZXJyYXIgYWRtaXNpb24iLCJDZXJyYXIgYXRlbmNpb24gZGUgdXJnZW5jaWFzIiwiQ29uc3VsdGFyIGFkbWlzaW9uZXMiLCJDb25zdWx0YXIgY2FydGVyYSIsIkNvbnN1bHRhciB0ZXJjZXJvIiwiQ3JlYXIgcGFjaWVudGUiLCJDcmVhciB0ZXJjZXJvIiwiRGFyIGVncmVzbyBob3NwaXRhbGFyaW8iLCJFZGl0YXIgZmFjdHVyYSIsIkdlbmVyYXIgZGlzcG9uaWJpbGlkYWQiLCJHZW5lcmFyIGZhY3R1cmEiLCJHZW5lcmFyIG9yZGVuIGNsaW5pY2EiLCJHZW5lcmFyIHByZXNjcmlwY2lvbiIsIkdlbmVyYXIgUklQUyIsIkdlc3Rpb25hciBhZ2VuZGFzIiwiR2VzdGlvbmFyIGNhbGVuZGFyaW9zIiwiR2VzdGlvbmFyIGNhdGFsb2dvIGRlIHNlcnZpY2lvcyIsIkdlc3Rpb25hciBjZW50cm9zIGRlIGNvc3RvIiwiR2VzdGlvbmFyIGNvYmVydHVyYSBkZSBjb250cmF0byIsIkdlc3Rpb25hciBjb250YWN0b3MiLCJHZXN0aW9uYXIgY29udHJhdG9zIiwiR2VzdGlvbmFyIGNvbnRyYXRvcyBkZWwgcGFjaWVudGUiLCJHZXN0aW9uYXIgZGlyZWNjaW9uZXMiLCJHZXN0aW9uYXIgZW1wcmVzYXMiLCJHZXN0aW9uYXIgZ2xvc2FzIiwiR2VzdGlvbmFyIGxpc3RhIGRlIGVzcGVyYSIsIkdlc3Rpb25hciBwYWdhZG9yZXMiLCJHZXN0aW9uYXIgcGVybWlzb3MiLCJHZXN0aW9uYXIgcHJvZmVzaW9uYWxlcyBkZSBzYWx1ZCIsIkdlc3Rpb25hciByZWN1cnNvcyBmaXNpY29zIiwiR2VzdGlvbmFyIHJlbGFjaW9uZXMiLCJHZXN0aW9uYXIgcm9sZXMiLCJHZXN0aW9uYXIgc2VkZXMiLCJHZXN0aW9uYXIgc2VndXJpZGFkIHNvY2lhbCIsIkdlc3Rpb25hciBzZXJ2aWNpb3MgaGFiaWxpdGFkb3MiLCJHZXN0aW9uYXIgU0lTQkVOIiwiR2VzdGlvbmFyIHRhcmlmYXJpb3MiLCJHZXN0aW9uYXIgdGFyaWZhcyBkZSBjb250cmF0byIsIkdlc3Rpb25hciB1c3VhcmlvcyIsIkluYWN0aXZhciB0ZXJjZXJvIiwiUmFkaWNhciBmYWN0dXJhIiwiUmVhbGl6YXIgdHJpYWdlIiwiUmVjaWJpciBlbiBob3NwaXRhbGl6YWNpb24iLCJSZWNsYXNpZmljYXIgdHJpYWdlIiwiUmVnaXN0cmFyIGFkbWlzaW9uIiwiUmVnaXN0cmFyIGRpYWdub3N0aWNvIiwiUmVnaXN0cmFyIGV2b2x1Y2lvbiIsIlJlZ2lzdHJhciBub3RhIGRlIGluZ3Jlc28iLCJSZWdpc3RyYXIgcGFnbyIsIlJlcHJvZ3JhbWFyIGNpdGEiLCJSZXNldGVhciBjb250cmFzZW5hIiwiU29saWNpdGFyIGhvc3BpdGFsaXphY2lvbiIsIlRyYXNsYWRhciBhZ2VuZGEiLCJWZXIgYXVkaXRvcmlhIGRlIGVtcHJlc2EiLCJWZXIgYXVkaXRvcmlhIGdsb2JhbCIsIlZlciBjb2xhIGRlIHVyZ2VuY2lhcyIsIlZlciBvcmRlbmVzIGFjdGl2YXMiXSwianRpIjoiN2I3MjczMjAtYzI5My00ZDZkLTg4ZDAtYjAzNzI3Zjg1NzUzIiwiaWF0IjoxNzc2NzMxMzQ4LCJleHAiOjE3NzY4MTc3NDh9.qxS-tGjX-Fi0iPh1iCgzt8o2mfzchqEU5EqbHv-Q_adSvAjS0Di_e0fAxY_7J62AhM4AuZQPCiacF6uTu0nPnw
 
-### Crear servicio habilitado
-POST http://localhost:{{port}}/api/enabled-services HTTP/1.1
+### Crear tercero — persona natural
+POST http://localhost:{{port}}/api/thirds HTTP/1.1
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-    "sedeId": 1,
-    "serviceCode": "SRV-001",
-    "serviceName": "Consulta Externa General",
-    "modality": "INTRAMURAL",
-    "complexity": "BAJA",
-    "enablementDate": "2024-01-01",
-    "expirationDate": "2026-12-31",
-    "resolution": "RES-2024-001",
-    "observations": "Servicio habilitado para atención primaria"
+    "thirdPartyTypeId": 17,
+    "documentTypeId": 21,
+    "documentNumber": "1234567890",
+    "firstName": "Juan",
+    "secondName": "Pablo",
+    "firstLastName": "García",
+    "secondLastName": "López",
+    "birthDate": "1990-05-15",
+    "sexId": 7,
+    "genderId": 11,
+    "maritalStatusId": 15,
+    "educationLevelId": 21,
+    "birthCountryId": 19,
+    "birthMunicipalityId": 139,
+    "observations": "Paciente referido"
 }
 
 ###
 
-### Crear servicio habilitado sin vencimiento
-POST http://localhost:{{port}}/api/enabled-services HTTP/1.1
+### Crear tercero — persona jurídica (pagador/EPS)
+POST http://localhost:{{port}}/api/thirds HTTP/1.1
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-    "sedeId": 1,
-    "serviceCode": "SRV-002",
-    "serviceName": "Urgencias 24 horas",
-    "modality": "INTRAMURAL",
-    "complexity": "ALTA",
-    "enablementDate": "2024-01-01",
-    "resolution": "RES-2024-002"
+    "thirdPartyTypeId": 19,
+    "documentTypeId": 28,
+    "documentNumber": "900123456",
+    "verificationDigit": "7",
+    "companyName": "EPS Salud Total S.A.",
+    "observations": "EPS principal"
 }
 
 ###
 
-### Obtener servicio habilitado por ID
-GET http://localhost:{{port}}/api/enabled-services/1 HTTP/1.1
+### Crear tercero — profesional de salud
+POST http://localhost:{{port}}/api/thirds HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "thirdPartyTypeId": 18,
+    "documentTypeId": 21,
+    "documentNumber": "9876543210",
+    "firstName": "María",
+    "firstLastName": "Rodríguez",
+    "secondLastName": "Pérez",
+    "birthDate": "1985-03-20",
+    "sexId": 8,
+    "genderId": 11,
+    "birthCountryId": 19,
+    "birthMunicipalityId": 139
+}
+
+###
+
+### Obtener tercero por ID
+GET http://localhost:{{port}}/api/thirds/8 HTTP/1.1
 Authorization: Bearer {{token}}
 
 ###
 
-### Listar servicios habilitados (sin búsqueda)
-POST http://localhost:{{port}}/api/enabled-services/list HTTP/1.1
+### Buscar tercero por tipo y número de documento (exacto)
+GET http://localhost:{{port}}/api/thirds/by-document?documentTypeId=1&documentNumber=1234567890 HTTP/1.1
+Authorization: Bearer {{token}}
+
+###
+
+### Listar terceros (sin búsqueda)
+POST http://localhost:{{port}}/api/thirds/list HTTP/1.1
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -52,46 +84,44 @@ Content-Type: application/json
     "page": 0,
     "rows": 10,
     "search": "",
-    "order_by": "sh.nombre_servicio",
+    "order_by": "t.nombre_completo",
     "order": "ASC"
 }
 
 ###
 
-### Listar servicios habilitados (con búsqueda)
-POST http://localhost:{{port}}/api/enabled-services/list HTTP/1.1
+### Listar terceros — búsqueda por nombre (ignora tildes y mayúsculas)
+POST http://localhost:{{port}}/api/thirds/list HTTP/1.1
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
     "page": 0,
     "rows": 10,
-    "search": "consulta",
-    "order_by": "sh.nombre_servicio",
+    "search": "garcia",
+    "order_by": "t.nombre_completo",
     "order": "ASC"
 }
 
 ###
 
-### Actualizar servicio habilitado
-PUT http://localhost:{{port}}/api/enabled-services/1 HTTP/1.1
+### Listar terceros — búsqueda por número de documento
+POST http://localhost:{{port}}/api/thirds/list HTTP/1.1
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-    "serviceName": "Consulta Externa General - Actualizada",
-    "modality": "PRESENCIAL",
-    "complexity": "MEDIA",
-    "enablementDate": "2024-01-01",
-    "expirationDate": "2027-12-31",
-    "resolution": "RES-2024-001-A",
-    "observations": "Actualización de complejidad"
+    "page": 0,
+    "rows": 10,
+    "search": "1234567890",
+    "order_by": "t.nombre_completo",
+    "order": "ASC"
 }
 
 ###
 
-### Activar / Inactivar servicio habilitado (toggle)
-PATCH http://localhost:{{port}}/api/enabled-services/1/toggle-active HTTP/1.1
+### Activar / Inactivar tercero (toggle)
+PATCH http://localhost:{{port}}/api/thirds/1/toggle-active HTTP/1.1
 Authorization: Bearer {{token}}
 
 ###

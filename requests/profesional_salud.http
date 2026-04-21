@@ -1,0 +1,103 @@
+@port = 9001
+@token = Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwidGlwb190b2tlbiI6IkFDQ0VTUyIsInVzdWFyaW9faWQiOjIsImVtcHJlc2FfaWQiOjQsInNlZGVfaWQiOjEsInVzZXJuYW1lIjoiYWRtaW5faG9zcGl0YWwiLCJyb2xlcyI6WyJTdXBlci1BZG1pbmlzdHJhZG9yIGRlbCBTaXN0ZW1hIl0sInBlcm1pc29zIjpbIkFjdHVhbGl6YXIgdGVyY2VybyIsIkFudWxhciBmYWN0dXJhIiwiQW51bGFyIG9yZGVuIGNsaW5pY2EiLCJBbnVsYXIgcHJlc2NyaXBjaW9uIiwiQXByb2JhciBmYWN0dXJhIiwiQXNpZ25hciBjaXRhIiwiQXNpZ25hciByb2xlcyBhIHVzdWFyaW9zIiwiQXRlbmRlciB1cmdlbmNpYXMiLCJDYW1iaWFyIGVzdGFkbyBkZSBhZG1pc2lvbiIsIkNhbmNlbGFyIGNpdGEiLCJDZXJyYXIgYWRtaXNpb24iLCJDZXJyYXIgYXRlbmNpb24gZGUgdXJnZW5jaWFzIiwiQ29uc3VsdGFyIGFkbWlzaW9uZXMiLCJDb25zdWx0YXIgY2FydGVyYSIsIkNvbnN1bHRhciB0ZXJjZXJvIiwiQ3JlYXIgcGFjaWVudGUiLCJDcmVhciB0ZXJjZXJvIiwiRGFyIGVncmVzbyBob3NwaXRhbGFyaW8iLCJFZGl0YXIgZmFjdHVyYSIsIkdlbmVyYXIgZGlzcG9uaWJpbGlkYWQiLCJHZW5lcmFyIGZhY3R1cmEiLCJHZW5lcmFyIG9yZGVuIGNsaW5pY2EiLCJHZW5lcmFyIHByZXNjcmlwY2lvbiIsIkdlbmVyYXIgUklQUyIsIkdlc3Rpb25hciBhZ2VuZGFzIiwiR2VzdGlvbmFyIGNhbGVuZGFyaW9zIiwiR2VzdGlvbmFyIGNhdGFsb2dvIGRlIHNlcnZpY2lvcyIsIkdlc3Rpb25hciBjZW50cm9zIGRlIGNvc3RvIiwiR2VzdGlvbmFyIGNvYmVydHVyYSBkZSBjb250cmF0byIsIkdlc3Rpb25hciBjb250YWN0b3MiLCJHZXN0aW9uYXIgY29udHJhdG9zIiwiR2VzdGlvbmFyIGNvbnRyYXRvcyBkZWwgcGFjaWVudGUiLCJHZXN0aW9uYXIgZGlyZWNjaW9uZXMiLCJHZXN0aW9uYXIgZW1wcmVzYXMiLCJHZXN0aW9uYXIgZ2xvc2FzIiwiR2VzdGlvbmFyIGxpc3RhIGRlIGVzcGVyYSIsIkdlc3Rpb25hciBwYWdhZG9yZXMiLCJHZXN0aW9uYXIgcGVybWlzb3MiLCJHZXN0aW9uYXIgcHJvZmVzaW9uYWxlcyBkZSBzYWx1ZCIsIkdlc3Rpb25hciByZWN1cnNvcyBmaXNpY29zIiwiR2VzdGlvbmFyIHJlbGFjaW9uZXMiLCJHZXN0aW9uYXIgcm9sZXMiLCJHZXN0aW9uYXIgc2VkZXMiLCJHZXN0aW9uYXIgc2VndXJpZGFkIHNvY2lhbCIsIkdlc3Rpb25hciBzZXJ2aWNpb3MgaGFiaWxpdGFkb3MiLCJHZXN0aW9uYXIgU0lTQkVOIiwiR2VzdGlvbmFyIHRhcmlmYXJpb3MiLCJHZXN0aW9uYXIgdGFyaWZhcyBkZSBjb250cmF0byIsIkdlc3Rpb25hciB1c3VhcmlvcyIsIkluYWN0aXZhciB0ZXJjZXJvIiwiUmFkaWNhciBmYWN0dXJhIiwiUmVhbGl6YXIgdHJpYWdlIiwiUmVjaWJpciBlbiBob3NwaXRhbGl6YWNpb24iLCJSZWNsYXNpZmljYXIgdHJpYWdlIiwiUmVnaXN0cmFyIGFkbWlzaW9uIiwiUmVnaXN0cmFyIGRpYWdub3N0aWNvIiwiUmVnaXN0cmFyIGV2b2x1Y2lvbiIsIlJlZ2lzdHJhciBub3RhIGRlIGluZ3Jlc28iLCJSZWdpc3RyYXIgcGFnbyIsIlJlcHJvZ3JhbWFyIGNpdGEiLCJSZXNldGVhciBjb250cmFzZW5hIiwiU29saWNpdGFyIGhvc3BpdGFsaXphY2lvbiIsIlRyYXNsYWRhciBhZ2VuZGEiLCJWZXIgYXVkaXRvcmlhIGRlIGVtcHJlc2EiLCJWZXIgYXVkaXRvcmlhIGdsb2JhbCIsIlZlciBjb2xhIGRlIHVyZ2VuY2lhcyIsIlZlciBvcmRlbmVzIGFjdGl2YXMiXSwianRpIjoiZTU3OGZiMDItOGIzZC00ZjA4LTkzNGMtMjY3MmQ1NTEyMGE1IiwiaWF0IjoxNzc2Nzc2MjkxLCJleHAiOjE3NzY4NjI2OTF9.cCkUvdm8f98TNUdnNH-i8q5s32eGyZD79qBuucPIAN2ccSKxs6PE0rPOzpiDHzZPWnmM4Pu3DbQZbOdHtbboxg
+@base = http://localhost:{{port}}/api/health-professionals
+
+### Crear profesional de salud
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "thirdPartyId": 12,
+  "medicalRegistrationNumber": "RM-12345",
+  "primarySpecialtyId": 51,
+  "startDate": "2024-01-15",
+  "observations": "Médico general con experiencia en urgencias"
+}
+
+###
+
+### Crear profesional sin registro médico (ej. enfermero)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "thirdPartyId": 3,
+  "primarySpecialtyId": 69,
+  "startDate": "2023-06-01"
+}
+
+###
+
+### Obtener profesional por ID
+GET {{base}}/2
+Authorization: {{token}}
+
+###
+
+### Obtener profesional por tercero
+GET {{base}}/third/12
+Authorization: {{token}}
+
+###
+
+### Listar profesionales (paginado)
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "size": 10,
+  "search": ""
+}
+
+###
+
+### Listar profesionales con búsqueda por nombre o registro
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "size": 10,
+  "search": "RM-12345"
+}
+
+###
+
+### Actualizar profesional
+PUT {{base}}/1
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "medicalRegistrationNumber": "RM-12345",
+  "primarySpecialtyId": 1,
+  "startDate": "2024-01-15",
+  "retirementDate": null,
+  "observations": "Médico general. Especialización en cardiología en curso"
+}
+
+###
+
+### Registrar retiro de profesional
+PUT {{base}}/1
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "medicalRegistrationNumber": "RM-12345",
+  "primarySpecialtyId": 1,
+  "startDate": "2024-01-15",
+  "retirementDate": "2025-12-31",
+  "observations": "Retiro voluntario"
+}
+
+###
+
+### Toggle activo/inactivo
+PATCH {{base}}/1/toggle-active
+Authorization: {{token}}
