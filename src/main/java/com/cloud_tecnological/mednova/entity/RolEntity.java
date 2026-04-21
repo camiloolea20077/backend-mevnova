@@ -4,36 +4,32 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "usuario_rol")
+@Table(name = "rol")
 @Getter
 @Setter
-public class UsuarioRolEntity {
+public class RolEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "usuario_id", nullable = false)
-    private Long usuario_id;
-
-    @Column(name = "empresa_id", nullable = false)
+    @Column(name = "empresa_id")
     private Long empresa_id;
 
-    @Column(name = "sede_id")
-    private Long sede_id;
+    @Column(name = "codigo", nullable = false, length = 50)
+    private String codigo;
 
-    @Column(name = "rol_id", nullable = false)
-    private Long rol_id;
+    @Column(name = "nombre", nullable = false, length = 200)
+    private String nombre;
 
-    @Column(name = "fecha_vigencia_desde")
-    private LocalDate fecha_vigencia_desde;
+    @Column(name = "descripcion", columnDefinition = "text")
+    private String descripcion;
 
-    @Column(name = "fecha_vigencia_hasta")
-    private LocalDate fecha_vigencia_hasta;
+    @Column(name = "es_global", nullable = false)
+    private Boolean es_global;
 
     @Column(name = "activo", nullable = false)
     private Boolean activo;
@@ -57,7 +53,7 @@ public class UsuarioRolEntity {
     protected void onCreate() {
         created_at = LocalDateTime.now();
         if (activo == null) activo = true;
-        if (fecha_vigencia_desde == null) fecha_vigencia_desde = LocalDate.now();
+        if (es_global == null) es_global = false;
     }
 
     @PreUpdate

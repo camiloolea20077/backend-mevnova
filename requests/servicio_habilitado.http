@@ -1,0 +1,97 @@
+@port = 9001
+@token =eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJwcmVfYXV0aCIsInRpcG9fdG9rZW4iOiJQUkVfQVVUSCIsImVtcHJlc2FfaWQiOjQsImp0aSI6ImUwNDZkNmFiLTFkYWUtNGNmYS1iNGI1LTM0NzA5ZWI0OTYyNiIsImlhdCI6MTc3NjcyOTA1MywiZXhwIjoxNzc2NzI5MzUzfQ.1s7SEJFFAjVGfJ4VrKKYKofyBZxTCSmPAQPg7v7xN13q-7sqaEMRHh37n9V6Hjv8U_NsbPPfG7kQIVmrMnYnDA
+
+### Crear servicio habilitado
+POST http://localhost:{{port}}/api/enabled-services HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "sedeId": 1,
+    "serviceCode": "SRV-001",
+    "serviceName": "Consulta Externa General",
+    "modality": "PRESENCIAL",
+    "complexity": "BAJA",
+    "enablementDate": "2024-01-01",
+    "expirationDate": "2026-12-31",
+    "resolution": "RES-2024-001",
+    "observations": "Servicio habilitado para atención primaria"
+}
+
+###
+
+### Crear servicio habilitado sin vencimiento
+POST http://localhost:{{port}}/api/enabled-services HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "sedeId": 1,
+    "serviceCode": "SRV-002",
+    "serviceName": "Urgencias 24 horas",
+    "modality": "PRESENCIAL",
+    "complexity": "ALTA",
+    "enablementDate": "2024-01-01",
+    "resolution": "RES-2024-002"
+}
+
+###
+
+### Obtener servicio habilitado por ID
+GET http://localhost:{{port}}/api/enabled-services/1 HTTP/1.1
+Authorization: Bearer {{token}}
+
+###
+
+### Listar servicios habilitados (sin búsqueda)
+POST http://localhost:{{port}}/api/enabled-services/list HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "page": 0,
+    "rows": 10,
+    "search": "",
+    "order_by": "sh.nombre_servicio",
+    "order": "ASC"
+}
+
+###
+
+### Listar servicios habilitados (con búsqueda)
+POST http://localhost:{{port}}/api/enabled-services/list HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "page": 0,
+    "rows": 10,
+    "search": "consulta",
+    "order_by": "sh.nombre_servicio",
+    "order": "ASC"
+}
+
+###
+
+### Actualizar servicio habilitado
+PUT http://localhost:{{port}}/api/enabled-services/1 HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "serviceName": "Consulta Externa General - Actualizada",
+    "modality": "PRESENCIAL",
+    "complexity": "MEDIA",
+    "enablementDate": "2024-01-01",
+    "expirationDate": "2027-12-31",
+    "resolution": "RES-2024-001-A",
+    "observations": "Actualización de complejidad"
+}
+
+###
+
+### Activar / Inactivar servicio habilitado (toggle)
+PATCH http://localhost:{{port}}/api/enabled-services/1/toggle-active HTTP/1.1
+Authorization: Bearer {{token}}
+
+###

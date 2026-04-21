@@ -725,4 +725,68 @@ public class AuthServiceImpl implements AuthService {
         }
         return empresaQueryRepository.findActiveByNit(request.getCompanyNit().trim());
     }
+
+    @Override
+    @Transactional
+    public AuthTokensDto switchTenant(SwitchTenantRequestDto request, String ip, String userAgent) {
+        Long usuarioId = TenantContext.getUsuarioId();
+
+        if (Boolean.FALSE.equals(TenantContext.hasRole("SUPER_ADMIN"))) {
+            throw new GlobalException(HttpStatus.FORBIDDEN, "Solo super-admin puede cambiar de tenant");
+        }
+
+        EmpresaEntity empresa = empresaQueryRepository.findActiveById(request.getEmpresaId())
+                .orElseThrow(() -> new GlobalException(HttpStatus.NOT_FOUND, "Empresa no encontrada"));
+
+        Long sedeId = null;
+        if (request.getSedeId() != null) {
+            if (!sedeQueryRepository.existsActiveByIdAndEmpresa(request.getSedeId(), empresa.getId())) {
+                throw new GlobalException(HttpStatus.BAD_REQUEST, "Sede no encontrada");
+            }
+            sedeId = request.getSedeId();
+        }
+
+        TenantInfo tenantInfo = TenantInfo.builder()
+                .usuario_id(usuarioId)
+                .empresa_id(empresa.getId())
+                .sede_id(sedeId)
+                .username(TenantContext.get().getUsername())
+                .roles(List.of("SUPER_ADMIN"))
+                .permisos(List.of())
+                .build();
+
+        String accessToken  = jwtTokenProvider.generateAccessToken(tenantInfo);
+        String refreshToken = jwtTokenProvider.generateRefreshToken(tenantInfo);
+
+        Claims accessClaims  = jwtTokenProvider.validateAndParse(accessToken, TIPO_ACCESS);
+        Claims refreshClaims = jwtTokenProvider.validateAndParse(refreshToken, TIPO_REFRESH);
+
+        String accessJti  = accessClaims.getId();
+        String refreshJti = refreshClaims.getId();
+
+        long accessExp  = jwtTokenProvider.getAccessExpiration();
+        long refreshExp = jwtTokenProvider.getRefreshExpiration();
+
+        guardarSesion(accessJti,  null,      TIPO_ACCESS,  empresa.getId(), usuarioId, sedeId, ip, accessExp);
+        guardarSesion(refreshJti, accessJti, TIPO_REFRESH, empresa.getId(), usuarioId, sedeId, ip, refreshExp);
+
+        registrarAuditoria(empresa.getId(), sedeId, usuarioId, "SWITCH_TENANT", ip, userAgent);
+
+        UserInfoDto userInfo = UserInfoDto.builder()
+                .id(usuarioId)
+                .username(TenantContext.get().getUsername())
+                .roles(List.of("SUPER_ADMIN"))
+                .empresaId(empresa.getId())
+                .empresaNombre(empresa.getRazon_social())
+                .sedeId(sedeId)
+                .build();
+
+        return AuthTokensDto.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .tokenType("Bearer")
+                .expiresInSeconds(accessExp)
+                .user(userInfo)
+                .build();
+    }
 }

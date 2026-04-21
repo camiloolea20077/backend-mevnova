@@ -1,0 +1,63 @@
+@port = 9001
+@token = eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwidGlwb190b2tlbiI6IkFDQ0VTUyIsInVzdWFyaW9faWQiOjEsInVzZXJuYW1lIjoic3VwZXJhZG1pbiIsInJvbGVzIjpbIlNVUEVSX0FETUlOIl0sInBlcm1pc29zIjpbXSwianRpIjoiNWEwODYwM2EtYWJkZC00YmFmLTgzZGQtZTZmNTQ3YmYyYzllIiwiaWF0IjoxNzc2NzI5NzMyLCJleHAiOjE3NzY4MTYxMzJ9.eIkk4DzEWKwfG5-1lb9TyuCnsm0jfVWxTX9gol7YE-taJH5bXwqi_WOBw1Qhgo6uv52uD43eS55yNW2a4nZrKQ
+
+### Asignar rol a usuario (aplica a todas las sedes)
+POST http://localhost:{{port}}/api/user-roles HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "userId": 2,
+    "roleId": 1,
+    "validFrom": "2024-01-01"
+}
+
+###
+
+### Asignar rol a usuario en sede específica
+POST http://localhost:{{port}}/api/user-roles HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "userId": 2,
+    "roleId": 2,
+    "sedeId": 1,
+    "validFrom": "2024-01-01",
+    "validUntil": "2026-12-31"
+}
+
+###
+
+### Obtener asignación por ID
+GET http://localhost:{{port}}/api/user-roles/1 HTTP/1.1
+Authorization: Bearer {{token}}
+
+###
+
+### Listar todas las asignaciones
+POST http://localhost:{{port}}/api/user-roles/list HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "page": 0,
+    "rows": 10,
+    "search": "",
+    "order_by": "ur.created_at",
+    "order": "DESC"
+}
+
+###
+
+### Listar asignaciones de un usuario específico
+GET http://localhost:{{port}}/api/user-roles/user/2 HTTP/1.1
+Authorization: Bearer {{token}}
+
+###
+
+### Revocar asignación (soft delete)
+DELETE http://localhost:{{port}}/api/user-roles/1 HTTP/1.1
+Authorization: Bearer {{token}}
+
+###

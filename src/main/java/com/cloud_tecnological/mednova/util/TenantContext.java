@@ -40,4 +40,9 @@ public class TenantContext {
         TenantInfo info = CONTEXT.get();
         return info != null && info.getPermisos() != null && info.getPermisos().contains(permiso);
     }
+
+    public static boolean hasRole(String rol) {
+        TenantInfo info = CONTEXT.get();
+        return info != null && info.getRoles() != null && info.getRoles().contains(rol);
+    }
 }

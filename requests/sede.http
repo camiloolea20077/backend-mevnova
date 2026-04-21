@@ -1,0 +1,120 @@
+@port = 9001
+@token = eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwidGlwb190b2tlbiI6IkFDQ0VTUyIsInVzdWFyaW9faWQiOjEsInVzZXJuYW1lIjoic3VwZXJhZG1pbiIsInJvbGVzIjpbIlNVUEVSX0FETUlOIl0sInBlcm1pc29zIjpbXSwianRpIjoiNWEwODYwM2EtYWJkZC00YmFmLTgzZGQtZTZmNTQ3YmYyYzllIiwiaWF0IjoxNzc2NzI5NzMyLCJleHAiOjE3NzY4MTYxMzJ9.eIkk4DzEWKwfG5-1lb9TyuCnsm0jfVWxTX9gol7YE-taJH5bXwqi_WOBw1Qhgo6uv52uD43eS55yNW2a4nZrKQ
+POST http://localhost:{{port}}/api/branches HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "code": "SEDE-01",
+    "repsCode": "05001001",
+    "name": "Sede Principal Medellín",
+    "countryId": 1,
+    "departmentId": 5,
+    "municipalityId": 1,
+    "address": "Calle 50 # 40-20",
+    "phone": "6044445555",
+    "email": "sede.principal@mednova.com",
+    "isPrincipal": true
+}
+
+###
+
+### Crear sede secundaria
+POST http://localhost:{{port}}/api/branches HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "code": "SEDE-02",
+    "repsCode": "05001002",
+    "name": "Sede Norte",
+    "countryId": 1,
+    "departmentId": 5,
+    "municipalityId": 1,
+    "address": "Carrera 80 # 32-15",
+    "phone": "6044446666",
+    "email": "sede.norte@mednova.com",
+    "isPrincipal": false
+}
+
+###
+
+### Obtener sede por ID
+GET http://localhost:{{port}}/api/branches/1 HTTP/1.1
+Authorization: Bearer {{token}}
+
+###
+
+### Listar sedes (sin búsqueda)
+POST http://localhost:{{port}}/api/branches/list HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "page": 0,
+    "rows": 10,
+    "search": "",
+    "order_by": "s.nombre",
+    "order": "ASC"
+}
+
+###
+
+### Listar sedes (con búsqueda)
+POST http://localhost:{{port}}/api/branches/list HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "page": 0,
+    "rows": 10,
+    "search": "principal",
+    "order_by": "s.nombre",
+    "order": "ASC"
+}
+
+###
+
+### Actualizar sede
+PUT http://localhost:{{port}}/api/branches/1 HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "name": "Sede Principal Medellín Actualizada",
+    "repsCode": "05001001",
+    "countryId": 1,
+    "departmentId": 5,
+    "municipalityId": 1,
+    "address": "Calle 50 # 40-25",
+    "phone": "6044445556",
+    "email": "sede.principal.nueva@mednova.com",
+    "isPrincipal": true
+}
+
+###
+
+### Marcar otra sede como principal (desmarca la anterior)
+PUT http://localhost:{{port}}/api/branches/2 HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "name": "Sede Norte",
+    "repsCode": "05001002",
+    "countryId": 1,
+    "departmentId": 5,
+    "municipalityId": 1,
+    "address": "Carrera 80 # 32-15",
+    "phone": "6044446666",
+    "email": "sede.norte@mednova.com",
+    "isPrincipal": true
+}
+
+###
+
+### Activar / Inactivar sede (toggle)
+PATCH http://localhost:{{port}}/api/branches/1/toggle-active HTTP/1.1
+Authorization: Bearer {{token}}
+
+###

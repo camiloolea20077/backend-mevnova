@@ -46,7 +46,8 @@ public class SecurityConfig {
                                 "/api/auth/select-sede",
                                 "/api/auth/refresh",
                                 "/api/auth/change-password",
-                                "/api/auth/super-admin/login"
+                                "/api/auth/super-admin/login",
+                                "/api/auth/super-admin/switch-tenant"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

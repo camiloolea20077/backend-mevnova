@@ -1,0 +1,97 @@
+@port = 9001
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbnRlcnByaXNlX2lkIjoxLCJ0ZW5hbnRfaWQiOjEsInNsdWciOiJjbG91ZF90ZWNubyIsImVtYWlsIjoic3VwZXItYWRtaW5AY2xvdWR0ZWNuby5jb20iLCJyb2xlcyI6WyJTVVBFUkFETUlOIl0sInJvbGVfbGV2ZWwiOjAsImlwIjoiMTI3LjAuMC4xIiwiZXhwIjoxNzc2NDg5NzY3LCJpYXQiOjE3NzY0MDMzNjd9.PPK8NAU0HkQejvCk-FU94jt8w7mvMAJlE2BppKbuqkI
+
+### Obtener registro de auditoría por ID
+GET http://localhost:{{port}}/api/audit/1 HTTP/1.1
+Authorization: Bearer {{token}}
+
+###
+
+### Listar auditoría (sin filtros)
+POST http://localhost:{{port}}/api/audit/list HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "page": 0,
+    "rows": 20,
+    "search": "",
+    "order_by": "a.created_at",
+    "order": "DESC"
+}
+
+###
+
+### Listar auditoría filtrada por tabla
+POST http://localhost:{{port}}/api/audit/list HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "page": 0,
+    "rows": 20,
+    "search": "",
+    "order_by": "a.created_at",
+    "order": "DESC",
+    "params": {
+        "tableName": "usuario"
+    }
+}
+
+###
+
+### Listar auditoría filtrada por acción
+POST http://localhost:{{port}}/api/audit/list HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "page": 0,
+    "rows": 20,
+    "search": "",
+    "order_by": "a.created_at",
+    "order": "DESC",
+    "params": {
+        "action": "UPDATE"
+    }
+}
+
+###
+
+### Listar auditoría filtrada por usuario y rango de fechas
+POST http://localhost:{{port}}/api/audit/list HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "page": 0,
+    "rows": 20,
+    "search": "",
+    "order_by": "a.created_at",
+    "order": "DESC",
+    "params": {
+        "userId": 1,
+        "dateFrom": "2024-01-01T00:00:00",
+        "dateTo": "2024-12-31T23:59:59"
+    }
+}
+
+###
+
+### Listar auditoría filtrada por IP de origen
+POST http://localhost:{{port}}/api/audit/list HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "page": 0,
+    "rows": 20,
+    "search": "",
+    "order_by": "a.created_at",
+    "order": "DESC",
+    "params": {
+        "ipOrigin": "127.0.0.1"
+    }
+}
+
+###

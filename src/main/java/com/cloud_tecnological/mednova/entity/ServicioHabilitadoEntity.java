@@ -8,32 +8,44 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "usuario_rol")
+@Table(name = "servicio_habilitado")
 @Getter
 @Setter
-public class UsuarioRolEntity {
+public class ServicioHabilitadoEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "usuario_id", nullable = false)
-    private Long usuario_id;
-
     @Column(name = "empresa_id", nullable = false)
     private Long empresa_id;
 
-    @Column(name = "sede_id")
+    @Column(name = "sede_id", nullable = false)
     private Long sede_id;
 
-    @Column(name = "rol_id", nullable = false)
-    private Long rol_id;
+    @Column(name = "codigo_servicio", nullable = false, length = 20)
+    private String codigo_servicio;
 
-    @Column(name = "fecha_vigencia_desde")
-    private LocalDate fecha_vigencia_desde;
+    @Column(name = "nombre_servicio", nullable = false, length = 200)
+    private String nombre_servicio;
 
-    @Column(name = "fecha_vigencia_hasta")
-    private LocalDate fecha_vigencia_hasta;
+    @Column(name = "modalidad", nullable = false, length = 50)
+    private String modalidad;
+
+    @Column(name = "complejidad", nullable = false, length = 20)
+    private String complejidad;
+
+    @Column(name = "fecha_habilitacion", nullable = false)
+    private LocalDate fecha_habilitacion;
+
+    @Column(name = "fecha_vencimiento")
+    private LocalDate fecha_vencimiento;
+
+    @Column(name = "resolucion", length = 50)
+    private String resolucion;
+
+    @Column(name = "observaciones", columnDefinition = "text")
+    private String observaciones;
 
     @Column(name = "activo", nullable = false)
     private Boolean activo;
@@ -57,7 +69,6 @@ public class UsuarioRolEntity {
     protected void onCreate() {
         created_at = LocalDateTime.now();
         if (activo == null) activo = true;
-        if (fecha_vigencia_desde == null) fecha_vigencia_desde = LocalDate.now();
     }
 
     @PreUpdate

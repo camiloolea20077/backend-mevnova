@@ -1,0 +1,95 @@
+@port = 9001
+@token = eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwidGlwb190b2tlbiI6IkFDQ0VTUyIsInVzdWFyaW9faWQiOjEsInVzZXJuYW1lIjoic3VwZXJhZG1pbiIsInJvbGVzIjpbIlNVUEVSX0FETUlOIl0sInBlcm1pc29zIjpbXSwianRpIjoiNWEwODYwM2EtYWJkZC00YmFmLTgzZGQtZTZmNTQ3YmYyYzllIiwiaWF0IjoxNzc2NzI5NzMyLCJleHAiOjE3NzY4MTYxMzJ9.eIkk4DzEWKwfG5-1lb9TyuCnsm0jfVWxTX9gol7YE-taJH5bXwqi_WOBw1Qhgo6uv52uD43eS55yNW2a4nZrKQ
+GET http://localhost:{{port}}/api/roles/permissions HTTP/1.1
+Authorization: Bearer {{token}}
+
+###
+
+### Crear rol
+POST http://localhost:{{port}}/api/roles HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "code": "ADMIN-CLINICA",
+    "name": "Administrador Clínica",
+    "description": "Rol para administradores de la clínica con acceso completo",
+    "permissionIds": [1, 2, 3]
+}
+
+###
+
+### Crear rol de médico
+POST http://localhost:{{port}}/api/roles HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "code": "MEDICO",
+    "name": "Médico",
+    "description": "Rol para médicos con acceso a historias clínicas",
+    "permissionIds": [1]
+}
+
+###
+
+### Obtener rol por ID
+GET http://localhost:{{port}}/api/roles/1 HTTP/1.1
+Authorization: Bearer {{token}}
+
+###
+
+### Listar roles (sin búsqueda)
+POST http://localhost:{{port}}/api/roles/list HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "page": 0,
+    "rows": 10,
+    "search": "",
+    "order_by": "r.nombre",
+    "order": "ASC"
+}
+
+###
+
+### Listar roles (con búsqueda)
+POST http://localhost:{{port}}/api/roles/list HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "page": 0,
+    "rows": 10,
+    "search": "admin",
+    "order_by": "r.nombre",
+    "order": "ASC"
+}
+
+###
+
+### Actualizar rol (reemplaza permisos)
+PUT http://localhost:{{port}}/api/roles/1 HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "name": "Administrador Clínica - Actualizado",
+    "description": "Rol actualizado con nuevos permisos",
+    "permissionIds": [1, 2, 3, 4]
+}
+
+###
+
+### Activar / Inactivar rol (toggle)
+PATCH http://localhost:{{port}}/api/roles/1/toggle-active HTTP/1.1
+Authorization: Bearer {{token}}
+
+###
+
+### Eliminar rol (soft delete)
+DELETE http://localhost:{{port}}/api/roles/2 HTTP/1.1
+Authorization: Bearer {{token}}
+
+###

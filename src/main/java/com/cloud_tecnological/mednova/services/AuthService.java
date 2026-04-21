@@ -17,4 +17,6 @@ public interface AuthService {
     AuthTokensDto refresh(String refreshToken);
 
     void changePassword(String token, ChangePasswordRequestDto request, String ip, String userAgent);
+
+    AuthTokensDto switchTenant(SwitchTenantRequestDto request, String ip, String userAgent);
 }
