@@ -47,7 +47,10 @@ public class SecurityConfig {
                                 "/api/auth/refresh",
                                 "/api/auth/change-password",
                                 "/api/auth/super-admin/login",
-                                "/api/auth/super-admin/switch-tenant"
+                                "/api/auth/super-admin/switch-tenant",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/v3/api-docs/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
