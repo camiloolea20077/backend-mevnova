@@ -142,9 +142,10 @@ Prioridad: A=Alta, M=Media, B=Baja.
 | HU-FASE1-014 | Gestión de contactos del tercero | A |
 | HU-FASE1-015 | Gestión de direcciones del tercero | A |
 | HU-FASE1-016 | Gestión de relaciones entre terceros | M |
-| HU-FASE1-017 | Registro de SISBEN del paciente | M |
-| HU-FASE1-018 | Registro de seguridad social del paciente | A |
-| HU-FASE1-019 | Asociación de contratos al paciente | A |
+| HU-FASE1-017 | Registro de SISBEN del paciente | M | ✅ |
+| HU-FASE1-018 | Registro de seguridad social del paciente | A | ✅ |
+| HU-FASE1-019 | Asociación de contratos al paciente | A | ✅ |
+| HU-FASE1-019A | Verificación de derechos y cobertura del paciente | A | ✅ |
 
 ### Bloque 3 — Admisiones
 | Código | Título | Prioridad |
@@ -192,13 +193,13 @@ Prioridad: A=Alta, M=Media, B=Baja.
 ### Bloque 7 — Servicios, pagadores y contratos
 | Código | Título | Prioridad |
 |--------|--------|-----------|
-| HU-FASE1-047 | Gestión del catálogo de servicios de salud | A |
-| HU-FASE1-048 | Gestión de centros de costo | M |
-| HU-FASE1-049 | Registro de pagador | A |
-| HU-FASE1-050 | Registro de contrato con pagador | A |
-| HU-FASE1-051 | Carga de tarifario base | A |
-| HU-FASE1-052 | Registro de tarifas específicas por contrato | A |
-| HU-FASE1-053 | Asignación de servicios al contrato | A |
+| HU-FASE1-047 | Gestión del catálogo de servicios de salud | A | ✅ |
+| HU-FASE1-048 | Gestión de centros de costo | M | ✅ |
+| HU-FASE1-049 | Registro de pagador | A | ✅ |
+| HU-FASE1-050 | Registro de contrato con pagador | A | ✅ |
+| HU-FASE1-051 | Carga de tarifario base | A | ✅ |
+| HU-FASE1-052 | Registro de tarifas específicas por contrato | A | ✅ |
+| HU-FASE1-053 | Asignación de servicios al contrato | A | ✅ |
 
 ### Bloque 8 — Facturación inicial
 | Código | Título | Prioridad |
@@ -1361,7 +1362,54 @@ Como auxiliar, quiero asociar contratos específicos al paciente de mi empresa, 
 **Prioridad**: Alta
 
 ---
+### HU-FASE1-019A — Verificación de derechos y cobertura del paciente
 
+**Módulo**: Servicios, pagadores y contratos  
+**Actor principal**: Auxiliar de admisiones
+
+**Historia de usuario**  
+Como auxiliar de admisiones, quiero verificar los derechos y la cobertura del paciente, para confirmar si puede ser atendido con un pagador y contrato vigente.
+
+**Descripción funcional detallada**  
+1. Selecciono el paciente de mi empresa.  
+2. El sistema consulta su seguridad social activa.  
+3. El sistema identifica pagador, régimen, tipo de afiliación y contrato asociado.  
+4. El sistema valida si el contrato está vigente.  
+5. El sistema valida si el servicio requerido está cubierto.  
+6. Si aplica, el sistema indica si requiere autorización.  
+7. El sistema muestra el resultado de cobertura para continuar la admisión.
+
+**Reglas de negocio**  
+- El paciente debe pertenecer a mi empresa.  
+- La verificación debe hacerse solo con afiliaciones activas.  
+- Solo pueden usarse contratos vigentes del pagador.  
+- Si el servicio no está cubierto, el sistema debe informarlo.  
+- Si el servicio requiere autorización, debe indicarlo antes de continuar.
+
+**Datos involucrados**  
+- `paciente`
+- `seguridad_social_paciente`
+- `contrato_paciente`
+- `pagador`
+- `contrato`
+- `servicio_contrato`
+
+**Dependencias**  
+- HU-FASE1-017  
+- HU-FASE1-018  
+- HU-FASE1-019  
+- HU-FASE1-050  
+- HU-FASE1-053
+
+**Criterios de aceptación**  
+- CA1: El sistema solo valida afiliaciones y contratos de mi empresa.  
+- CA2: El sistema informa si el servicio está cubierto o no.  
+- CA3: El sistema indica si requiere autorización.  
+- CA4: No se permite continuar con cobertura inválida sin dejar trazabilidad.
+
+**Prioridad**: Alta
+
+---
 ## Bloque 3. Admisiones
 
 ---
@@ -2025,6 +2073,48 @@ Como coordinador, quiero definir calendarios de mi empresa con días hábiles y 
 **Prioridad**: Alta
 
 ---
+### HU-FASE1-039A — Parametrización de tipos de cita, estados y motivos
+
+**Módulo**: Citas  
+**Actor principal**: Administrador de la empresa
+
+**Historia de usuario**  
+Como administrador, quiero parametrizar tipos de cita, estados y motivos, para que el módulo de citas funcione con reglas configurables de mi empresa.
+
+**Descripción funcional detallada**  
+1. Ingreso al módulo de parametrización de citas de mi empresa.  
+2. Registro tipos de cita.  
+3. Registro estados de cita.  
+4. Registro motivos de cancelación.  
+5. Registro motivos de reprogramación.  
+6. Activo o inactivo los parámetros según necesidad.  
+7. El sistema deja disponibles esos parámetros para agendas, asignación, cancelación y reprogramación.
+
+**Reglas de negocio**  
+- Los parámetros deben crearse solo para mi empresa.  
+- No se puede eliminar un parámetro si ya fue usado en citas.  
+- Los parámetros inactivos no deben aparecer en nuevas transacciones.  
+- Debe mantenerse trazabilidad de creación y modificación.
+
+**Datos involucrados**  
+- `tipo_cita`
+- `estado_cita`
+- `motivo_cancelacion_cita`
+- `motivo_reprogramacion_cita`
+
+**Dependencias**  
+- HU-FASE1-002  
+- HU-FASE1-006
+
+**Criterios de aceptación**  
+- CA1: Solo se visualizan y administran parámetros de mi empresa.  
+- CA2: Los parámetros creados quedan disponibles en la asignación y gestión de citas.  
+- CA3: No se permite borrar parámetros ya usados.  
+- CA4: El sistema registra usuario y fecha de los cambios.
+
+**Prioridad**: Alta
+
+---
 
 ### HU-FASE1-040 — Gestión de recursos físicos
 
@@ -2052,6 +2142,49 @@ Como administrador, quiero registrar recursos físicos agendables (consultorios,
 - CA2: No veo recursos de otras empresas.
 
 **Prioridad**: Media
+
+---
+### HU-FASE1-040A — Asignación de cama y traslado a hospitalización
+
+**Módulo**: Hospitalización  
+**Actor principal**: Coordinador asistencial
+
+**Historia de usuario**  
+Como coordinador asistencial, quiero asignar cama y trasladar a hospitalización a un paciente proveniente de urgencias, para dejarlo ubicado y disponible para el médico hospitalario.
+
+**Descripción funcional detallada**  
+1. Consulto las solicitudes de hospitalización generadas desde urgencias en mi empresa.  
+2. Selecciono el paciente.  
+3. El sistema muestra camas o recursos físicos disponibles.  
+4. Selecciono cama, sala o ubicación de destino.  
+5. Confirmo el traslado.  
+6. El sistema cambia el estado del paciente a hospitalizado.  
+7. El sistema deja disponible la información para el médico tratante de hospitalización.
+
+**Reglas de negocio**  
+- Solo pueden asignarse recursos físicos de mi empresa.  
+- Solo pueden asignarse camas disponibles.  
+- El paciente debe tener solicitud de hospitalización previa.  
+- La asignación debe quedar asociada a fecha, hora y usuario.  
+- No puede asignarse más de una cama activa al mismo paciente.
+
+**Datos involucrados**  
+- `recurso_fisico`
+- `admision`
+- `atencion`
+- `traslado_paciente`
+
+**Dependencias**  
+- HU-FASE1-033  
+- HU-FASE1-040
+
+**Criterios de aceptación**  
+- CA1: Solo se asignan camas disponibles de mi empresa.  
+- CA2: El paciente debe venir con solicitud de hospitalización activa.  
+- CA3: La asignación cambia el estado del flujo asistencial.  
+- CA4: Queda trazabilidad de usuario, fecha, hora y recurso asignado.
+
+**Prioridad**: Alta
 
 ---
 
@@ -2521,33 +2654,212 @@ Como facturador, quiero editar detalles de una factura en borrador de mi empresa
 
 ---
 
-### HU-FASE1-056 — Cálculo de copago y cuota moderadora
+### HU-FASE1-055A — Parametrización de copago y cuota moderadora
 
-**Módulo**: Facturación inicial
-**Actor principal**: Sistema (automático)
+**Módulo**: Facturación y cartera  
+**Actor principal**: Administrador financiero
 
-**Historia de usuario**
-Como sistema, al generar facturas de una empresa quiero calcular automáticamente copago y cuota moderadora aplicando las reglas normativas.
+**Historia de usuario**  
+Como administrador financiero, quiero parametrizar reglas de copago y cuota moderadora, para que el sistema liquide correctamente los cobros al paciente según vigencia, régimen, categoría o condición aplicable.
 
-**Descripción funcional detallada**
-1. Identifico régimen + SISBEN del paciente (de mi empresa).
-2. Aplico reglas paramétricas.
-3. Presento valores al facturador, quien puede ajustar con justificación.
+**Descripción funcional detallada**  
+1. Ingreso a la parametrización de cobros al paciente de mi empresa.  
+2. Registro la vigencia de la regla.  
+3. Selecciono el régimen al que aplica.  
+4. Indico el tipo de cobro: copago o cuota moderadora.  
+5. Defino el criterio de aplicación por rango de ingreso, categoría SISBEN o ambos, según corresponda.  
+6. Registro porcentaje de cobro o valor fijo.  
+7. Registro tope por evento y tope anual, si aplica.  
+8. Defino la unidad de valor usada por la regla.  
+9. Configuro observaciones y activo o inactivo la regla.  
+10. El sistema permite asociar exenciones por servicio mediante la configuración de servicios exentos de cobro.  
+11. El sistema deja disponible la regla para procesos de admisión, liquidación y facturación.
 
-**Reglas de negocio**
-- Parámetros centralizados (seed global) pero aplicados a pacientes de cada empresa.
-- Suma copago + cuota moderadora ≤ valor del ítem.
+**Reglas de negocio**  
+- Las reglas deben configurarse solo para mi empresa.  
+- No puede existir más de una regla activa incompatible para la misma vigencia, régimen, tipo de cobro y criterio de aplicación.  
+- Las reglas inactivas no deben participar en nuevos cálculos.  
+- Los servicios exentos deben manejarse de forma separada mediante su propia parametrización.  
+- Debe mantenerse trazabilidad de creación y modificación.
 
-**Datos involucrados**
-- `factura`, `detalle_factura`, `paciente`, `seguridad_social_paciente`, `sisben_paciente`
+**Datos involucrados**  
+- `regla_cobro_paciente`  
+- `servicio_exento_cobro`  
+- `regimen`  
+- `grupo_sisben`  
+- `servicio_salud`
 
-**Dependencias**
-- HU-FASE1-017, HU-FASE1-018, HU-FASE1-054.
+**Dependencias**  
+- HU-FASE1-047  
+- HU-FASE1-050  
+- HU-FASE1-052
 
-**Criterios de aceptación**
-- CA1: Cálculo automático sobre datos de mi empresa.
+**Criterios de aceptación**  
+- CA1: El sistema permite crear reglas de cobro solo para mi empresa.  
+- CA2: El sistema valida que no existan reglas activas duplicadas o solapadas para el mismo criterio.  
+- CA3: El sistema permite registrar porcentaje, valor fijo y topes.  
+- CA4: El sistema permite definir servicios exentos de cobro.  
+- CA5: El sistema registra usuario y fecha de creación o modificación.
 
 **Prioridad**: Alta
+
+---
+
+
+### HU-FASE1-056 — Cálculo de copago y cuota moderadora
+
+**Módulo**: Facturación y cartera  
+**Actor principal**: Sistema
+
+**Historia de usuario**  
+Como sistema, quiero calcular automáticamente el copago o la cuota moderadora aplicable al paciente, para determinar el valor correcto a cobrar según la regla vigente, el servicio prestado, las exenciones y los topes definidos.
+
+**Descripción funcional detallada**  
+1. El sistema recibe el contexto de liquidación desde la admisión, atención o facturación de mi empresa.  
+2. El sistema identifica el paciente, servicio, régimen, contrato y demás datos necesarios para el cálculo.  
+3. El sistema consulta las reglas activas de cobro al paciente para la vigencia correspondiente.  
+4. El sistema determina si aplica copago o cuota moderadora.  
+5. El sistema valida si el servicio está marcado como exento de cobro.  
+6. Si el servicio no está exento, el sistema identifica el porcentaje o valor fijo aplicable.  
+7. El sistema valida topes por evento y topes anuales según los acumulados del paciente.  
+8. El sistema calcula el valor del cobro.  
+9. El sistema genera la liquidación del cobro del paciente, asociándola a la admisión, atención o factura cuando corresponda.  
+10. El sistema deja disponible la liquidación para recaudo, consulta y auditoría.
+
+**Reglas de negocio**  
+- El cálculo solo debe ejecutarse con reglas activas de mi empresa.  
+- Para una misma liquidación no debe aplicarse simultáneamente copago y cuota moderadora.  
+- Si el servicio está exento, el sistema debe registrar la exención y no generar cobro.  
+- Si existen topes por evento o por vigencia, el sistema debe respetarlos.  
+- Si no existe una regla válida, el sistema no debe calcular y debe dejar trazabilidad del evento.  
+- Toda liquidación debe quedar asociada a la regla utilizada cuando aplique.
+
+**Datos involucrados**  
+- `regla_cobro_paciente`  
+- `servicio_exento_cobro`  
+- `liquidacion_cobro_paciente`  
+- `acumulado_cobro_paciente`  
+- `paciente`  
+- `admision`  
+- `atencion`  
+- `factura`  
+- `servicio_salud`
+
+**Dependencias**  
+- HU-FASE1-055A  
+- HU-FASE1-017  
+- HU-FASE1-018  
+- HU-FASE1-019  
+- HU-FASE1-047  
+- HU-FASE1-050  
+- HU-FASE1-052
+
+**Criterios de aceptación**  
+- CA1: El sistema calcula el cobro usando únicamente reglas activas de mi empresa.  
+- CA2: El sistema identifica si aplica copago o cuota moderadora, pero no ambos al mismo tiempo.  
+- CA3: El sistema respeta servicios exentos y registra el motivo de exención.  
+- CA4: El sistema aplica topes por evento y topes acumulados cuando corresponda.  
+- CA5: El sistema genera una liquidación con valor calculado, regla aplicada y estado inicial de recaudo.  
+- CA6: Si no existe una regla válida, el sistema no liquida y deja trazabilidad.
+
+**Prioridad**: Alta
+
+---
+
+### HU-FASE1-056A — Recaudo de copago y cuota moderadora
+
+**Módulo**: Facturación y cartera  
+**Actor principal**: Cajero
+
+**Historia de usuario**  
+Como cajero, quiero registrar el recaudo de copago o cuota moderadora, para dejar constancia del pago o del estado pendiente del cobro al paciente.
+
+**Descripción funcional detallada**  
+1. Consulto la liquidación de cobro generada para el paciente de mi empresa.  
+2. El sistema muestra tipo de cobro, servicio, valor calculado, valor cobrado acumulado y estado actual.  
+3. Registro el valor pagado por el paciente.  
+4. Selecciono el medio de pago.  
+5. Registro número de recibo y observaciones si aplica.  
+6. Confirmo el recaudo.  
+7. El sistema guarda el recaudo asociado a la liquidación.  
+8. El sistema actualiza el estado de la liquidación como pagado, parcial, exento o anulado según corresponda.  
+9. El sistema actualiza los acumulados del paciente cuando aplique.  
+10. El sistema deja disponible el recaudo para consulta y auditoría.
+
+**Reglas de negocio**  
+- Solo pueden recaudarse liquidaciones activas de mi empresa.  
+- No puede registrarse recaudo sobre liquidaciones anuladas.  
+- El sistema debe permitir pago total, parcial o exención.  
+- Si la liquidación está exenta, no debe exigirse valor pagado.  
+- Todo recaudo debe quedar asociado a medio de pago, usuario y fecha.  
+- Los recaudos deben impactar el acumulado del paciente cuando aplique control de topes.
+
+**Datos involucrados**  
+- `liquidacion_cobro_paciente`  
+- `recaudo_cobro_paciente`  
+- `acumulado_cobro_paciente`  
+- `medio_pago`
+
+**Dependencias**  
+- HU-FASE1-056  
+- HU-FASE1-055A
+
+**Criterios de aceptación**  
+- CA1: El sistema registra recaudos solo sobre liquidaciones de mi empresa.  
+- CA2: El sistema permite registrar pago total, parcial o exención.  
+- CA3: El sistema actualiza el estado de la liquidación después del recaudo.  
+- CA4: El sistema actualiza acumulados del paciente cuando corresponda.  
+- CA5: El sistema conserva trazabilidad del recaudo con usuario, fecha, medio de pago y número de recibo.
+
+**Prioridad**: Media
+
+---
+
+### HU-FASE1-056B — Consulta de liquidación de cobros al paciente
+
+**Módulo**: Facturación y cartera  
+**Actor principal**: Facturación
+
+**Historia de usuario**  
+Como usuario de facturación, quiero consultar la liquidación de copago y cuota moderadora del paciente, para validar el valor aplicado, su regla de origen y su estado antes de facturar o auditar.
+
+**Descripción funcional detallada**  
+1. Ingreso a la consulta de liquidaciones de cobro de mi empresa.  
+2. Busco por paciente, admisión, atención, factura, servicio o fecha.  
+3. El sistema muestra la regla aplicada al cobro.  
+4. El sistema muestra tipo de cobro, base de cálculo, porcentaje aplicado, valor calculado y valor cobrado.  
+5. El sistema muestra si hubo exención, motivo de exención y estado del recaudo.  
+6. El sistema permite consultar recaudos realizados sobre la liquidación.  
+7. El sistema permite consultar acumulados del paciente por vigencia cuando apliquen topes.  
+8. El sistema deja disponible esta información como soporte para auditoría y facturación.
+
+**Reglas de negocio**  
+- Solo se consultan liquidaciones de mi empresa.  
+- La consulta debe mostrar trazabilidad del cálculo, la regla aplicada y el recaudo.  
+- Si hubo exención, debe visualizarse su motivo.  
+- Si hubo recaudo parcial, debe visualizarse saldo pendiente.  
+- Si existen topes aplicados, el sistema debe mostrarlos.
+
+**Datos involucrados**  
+- `liquidacion_cobro_paciente`  
+- `regla_cobro_paciente`  
+- `recaudo_cobro_paciente`  
+- `acumulado_cobro_paciente`  
+- `servicio_exento_cobro`
+
+**Dependencias**  
+- HU-FASE1-056  
+- HU-FASE1-056A  
+- HU-FASE1-055A
+
+**Criterios de aceptación**  
+- CA1: El usuario consulta solo liquidaciones de su empresa.  
+- CA2: El sistema muestra regla aplicada, base de cálculo, valor calculado y estado.  
+- CA3: El sistema muestra exenciones, recaudos y saldos pendientes.  
+- CA4: El sistema muestra acumulados y topes cuando apliquen.  
+- CA5: La consulta sirve como soporte para facturación, caja y auditoría.
+
+**Prioridad**: Media
 
 ---
 

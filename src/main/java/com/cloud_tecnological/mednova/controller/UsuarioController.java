@@ -1,5 +1,17 @@
 package com.cloud_tecnological.mednova.controller;
 
+import org.springframework.data.domain.PageImpl;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.cloud_tecnological.mednova.dto.usuario.CreateUsuarioRequestDto;
 import com.cloud_tecnological.mednova.dto.usuario.ResetPasswordRequestDto;
 import com.cloud_tecnological.mednova.dto.usuario.UpdateUsuarioRequestDto;
@@ -8,16 +20,12 @@ import com.cloud_tecnological.mednova.dto.usuario.UsuarioTableDto;
 import com.cloud_tecnological.mednova.services.UsuarioService;
 import com.cloud_tecnological.mednova.util.ApiResponse;
 import com.cloud_tecnological.mednova.util.PageableDto;
+
 import jakarta.validation.Valid;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
-@PreAuthorize("isAuthenticated()")
+
 public class UsuarioController {
 
     private final UsuarioService usuarioService;

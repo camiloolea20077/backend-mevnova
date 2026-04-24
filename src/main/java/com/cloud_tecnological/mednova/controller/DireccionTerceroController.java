@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/third-addresses")
-@PreAuthorize("isAuthenticated()")
+
 public class DireccionTerceroController {
 
     private final DireccionTerceroService direccionTerceroService;

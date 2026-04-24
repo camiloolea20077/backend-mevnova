@@ -1,5 +1,20 @@
 package com.cloud_tecnological.mednova.controller;
 
+import java.util.List;
+
+import org.springframework.data.domain.PageImpl;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.cloud_tecnological.mednova.dto.permiso.PermisoDto;
 import com.cloud_tecnological.mednova.dto.rol.CreateRolRequestDto;
 import com.cloud_tecnological.mednova.dto.rol.RolResponseDto;
@@ -8,18 +23,12 @@ import com.cloud_tecnological.mednova.dto.rol.UpdateRolRequestDto;
 import com.cloud_tecnological.mednova.services.RolService;
 import com.cloud_tecnological.mednova.util.ApiResponse;
 import com.cloud_tecnological.mednova.util.PageableDto;
-import jakarta.validation.Valid;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/roles")
-@PreAuthorize("isAuthenticated()")
+
 public class RolController {
 
     private final RolService rolService;

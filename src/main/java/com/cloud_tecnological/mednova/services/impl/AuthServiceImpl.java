@@ -16,6 +16,7 @@ import com.cloud_tecnological.mednova.security.IpRateLimiter;
 import com.cloud_tecnological.mednova.security.JwtTokenProvider;
 import com.cloud_tecnological.mednova.services.AuthService;
 import com.cloud_tecnological.mednova.util.GlobalException;
+import com.cloud_tecnological.mednova.util.TenantContext;
 import com.cloud_tecnological.mednova.util.TenantInfo;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Value;

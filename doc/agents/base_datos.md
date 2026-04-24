@@ -1788,7 +1788,143 @@ Tu misión es explicar toda la base de datos del SGH, usando como fuente este di
 * `updated_at`: timestamp
 * `usuario_modificacion`: integer
 
+## 16. Cobros al paciente
+
+### regla_cobro_paciente
+
+**Propósito**: Reglas parametrizadas para liquidar copago y cuota moderadora según vigencia, régimen, categoría o rango aplicable.
+**Campos:**
+
+* `id`: serial PRIMARY KEY
+* `empresa_id`: integer NOT NULL REFERENCES empresa(id)
+* `vigencia`: integer NOT NULL
+* `regimen_id`: integer NOT NULL REFERENCES regimen(id)
+* `tipo_cobro`: varchar(30) NOT NULL CHECK (tipo_cobro IN ('CUOTA_MODERADORA','COPAGO'))
+* `rango_ingreso_desde`: numeric(14,2)
+* `rango_ingreso_hasta`: numeric(14,2)
+* `categoria_sisben_id`: integer REFERENCES grupo_sisben(id)
+* `porcentaje_cobro`: numeric(7,2)
+* `valor_fijo`: numeric(14,2)
+* `tope_evento`: numeric(14,2)
+* `tope_anual`: numeric(14,2)
+* `unidad_valor`: varchar(20)
+* `observaciones`: text
+* `activo`: boolean NOT NULL DEFAULT true
+* `created_at`: timestamp NOT NULL DEFAULT current_timestamp
+* `usuario_creacion`: integer
+* `updated_at`: timestamp
+* `usuario_modificacion`: integer
+
+### servicio_exento_cobro
+
+**Propósito**: Servicios exentos de copago o cuota moderadora según vigencia y motivo de exención.
+**Campos:**
+
+* `id`: serial PRIMARY KEY
+* `empresa_id`: integer NOT NULL REFERENCES empresa(id)
+* `servicio_salud_id`: integer NOT NULL REFERENCES servicio_salud(id)
+* `tipo_cobro`: varchar(30) NOT NULL CHECK (tipo_cobro IN ('CUOTA_MODERADORA','COPAGO'))
+* `motivo_exencion`: varchar(300) NOT NULL
+* `vigencia_desde`: date NOT NULL
+* `vigencia_hasta`: date
+* `activo`: boolean NOT NULL DEFAULT true
+* `created_at`: timestamp NOT NULL DEFAULT current_timestamp
+* `usuario_creacion`: integer
+* `updated_at`: timestamp
+* `usuario_modificacion`: integer
+
+### liquidacion_cobro_paciente
+
+**Propósito**: Liquidación operativa del copago o cuota moderadora aplicada al paciente sobre una admisión, atención o factura.
+**Campos:**
+
+* `id`: serial PRIMARY KEY
+* `empresa_id`: integer NOT NULL REFERENCES empresa(id)
+* `paciente_id`: integer NOT NULL REFERENCES paciente(id)
+* `admision_id`: integer REFERENCES admision(id)
+* `atencion_id`: integer REFERENCES atencion(id)
+* `factura_id`: integer REFERENCES factura(id)
+* `tipo_cobro`: varchar(30) NOT NULL CHECK (tipo_cobro IN ('CUOTA_MODERADORA','COPAGO'))
+* `servicio_salud_id`: integer REFERENCES servicio_salud(id)
+* `regla_cobro_paciente_id`: integer REFERENCES regla_cobro_paciente(id)
+* `base_calculo`: numeric(14,2)
+* `porcentaje_aplicado`: numeric(7,2)
+* `valor_calculado`: numeric(14,2) NOT NULL DEFAULT 0
+* `valor_cobrado`: numeric(14,2) NOT NULL DEFAULT 0
+* `aplica_exencion`: boolean NOT NULL DEFAULT false
+* `motivo_exencion`: varchar(300)
+* `fecha_liquidacion`: timestamp NOT NULL DEFAULT current_timestamp
+* `estado_recaudo`: varchar(20) NOT NULL DEFAULT 'PENDIENTE' CHECK (estado_recaudo IN ('PENDIENTE','PAGADO','PARCIAL','EXENTO','ANULADO'))
+* `observaciones`: text
+* `activo`: boolean NOT NULL DEFAULT true
+* `created_at`: timestamp NOT NULL DEFAULT current_timestamp
+* `usuario_creacion`: integer
+* `updated_at`: timestamp
+* `usuario_modificacion`: integer
+
+### acumulado_cobro_paciente
+
+**Propósito**: Control de acumulados por vigencia del paciente para validar topes de cobro, especialmente copagos.
+**Campos:**
+
+* `id`: serial PRIMARY KEY
+* `empresa_id`: integer NOT NULL REFERENCES empresa(id)
+* `paciente_id`: integer NOT NULL REFERENCES paciente(id)
+* `vigencia`: integer NOT NULL
+* `tipo_cobro`: varchar(30) NOT NULL CHECK (tipo_cobro IN ('CUOTA_MODERADORA','COPAGO'))
+* `valor_acumulado_evento`: numeric(14,2) NOT NULL DEFAULT 0
+* `valor_acumulado_anual`: numeric(14,2) NOT NULL DEFAULT 0
+* `tope_evento_aplicado`: numeric(14,2)
+* `tope_anual_aplicado`: numeric(14,2)
+* `observaciones`: text
+* `activo`: boolean NOT NULL DEFAULT true
+* `created_at`: timestamp NOT NULL DEFAULT current_timestamp
+* `usuario_creacion`: integer
+* `updated_at`: timestamp
+* `usuario_modificacion`: integer
+
+### recaudo_cobro_paciente
+
+**Propósito**: Registro de recaudo operativo del copago o cuota moderadora liquidado al paciente.
+**Campos:**
+
+* `id`: serial PRIMARY KEY
+* `empresa_id`: integer NOT NULL REFERENCES empresa(id)
+* `liquidacion_cobro_paciente_id`: integer NOT NULL REFERENCES liquidacion_cobro_paciente(id)
+* `fecha_pago`: timestamp NOT NULL DEFAULT current_timestamp
+* `valor_pagado`: numeric(14,2) NOT NULL DEFAULT 0
+* `medio_pago_id`: integer REFERENCES medio_pago(id)
+* `numero_recibo`: varchar(50)
+* `estado_recaudo`: varchar(20) NOT NULL CHECK (estado_recaudo IN ('PAGADO','PARCIAL','EXENTO','ANULADO'))
+* `observaciones`: text
+* `activo`: boolean NOT NULL DEFAULT true
+* `created_at`: timestamp NOT NULL DEFAULT current_timestamp
+* `usuario_creacion`: integer
+* `updated_at`: timestamp
+* `usuario_modificacion`: integer
+
 ## Relaciones agregadas posteriormente por ALTER TABLE
+
+### liquidacion_cobro_paciente
+
+* `regla_cobro_paciente_id -> regla_cobro_paciente(id)`
+* `servicio_salud_id -> servicio_salud(id)`
+* `paciente_id -> paciente(id)`
+* `admision_id -> admision(id)`
+* `atencion_id -> atencion(id)`
+* `factura_id -> factura(id)`
+
+### recaudo_cobro_paciente
+
+* `liquidacion_cobro_paciente_id -> liquidacion_cobro_paciente(id)`
+
+### acumulado_cobro_paciente
+
+* `paciente_id -> paciente(id)`
+
+### servicio_exento_cobro
+
+* `servicio_salud_id -> servicio_salud(id)`
 
 ### usuario
 

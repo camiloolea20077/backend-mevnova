@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/patients")
-@PreAuthorize("isAuthenticated()")
+
 public class PacienteController {
 
     private final PacienteService pacienteService;

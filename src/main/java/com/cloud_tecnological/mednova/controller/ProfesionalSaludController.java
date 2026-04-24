@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/health-professionals")
-@PreAuthorize("isAuthenticated()")
+
 public class ProfesionalSaludController {
 
     private final ProfesionalSaludService profesionalSaludService;

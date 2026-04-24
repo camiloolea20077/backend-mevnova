@@ -1,22 +1,30 @@
 package com.cloud_tecnological.mednova.controller;
 
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.cloud_tecnological.mednova.dto.contactotercero.ContactoTerceroResponseDto;
 import com.cloud_tecnological.mednova.dto.contactotercero.ContactoTerceroTableDto;
 import com.cloud_tecnological.mednova.dto.contactotercero.CreateContactoTerceroRequestDto;
 import com.cloud_tecnological.mednova.dto.contactotercero.UpdateContactoTerceroRequestDto;
 import com.cloud_tecnological.mednova.services.ContactoTerceroService;
 import com.cloud_tecnological.mednova.util.ApiResponse;
-import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/third-contacts")
-@PreAuthorize("isAuthenticated()")
+    
 public class ContactoTerceroController {
 
     private final ContactoTerceroService contactoTerceroService;

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/branches")
-@PreAuthorize("isAuthenticated()")
+
 public class SedeController {
 
     private final SedeService sedeService;

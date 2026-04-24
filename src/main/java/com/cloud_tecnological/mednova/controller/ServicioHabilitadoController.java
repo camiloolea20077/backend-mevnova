@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/enabled-services")
-@PreAuthorize("isAuthenticated()")
+
 public class ServicioHabilitadoController {
 
     private final ServicioHabilitadoService servicioHabilitadoService;

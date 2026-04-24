@@ -1,23 +1,30 @@
 package com.cloud_tecnological.mednova.controller;
 
+import java.util.List;
+
+import org.springframework.data.domain.PageImpl;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.cloud_tecnological.mednova.dto.usuariorol.AsignarRolRequestDto;
 import com.cloud_tecnological.mednova.dto.usuariorol.UsuarioRolResponseDto;
 import com.cloud_tecnological.mednova.dto.usuariorol.UsuarioRolTableDto;
 import com.cloud_tecnological.mednova.services.UsuarioRolService;
 import com.cloud_tecnological.mednova.util.ApiResponse;
 import com.cloud_tecnological.mednova.util.PageableDto;
-import jakarta.validation.Valid;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/user-roles")
-@PreAuthorize("isAuthenticated()")
+
 public class UsuarioRolController {
 
     private final UsuarioRolService usuarioRolService;

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/thirds")
-@PreAuthorize("isAuthenticated()")
+
 public class TerceroController {
 
     private final TerceroService terceroService;

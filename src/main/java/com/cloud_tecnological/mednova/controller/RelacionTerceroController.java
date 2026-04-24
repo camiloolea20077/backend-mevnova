@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/third-relations")
-@PreAuthorize("isAuthenticated()")
+
 public class RelacionTerceroController {
 
     private final RelacionTerceroService relacionTerceroService;

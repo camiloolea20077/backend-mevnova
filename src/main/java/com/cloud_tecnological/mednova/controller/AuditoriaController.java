@@ -1,19 +1,24 @@
 package com.cloud_tecnological.mednova.controller;
 
+import org.springframework.data.domain.PageImpl;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.cloud_tecnological.mednova.dto.auditoria.AuditoriaFilterDto;
 import com.cloud_tecnological.mednova.dto.auditoria.AuditoriaResponseDto;
 import com.cloud_tecnological.mednova.services.AuditoriaService;
 import com.cloud_tecnological.mednova.util.ApiResponse;
 import com.cloud_tecnological.mednova.util.PageableDto;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/audit")
-@PreAuthorize("isAuthenticated()")
+
 public class AuditoriaController {
 
     private final AuditoriaService auditoriaService;
