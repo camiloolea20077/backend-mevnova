@@ -1,69 +1,107 @@
-### Variables
-@base = http://localhost:9001
+@port = 9001
 @token = Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwidGlwb190b2tlbiI6IkFDQ0VTUyIsInVzdWFyaW9faWQiOjIsImVtcHJlc2FfaWQiOjQsInNlZGVfaWQiOjEsInVzZXJuYW1lIjoiYWRtaW5faG9zcGl0YWwiLCJyb2xlcyI6WyJTdXBlci1BZG1pbmlzdHJhZG9yIGRlbCBTaXN0ZW1hIl0sInBlcm1pc29zIjpbIkFjdHVhbGl6YXIgdGVyY2VybyIsIkFudWxhciBmYWN0dXJhIiwiQW51bGFyIG9yZGVuIGNsaW5pY2EiLCJBbnVsYXIgcHJlc2NyaXBjaW9uIiwiQXByb2JhciBmYWN0dXJhIiwiQXNpZ25hciBjaXRhIiwiQXNpZ25hciByb2xlcyBhIHVzdWFyaW9zIiwiQXRlbmRlciB1cmdlbmNpYXMiLCJDYW1iaWFyIGVzdGFkbyBkZSBhZG1pc2lvbiIsIkNhbmNlbGFyIGNpdGEiLCJDZXJyYXIgYWRtaXNpb24iLCJDZXJyYXIgYXRlbmNpb24gZGUgdXJnZW5jaWFzIiwiQ29uc3VsdGFyIGFkbWlzaW9uZXMiLCJDb25zdWx0YXIgY2FydGVyYSIsIkNvbnN1bHRhciB0ZXJjZXJvIiwiQ3JlYXIgcGFjaWVudGUiLCJDcmVhciB0ZXJjZXJvIiwiRGFyIGVncmVzbyBob3NwaXRhbGFyaW8iLCJFZGl0YXIgZmFjdHVyYSIsIkdlbmVyYXIgZGlzcG9uaWJpbGlkYWQiLCJHZW5lcmFyIGZhY3R1cmEiLCJHZW5lcmFyIG9yZGVuIGNsaW5pY2EiLCJHZW5lcmFyIHByZXNjcmlwY2lvbiIsIkdlbmVyYXIgUklQUyIsIkdlc3Rpb25hciBhZ2VuZGFzIiwiR2VzdGlvbmFyIGNhbGVuZGFyaW9zIiwiR2VzdGlvbmFyIGNhdGFsb2dvIGRlIHNlcnZpY2lvcyIsIkdlc3Rpb25hciBjZW50cm9zIGRlIGNvc3RvIiwiR2VzdGlvbmFyIGNvYmVydHVyYSBkZSBjb250cmF0byIsIkdlc3Rpb25hciBjb250YWN0b3MiLCJHZXN0aW9uYXIgY29udHJhdG9zIiwiR2VzdGlvbmFyIGNvbnRyYXRvcyBkZWwgcGFjaWVudGUiLCJHZXN0aW9uYXIgZGlyZWNjaW9uZXMiLCJHZXN0aW9uYXIgZW1wcmVzYXMiLCJHZXN0aW9uYXIgZ2xvc2FzIiwiR2VzdGlvbmFyIGxpc3RhIGRlIGVzcGVyYSIsIkdlc3Rpb25hciBwYWdhZG9yZXMiLCJHZXN0aW9uYXIgcGVybWlzb3MiLCJHZXN0aW9uYXIgcHJvZmVzaW9uYWxlcyBkZSBzYWx1ZCIsIkdlc3Rpb25hciByZWN1cnNvcyBmaXNpY29zIiwiR2VzdGlvbmFyIHJlbGFjaW9uZXMiLCJHZXN0aW9uYXIgcm9sZXMiLCJHZXN0aW9uYXIgc2VkZXMiLCJHZXN0aW9uYXIgc2VndXJpZGFkIHNvY2lhbCIsIkdlc3Rpb25hciBzZXJ2aWNpb3MgaGFiaWxpdGFkb3MiLCJHZXN0aW9uYXIgU0lTQkVOIiwiR2VzdGlvbmFyIHRhcmlmYXJpb3MiLCJHZXN0aW9uYXIgdGFyaWZhcyBkZSBjb250cmF0byIsIkdlc3Rpb25hciB1c3VhcmlvcyIsIkluYWN0aXZhciB0ZXJjZXJvIiwiUmFkaWNhciBmYWN0dXJhIiwiUmVhbGl6YXIgdHJpYWdlIiwiUmVjaWJpciBlbiBob3NwaXRhbGl6YWNpb24iLCJSZWNsYXNpZmljYXIgdHJpYWdlIiwiUmVnaXN0cmFyIGFkbWlzaW9uIiwiUmVnaXN0cmFyIGRpYWdub3N0aWNvIiwiUmVnaXN0cmFyIGV2b2x1Y2lvbiIsIlJlZ2lzdHJhciBub3RhIGRlIGluZ3Jlc28iLCJSZWdpc3RyYXIgcGFnbyIsIlJlcHJvZ3JhbWFyIGNpdGEiLCJSZXNldGVhciBjb250cmFzZW5hIiwiU29saWNpdGFyIGhvc3BpdGFsaXphY2lvbiIsIlRyYXNsYWRhciBhZ2VuZGEiLCJWZXIgYXVkaXRvcmlhIGRlIGVtcHJlc2EiLCJWZXIgYXVkaXRvcmlhIGdsb2JhbCIsIlZlciBjb2xhIGRlIHVyZ2VuY2lhcyIsIlZlciBvcmRlbmVzIGFjdGl2YXMiXSwianRpIjoiZDFhY2Q3MzctYjAyNi00ZjZmLTkwZWItODliMzkwOGNmZDM5IiwiaWF0IjoxNzc3MDQ4NzY4LCJleHAiOjE3NzcxMzUxNjh9.tQw7dCTF9V-8TvPWWSdFGRjRR7_5pq6sU30OEQmBXdymtCN1400U6LJwPqkG8yZAzAjzkIVrn7B4A8DhXPgE-Q
 
+@base = http://localhost:{{port}}/api/attentions
 
-### Crear pagador (el tercero debe existir previamente)
-POST {{base}}/api/payers
+### HU-021 — Consultar atención abierta de una admisión (creada automáticamente)
+GET {{base}}/by-admission/1
 Authorization: {{token}}
+
+###
+
+### HU-025 — Registrar triage (nivel III — Urgente)
+# {id} = ID de la atención (atencion.id) obtenida del GET anterior
+PATCH {{base}}/3/triage
 Content-Type: application/json
+Authorization: {{token}}
 
 {
-  "thirdPartyId": 8,
-  "code": "EPS-SURA-01",
-  "payerTypeId": 23,
-  "clientTypeId": 9,
-  "epsCode": "EPS010",
-  "administratorCode": null,
-  "filingDays": 30,
-  "glossaResponseDays": 15
+  "triageLevel": "III",
+  "chiefComplaint": "Dolor abdominal agudo en fosa ilíaca derecha con irradiación, acompañado de náuseas y fiebre",
+  "systolicPressure": 130,
+  "diastolicPressure": 85,
+  "heartRate": 98,
+  "respiratoryRate": 18,
+  "temperature": 38.2,
+  "oxygenSaturation": 97,
+  "weight": 72.5,
+  "height": 1.68,
+  "glucometry": null,
+  "observations": "Signo de McBurney positivo"
 }
 
 ###
 
-### Obtener por ID
-GET {{base}}/api/payers/3
-Authorization: {{token}}
-
-###
-
-### Obtener por tercero
-GET {{base}}/api/payers/third/8
-Authorization: {{token}}
-
-###
-
-### Listar con paginación
-POST {{base}}/api/payers/list
-Authorization: {{token}}
+### HU-025 — Registrar triage (nivel I — Resucitación)
+PATCH {{base}}/1/triage
 Content-Type: application/json
+Authorization: {{token}}
 
 {
-  "page": 0,
-  "rows": 10,
-  "search": "",
-  "order_by": "t.nombre_completo",
-  "order": "ASC"
+  "triageLevel": "I",
+  "chiefComplaint": "Paciente en paro cardiorrespiratorio",
+  "systolicPressure": 0,
+  "diastolicPressure": 0,
+  "heartRate": 0,
+  "respiratoryRate": 0,
+  "temperature": 35.8,
+  "oxygenSaturation": 70,
+  "weight": 80.0,
+  "height": 1.75,
+  "glucometry": null,
+  "observations": "Se inicia RCP inmediatamente"
 }
 
 ###
 
-### Actualizar
-PUT {{base}}/api/payers/1
-Authorization: {{token}}
+### HU-025 — Registrar triage (nivel V — No urgente)
+PATCH {{base}}/2/triage
 Content-Type: application/json
+Authorization: {{token}}
 
 {
-  "payerTypeId": 1,
-  "clientTypeId": 1,
-  "epsCode": "EPS010",
-  "administratorCode": "ADM001",
-  "filingDays": 45,
-  "glossaResponseDays": 20
+  "triageLevel": "V",
+  "chiefComplaint": "Resfriado común de 3 días de evolución, sin complicaciones",
+  "systolicPressure": 115,
+  "diastolicPressure": 75,
+  "heartRate": 72,
+  "respiratoryRate": 16,
+  "temperature": 37.1,
+  "oxygenSaturation": 99,
+  "weight": 65.0,
+  "height": 1.62,
+  "glucometry": null,
+  "observations": null
 }
 
 ###
 
-### Activar/Inactivar
-PATCH {{base}}/api/payers/1/toggle-active
+### HU-026 — Reclasificar triage (empeora de III a II)
+PATCH {{base}}/1/triage/reclassify
+Content-Type: application/json
 Authorization: {{token}}
+
+{
+  "newTriageLevel": "II",
+  "justification": "Paciente presenta deterioro clínico: hipotensión y taquicardia progresiva, sospecha de sepsis abdominal"
+}
+
+###
+
+### HU-026 — Reclasificar triage (mejora de II a IV)
+PATCH {{base}}/2/triage/reclassify
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "newTriageLevel": "IV",
+  "justification": "Paciente estabilizado tras analgesia. Signos vitales normales, dolor controlado"
+}
+
+###
+
+### HU-027 — Cola de urgencias de la sede
+GET {{base}}/emergency-queue
+Authorization: {{token}}
+
+###

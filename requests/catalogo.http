@@ -1,0 +1,84 @@
+@port = 9001
+@token = 
+Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwidGlwb190b2tlbiI6IkFDQ0VTUyIsInVzdWFyaW9faWQiOjIsImVtcHJlc2FfaWQiOjQsInNlZGVfaWQiOjEsInVzZXJuYW1lIjoiYWRtaW5faG9zcGl0YWwiLCJyb2xlcyI6WyJTdXBlci1BZG1pbmlzdHJhZG9yIGRlbCBTaXN0ZW1hIl0sInBlcm1pc29zIjpbIkFjdHVhbGl6YXIgdGVyY2VybyIsIkFudWxhciBmYWN0dXJhIiwiQW51bGFyIG9yZGVuIGNsaW5pY2EiLCJBbnVsYXIgcHJlc2NyaXBjaW9uIiwiQXByb2JhciBmYWN0dXJhIiwiQXNpZ25hciBjaXRhIiwiQXNpZ25hciByb2xlcyBhIHVzdWFyaW9zIiwiQXRlbmRlciB1cmdlbmNpYXMiLCJDYW1iaWFyIGVzdGFkbyBkZSBhZG1pc2lvbiIsIkNhbmNlbGFyIGNpdGEiLCJDZXJyYXIgYWRtaXNpb24iLCJDZXJyYXIgYXRlbmNpb24gZGUgdXJnZW5jaWFzIiwiQ29uc3VsdGFyIGFkbWlzaW9uZXMiLCJDb25zdWx0YXIgY2FydGVyYSIsIkNvbnN1bHRhciB0ZXJjZXJvIiwiQ3JlYXIgcGFjaWVudGUiLCJDcmVhciB0ZXJjZXJvIiwiRGFyIGVncmVzbyBob3NwaXRhbGFyaW8iLCJFZGl0YXIgZmFjdHVyYSIsIkdlbmVyYXIgZGlzcG9uaWJpbGlkYWQiLCJHZW5lcmFyIGZhY3R1cmEiLCJHZW5lcmFyIG9yZGVuIGNsaW5pY2EiLCJHZW5lcmFyIHByZXNjcmlwY2lvbiIsIkdlbmVyYXIgUklQUyIsIkdlc3Rpb25hciBhZ2VuZGFzIiwiR2VzdGlvbmFyIGNhbGVuZGFyaW9zIiwiR2VzdGlvbmFyIGNhdGFsb2dvIGRlIHNlcnZpY2lvcyIsIkdlc3Rpb25hciBjZW50cm9zIGRlIGNvc3RvIiwiR2VzdGlvbmFyIGNvYmVydHVyYSBkZSBjb250cmF0byIsIkdlc3Rpb25hciBjb250YWN0b3MiLCJHZXN0aW9uYXIgY29udHJhdG9zIiwiR2VzdGlvbmFyIGNvbnRyYXRvcyBkZWwgcGFjaWVudGUiLCJHZXN0aW9uYXIgZGlyZWNjaW9uZXMiLCJHZXN0aW9uYXIgZW1wcmVzYXMiLCJHZXN0aW9uYXIgZ2xvc2FzIiwiR2VzdGlvbmFyIGxpc3RhIGRlIGVzcGVyYSIsIkdlc3Rpb25hciBwYWdhZG9yZXMiLCJHZXN0aW9uYXIgcGVybWlzb3MiLCJHZXN0aW9uYXIgcHJvZmVzaW9uYWxlcyBkZSBzYWx1ZCIsIkdlc3Rpb25hciByZWN1cnNvcyBmaXNpY29zIiwiR2VzdGlvbmFyIHJlbGFjaW9uZXMiLCJHZXN0aW9uYXIgcm9sZXMiLCJHZXN0aW9uYXIgc2VkZXMiLCJHZXN0aW9uYXIgc2VndXJpZGFkIHNvY2lhbCIsIkdlc3Rpb25hciBzZXJ2aWNpb3MgaGFiaWxpdGFkb3MiLCJHZXN0aW9uYXIgU0lTQkVOIiwiR2VzdGlvbmFyIHRhcmlmYXJpb3MiLCJHZXN0aW9uYXIgdGFyaWZhcyBkZSBjb250cmF0byIsIkdlc3Rpb25hciB1c3VhcmlvcyIsIkluYWN0aXZhciB0ZXJjZXJvIiwiUmFkaWNhciBmYWN0dXJhIiwiUmVhbGl6YXIgdHJpYWdlIiwiUmVjaWJpciBlbiBob3NwaXRhbGl6YWNpb24iLCJSZWNsYXNpZmljYXIgdHJpYWdlIiwiUmVnaXN0cmFyIGFkbWlzaW9uIiwiUmVnaXN0cmFyIGRpYWdub3N0aWNvIiwiUmVnaXN0cmFyIGV2b2x1Y2lvbiIsIlJlZ2lzdHJhciBub3RhIGRlIGluZ3Jlc28iLCJSZWdpc3RyYXIgcGFnbyIsIlJlcHJvZ3JhbWFyIGNpdGEiLCJSZXNldGVhciBjb250cmFzZW5hIiwiU29saWNpdGFyIGhvc3BpdGFsaXphY2lvbiIsIlRyYXNsYWRhciBhZ2VuZGEiLCJWZXIgYXVkaXRvcmlhIGRlIGVtcHJlc2EiLCJWZXIgYXVkaXRvcmlhIGdsb2JhbCIsIlZlciBjb2xhIGRlIHVyZ2VuY2lhcyIsIlZlciBvcmRlbmVzIGFjdGl2YXMiXSwianRpIjoiOGQyN2VhZjgtNGNjYS00ZTA5LWJkNjgtYThiNzkzNjE4NDFlIiwiaWF0IjoxNzc3MTI3OTIzLCJleHAiOjE3NzcyMTQzMjN9.FXs3OLbdwo2n9cT86E0yXXrTkunDZULx8mJAdO0kqQNguDvqAKvQESNxzZxUGNcU2jYReKcl8P6m-8Ny0w95PQ
+@base = http://localhost:{{port}}/api/catalogos
+
+### 01. CATÁLOGO - Personas: tipo_tercero
+GET {{base}}/tipo_tercero
+Authorization: {{token}}
+
+### 01. CATÁLOGO - Personas: tipo_documento
+GET {{base}}/tipo_documento
+Authorization: {{token}}
+
+### 01. CATÁLOGO - Personas: sexo
+GET {{base}}/sexo
+Authorization: {{token}}
+
+### 01. CATÁLOGO - Personas: genero
+GET {{base}}/genero
+Authorization: {{token}}
+
+### 01. CATÁLOGO - Personas: estado_civil
+GET {{base}}/estado_civil
+Authorization: {{token}}
+
+### 01. CATÁLOGO - Personas: grupo_sanguineo
+GET {{base}}/grupo_sanguineo
+Authorization: {{token}}
+
+### 02. CATÁLOGO - Contacto y geografía: pais
+GET {{base}}/pais
+Authorization: {{token}}
+
+### 02. CATÁLOGO - Contacto y geografía: departamento
+GET {{base}}/departamento
+Authorization: {{token}}
+
+### 02. CATÁLOGO - Contacto y geografía: municipio
+GET {{base}}/municipio
+Authorization: {{token}}
+
+### 03. CATÁLOGO - Seguridad social: regimen
+GET {{base}}/regimen
+Authorization: {{token}}
+
+### 04. CATÁLOGO - Admisión y atención: tipo_admision
+GET {{base}}/tipo_admision
+Authorization: {{token}}
+
+### 04. CATÁLOGO - Admisión y atención: estado_atencion
+GET {{base}}/estado_atencion
+Authorization: {{token}}
+
+### 05. CATÁLOGO - Citas: estado_cita
+GET {{base}}/estado_cita
+Authorization: {{token}}
+
+### 05. CATÁLOGO - Citas: tipo_cita
+GET {{base}}/tipo_cita
+Authorization: {{token}}
+
+### 06. CATÁLOGO - Clínicos: especialidad
+GET {{base}}/especialidad
+Authorization: {{token}}
+
+### 06. CATÁLOGO - Clínicos: via_administracion
+GET {{base}}/via_administracion
+Authorization: {{token}}
+
+### 07. CATÁLOGO - Servicios y cartera: tipo_pagador
+GET {{base}}/tipo_pagador
+Authorization: {{token}}
+
+### 07. CATÁLOGO - Servicios y cartera: estado_factura
+GET {{base}}/estado_factura
+Authorization: {{token}}
+
+### Filtrar solo activos
+GET {{base}}/tipo_documento?activo=true
+Authorization: {{token}}
+
+### Filtrar solo inactivos
+GET {{base}}/sexo?activo=false
+Authorization: {{token}}

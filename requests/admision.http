@@ -1,69 +1,115 @@
-### Variables
-@base = http://localhost:9001
+@port = 9001
 @token = Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwidGlwb190b2tlbiI6IkFDQ0VTUyIsInVzdWFyaW9faWQiOjIsImVtcHJlc2FfaWQiOjQsInNlZGVfaWQiOjEsInVzZXJuYW1lIjoiYWRtaW5faG9zcGl0YWwiLCJyb2xlcyI6WyJTdXBlci1BZG1pbmlzdHJhZG9yIGRlbCBTaXN0ZW1hIl0sInBlcm1pc29zIjpbIkFjdHVhbGl6YXIgdGVyY2VybyIsIkFudWxhciBmYWN0dXJhIiwiQW51bGFyIG9yZGVuIGNsaW5pY2EiLCJBbnVsYXIgcHJlc2NyaXBjaW9uIiwiQXByb2JhciBmYWN0dXJhIiwiQXNpZ25hciBjaXRhIiwiQXNpZ25hciByb2xlcyBhIHVzdWFyaW9zIiwiQXRlbmRlciB1cmdlbmNpYXMiLCJDYW1iaWFyIGVzdGFkbyBkZSBhZG1pc2lvbiIsIkNhbmNlbGFyIGNpdGEiLCJDZXJyYXIgYWRtaXNpb24iLCJDZXJyYXIgYXRlbmNpb24gZGUgdXJnZW5jaWFzIiwiQ29uc3VsdGFyIGFkbWlzaW9uZXMiLCJDb25zdWx0YXIgY2FydGVyYSIsIkNvbnN1bHRhciB0ZXJjZXJvIiwiQ3JlYXIgcGFjaWVudGUiLCJDcmVhciB0ZXJjZXJvIiwiRGFyIGVncmVzbyBob3NwaXRhbGFyaW8iLCJFZGl0YXIgZmFjdHVyYSIsIkdlbmVyYXIgZGlzcG9uaWJpbGlkYWQiLCJHZW5lcmFyIGZhY3R1cmEiLCJHZW5lcmFyIG9yZGVuIGNsaW5pY2EiLCJHZW5lcmFyIHByZXNjcmlwY2lvbiIsIkdlbmVyYXIgUklQUyIsIkdlc3Rpb25hciBhZ2VuZGFzIiwiR2VzdGlvbmFyIGNhbGVuZGFyaW9zIiwiR2VzdGlvbmFyIGNhdGFsb2dvIGRlIHNlcnZpY2lvcyIsIkdlc3Rpb25hciBjZW50cm9zIGRlIGNvc3RvIiwiR2VzdGlvbmFyIGNvYmVydHVyYSBkZSBjb250cmF0byIsIkdlc3Rpb25hciBjb250YWN0b3MiLCJHZXN0aW9uYXIgY29udHJhdG9zIiwiR2VzdGlvbmFyIGNvbnRyYXRvcyBkZWwgcGFjaWVudGUiLCJHZXN0aW9uYXIgZGlyZWNjaW9uZXMiLCJHZXN0aW9uYXIgZW1wcmVzYXMiLCJHZXN0aW9uYXIgZ2xvc2FzIiwiR2VzdGlvbmFyIGxpc3RhIGRlIGVzcGVyYSIsIkdlc3Rpb25hciBwYWdhZG9yZXMiLCJHZXN0aW9uYXIgcGVybWlzb3MiLCJHZXN0aW9uYXIgcHJvZmVzaW9uYWxlcyBkZSBzYWx1ZCIsIkdlc3Rpb25hciByZWN1cnNvcyBmaXNpY29zIiwiR2VzdGlvbmFyIHJlbGFjaW9uZXMiLCJHZXN0aW9uYXIgcm9sZXMiLCJHZXN0aW9uYXIgc2VkZXMiLCJHZXN0aW9uYXIgc2VndXJpZGFkIHNvY2lhbCIsIkdlc3Rpb25hciBzZXJ2aWNpb3MgaGFiaWxpdGFkb3MiLCJHZXN0aW9uYXIgU0lTQkVOIiwiR2VzdGlvbmFyIHRhcmlmYXJpb3MiLCJHZXN0aW9uYXIgdGFyaWZhcyBkZSBjb250cmF0byIsIkdlc3Rpb25hciB1c3VhcmlvcyIsIkluYWN0aXZhciB0ZXJjZXJvIiwiUmFkaWNhciBmYWN0dXJhIiwiUmVhbGl6YXIgdHJpYWdlIiwiUmVjaWJpciBlbiBob3NwaXRhbGl6YWNpb24iLCJSZWNsYXNpZmljYXIgdHJpYWdlIiwiUmVnaXN0cmFyIGFkbWlzaW9uIiwiUmVnaXN0cmFyIGRpYWdub3N0aWNvIiwiUmVnaXN0cmFyIGV2b2x1Y2lvbiIsIlJlZ2lzdHJhciBub3RhIGRlIGluZ3Jlc28iLCJSZWdpc3RyYXIgcGFnbyIsIlJlcHJvZ3JhbWFyIGNpdGEiLCJSZXNldGVhciBjb250cmFzZW5hIiwiU29saWNpdGFyIGhvc3BpdGFsaXphY2lvbiIsIlRyYXNsYWRhciBhZ2VuZGEiLCJWZXIgYXVkaXRvcmlhIGRlIGVtcHJlc2EiLCJWZXIgYXVkaXRvcmlhIGdsb2JhbCIsIlZlciBjb2xhIGRlIHVyZ2VuY2lhcyIsIlZlciBvcmRlbmVzIGFjdGl2YXMiXSwianRpIjoiZDFhY2Q3MzctYjAyNi00ZjZmLTkwZWItODliMzkwOGNmZDM5IiwiaWF0IjoxNzc3MDQ4NzY4LCJleHAiOjE3NzcxMzUxNjh9.tQw7dCTF9V-8TvPWWSdFGRjRR7_5pq6sU30OEQmBXdymtCN1400U6LJwPqkG8yZAzAjzkIVrn7B4A8DhXPgE-Q
 
+@base = http://localhost:{{port}}/api/admissions
 
-### Crear pagador (el tercero debe existir previamente)
-POST {{base}}/api/payers
-Authorization: {{token}}
+### HU-020 — Registrar admisión de urgencias
+# tipo_admision_id=1 (URGENCIAS), origen_atencion_id=1 (Enfermedad General),
+# pagador_id=1, paciente_id=1
+POST {{base}}
 Content-Type: application/json
+Authorization: {{token}}
 
 {
-  "thirdPartyId": 8,
-  "code": "EPS-SURA-01",
-  "payerTypeId": 23,
-  "clientTypeId": 9,
-  "epsCode": "EPS010",
-  "administratorCode": null,
-  "filingDays": 30,
-  "glossaResponseDays": 15
+  "patientId": 5,
+  "admissionTypeId": 13,
+  "careOriginId": 17,
+  "payerId": 3,
+  "contractId": null,
+  "companionId": null,
+  "entryReason": "Paciente con dolor abdominal agudo en FID de 6 horas de evolución",
+  "observations": null
 }
 
 ###
 
-### Obtener por ID
-GET {{base}}/api/payers/3
-Authorization: {{token}}
-
-###
-
-### Obtener por tercero
-GET {{base}}/api/payers/third/8
-Authorization: {{token}}
-
-###
-
-### Listar con paginación
-POST {{base}}/api/payers/list
-Authorization: {{token}}
+### HU-020 — Registrar admisión de consulta externa
+POST {{base}}
 Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "patientId": 5,
+  "admissionTypeId": 14,
+  "careOriginId": 24,
+  "payerId": 3,
+  "contractId": 2,
+  "companionId": null,
+  "entryReason": "Control mensual hipertensión arterial",
+  "observations": null
+}
+
+###
+
+### HU-022 — Consultar admisión por ID
+GET {{base}}/3
+Authorization: {{token}}
+
+###
+
+### HU-022 — Listar admisiones activas de la sede (paginado)
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
 
 {
   "page": 0,
   "rows": 10,
   "search": "",
-  "order_by": "t.nombre_completo",
-  "order": "ASC"
+  "order_by": "a.fecha_admision",
+  "order": "DESC"
 }
 
 ###
 
-### Actualizar
-PUT {{base}}/api/payers/1
-Authorization: {{token}}
+### HU-022 — Buscar admisión por nombre o número de documento
+POST {{base}}/list
 Content-Type: application/json
+Authorization: {{token}}
 
 {
-  "payerTypeId": 1,
-  "clientTypeId": 1,
-  "epsCode": "EPS010",
-  "administratorCode": "ADM001",
-  "filingDays": 45,
-  "glossaResponseDays": 20
+  "page": 0,
+  "rows": 10,
+  "search": "García",
+  "order_by": "a.fecha_admision",
+  "order": "DESC"
 }
 
 ###
 
-### Activar/Inactivar
-PATCH {{base}}/api/payers/1/toggle-active
+### HU-023 — Cambiar estado de admisión a EN_ATENCION
+PATCH {{base}}/3/status
+Content-Type: application/json
 Authorization: {{token}}
+
+{
+  "newStatusCode": "EN_ATENCION",
+  "observations": "Paciente pasa a atención médica"
+}
+
+###
+
+### HU-023 — Cancelar admisión
+PATCH {{base}}/3/status
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "newStatusCode": "CANCELADO",
+  "observations": "Paciente se retira voluntariamente"
+}
+
+###
+
+### HU-024 — Registrar egreso administrativo
+# Solo permitido si todas las atenciones están cerradas
+PATCH {{base}}/6/egreso
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "dischargeType": "ALTA_VOLUNTARIA",
+  "observations": "Paciente solicita alta voluntaria, se educa sobre riesgos"
+}
+
+###
