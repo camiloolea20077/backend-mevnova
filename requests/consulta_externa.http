@@ -1,0 +1,371 @@
+### Variables
+@base = http://localhost:9001
+@base_calendars = {{base}}/api/calendars
+@base_agendas = {{base}}/api/agendas
+@base_availability = {{base}}/api/availability
+@base_appointments = {{base}}/api/appointments
+@base_waitlist = {{base}}/api/wait-list
+@token = Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIzIiwidGlwb190b2tlbiI6IkFDQ0VTUyIsInVzdWFyaW9faWQiOjMsImVtcHJlc2FfaWQiOjQsInNlZGVfaWQiOjEsInVzZXJuYW1lIjoibWFyaWEucGVyZXoiLCJyb2xlcyI6WyJNw6lkaWNvIl0sInBlcm1pc29zIjpbIkNhbWJpYXIgZXN0YWRvIGRlIGFkbWlzaW9uIiwiQ29uc3VsdGFyIGFkbWlzaW9uZXMiLCJSZWdpc3RyYXIgYWRtaXNpb24iXSwianRpIjoiM2QyNGI1NzUtYzllNy00YWM2LThiNTUtZjkxNDY4N2UzMmYxIiwiaWF0IjoxNzc3MjkzMTYyLCJleHAiOjE3NzczNzk1NjJ9.nWgFiuImOtFxaajX3KxMaC1jprRkl-gyj5OafQ7aSaZBtLqzeLQRjRcliJfLj3MCwSwrzD8AyEgJZ0AEpnoUkw
+
+
+# ============================================================
+# HU-039: CALENDARIOS INSTITUCIONALES
+# ============================================================
+
+### Crear calendario institucional
+POST {{base_calendars}}
+Authorization: {{token}}
+Content-Type: application/json
+
+{
+  "codigo": "CAL-2025",
+  "nombre": "Calendario Institucional 2025",
+  "descripcion": "Calendario oficial para el año 2025"
+}
+
+###
+
+### Obtener calendario por ID
+GET {{base_calendars}}/1
+Authorization: {{token}}
+
+###
+
+### Listar calendarios (paginado)
+POST {{base_calendars}}/list
+Authorization: {{token}}
+Content-Type: application/json
+
+{
+  "page": 0,
+  "rows": 10,
+  "search": "",
+  "order_by": "c.nombre",
+  "order": "ASC"
+}
+
+###
+
+### Agregar día especial al calendario (festivo / no hábil)
+POST {{base_calendars}}/1/detalles
+Authorization: {{token}}
+Content-Type: application/json
+
+{
+  "fecha": "2025-05-01",
+  "esHabil": false,
+  "esFestivo": true,
+  "descripcion": "Día del Trabajo"
+}
+
+###
+
+### Eliminar calendario
+DELETE {{base_calendars}}/1
+Authorization: {{token}}
+
+###
+
+
+# ============================================================
+# HU-041: AGENDAS DE PROFESIONALES
+# ============================================================
+
+### Crear agenda profesional (con bloques por día)
+POST {{base_agendas}}
+Authorization: {{token}}
+Content-Type: application/json
+
+{
+  "profesionalId": 2,
+  "especialidadId": 53,
+  "recursoFisicoId": 1,
+  "calendarioId": 1,
+  "duracionCitaMinutos": 20,
+  "fechaVigenciaDesde": "2025-05-01",
+  "fechaVigenciaHasta": "2025-12-31",
+  "observaciones": "Agenda consulta externa medicina general",
+  "bloques": [
+    {
+      "diaSemana": 1,
+      "horaInicio": "07:00",
+      "horaFin": "12:00",
+      "cupos": 1
+    },
+    {
+      "diaSemana": 2,
+      "horaInicio": "07:00",
+      "horaFin": "12:00",
+      "cupos": 1
+    },
+    {
+      "diaSemana": 3,
+      "horaInicio": "07:00",
+      "horaFin": "12:00",
+      "cupos": 1
+    },
+    {
+      "diaSemana": 4,
+      "horaInicio": "07:00",
+      "horaFin": "12:00",
+      "cupos": 1
+    },
+    {
+      "diaSemana": 5,
+      "horaInicio": "07:00",
+      "horaFin": "12:00",
+      "cupos": 1
+    }
+  ]
+}
+
+###
+
+### Obtener agenda por ID
+GET {{base_agendas}}/5
+Authorization: {{token}}
+
+###
+
+### Listar agendas activas (paginado)
+POST {{base_agendas}}/list
+Authorization: {{token}}
+Content-Type: application/json
+
+{
+  "page": 0,
+  "rows": 10,
+  "search": "",
+  "order_by": "a.created_at",
+  "order": "DESC"
+}
+
+###
+
+### Eliminar agenda (soft delete)
+DELETE {{base_agendas}}/1
+Authorization: {{token}}
+
+###
+
+
+# ============================================================
+# HU-042: GENERACIÓN DE DISPONIBILIDAD
+# ============================================================
+
+### Generar disponibilidad para un rango de fechas
+# Este endpoint genera slots de disponibilidad (ON CONFLICT DO NOTHING)
+# Para agenda 1, lunes a viernes, 7:00-12:00, cada 20 min → 15 slots/día
+POST {{base_availability}}/generate
+Authorization: {{token}}
+Content-Type: application/json
+
+{
+  "agendaId": 5,
+  "fechaDesde": "2025-05-05",
+  "fechaHasta": "2025-05-30"
+}
+
+###
+
+### Buscar disponibilidad (para asignar cita)
+POST {{base_availability}}/search
+Authorization: {{token}}
+Content-Type: application/json
+
+{
+  "especialidadId": 53,
+  "fechaDesde": "2025-05-05",
+  "fechaHasta": "2025-05-30",
+  "page": 0,
+  "rows": 20
+}
+
+###
+
+### Buscar disponibilidad filtrando por profesional
+POST {{base_availability}}/search
+Authorization: {{token}}
+Content-Type: application/json
+
+{
+  "profesionalId": 2,
+  "fechaDesde": "2025-05-05",
+  "fechaHasta": "2025-05-09",
+  "page": 0,
+  "rows": 20
+}
+
+###
+
+### Buscar disponibilidad filtrando por agenda
+POST {{base_availability}}/search
+Authorization: {{token}}
+Content-Type: application/json
+
+{
+  "agendaId": 1,
+  "fechaDesde": "2025-05-05",
+  "fechaHasta": "2025-05-09",
+  "page": 0,
+  "rows": 20
+}
+
+###
+
+
+# ============================================================
+# HU-043: ASIGNACIÓN DE CITA
+# ============================================================
+
+### Asignar cita a un paciente
+# disponibilidadId viene del resultado de /api/availability/search
+POST {{base_appointments}}
+Authorization: {{token}}
+Content-Type: application/json
+
+{
+  "disponibilidadId": 10,
+  "pacienteId": 5,
+  "tipoCitaId": 13,
+  "servicioSaludId": 3,
+  "motivo": "Consulta de control mensual",
+  "observaciones": "Paciente con hipertensión"
+}
+
+###
+
+### Obtener cita por ID
+GET {{base_appointments}}/4
+Authorization: {{token}}
+
+###
+
+### Listar citas activas (paginado)
+POST {{base_appointments}}/list
+Authorization: {{token}}
+Content-Type: application/json
+
+{
+  "page": 0,
+  "rows": 10,
+  "search": "",
+  "order_by": "d.fecha",
+  "order": "ASC"
+}
+
+###
+
+
+# ============================================================
+# HU-044: CANCELACIÓN Y REPROGRAMACIÓN
+# ============================================================
+
+### Cancelar cita
+PATCH {{base_appointments}}/4/cancel
+Authorization: {{token}}
+Content-Type: application/json
+
+{
+  "motivoCancelacionId": 13,
+  "observaciones": "Paciente no puede asistir por viaje"
+}
+
+###
+
+### Reprogramar cita
+# nuevaDisponibilidadId: el nuevo slot disponible obtenido de /api/availability/search
+PATCH {{base_appointments}}/1/reschedule
+Authorization: {{token}}
+Content-Type: application/json
+
+{
+  "nuevaDisponibilidadId": 5,
+  "motivoReprogramacionId": 1,
+  "observaciones": "Paciente solicita fecha diferente"
+}
+
+###
+
+
+# ============================================================
+# HU-045: LISTA DE ESPERA
+# ============================================================
+
+### Agregar paciente a lista de espera
+POST {{base_waitlist}}
+Authorization: {{token}}
+Content-Type: application/json
+
+{
+  "pacienteId": 5,
+  "especialidadId": 53,
+  "prioridad": 2,
+  "fechaPreferidaDesde": "2025-06-01",
+  "fechaPreferidaHasta": "2025-06-30",
+  "observaciones": "Prefiere mañanas"
+}
+
+###
+
+### Obtener entrada de lista de espera por ID
+GET {{base_waitlist}}/2
+Authorization: {{token}}
+
+###
+
+### Listar lista de espera activa (paginado)
+POST {{base_waitlist}}/list
+Authorization: {{token}}
+Content-Type: application/json
+
+{
+  "page": 0,
+  "rows": 10,
+  "search": "",
+  "order_by": "le.prioridad",
+  "order": "ASC"
+}
+
+###
+
+### Cancelar entrada de lista de espera
+PATCH {{base_waitlist}}/2/cancel
+Authorization: {{token}}
+
+###
+
+
+# ============================================================
+# HU-046: TRASLADO MASIVO DE AGENDA
+# ============================================================
+
+### Traslado masivo — con agenda y fecha destino
+# Traslada todas las citas AGENDADAS de agendaOrigen/fechaOrigen
+# hacia la primera disponibilidad de agendaDestino/fechaDestino
+POST {{base_agendas}}/bulk-transfer
+Authorization: {{token}}
+Content-Type: application/json
+
+{
+  "agendaOrigenId": 1,
+  "fechaOrigen": "2025-05-12",
+  "agendaDestinoId": 1,
+  "fechaDestino": "2025-05-19",
+  "motivo": "Profesional en capacitación"
+}
+
+###
+
+### Traslado masivo — sin destino (van a lista de espera)
+POST {{base_agendas}}/bulk-transfer
+Authorization: {{token}}
+Content-Type: application/json
+
+{
+  "agendaOrigenId": 1,
+  "fechaOrigen": "2025-05-13",
+  "motivo": "Suspensión por mantenimiento de consultorio"
+}
+
+###
