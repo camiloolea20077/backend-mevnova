@@ -196,7 +196,11 @@ public class UsuarioQueryRepository {
             params.addValue("search", "%" + search + "%");
         }
 
-        String orderBy = pageable.getOrder_by() != null ? pageable.getOrder_by() : "nombre_usuario";
+        String rawOrderBy = pageable.getOrder_by() != null ? pageable.getOrder_by() : "nombre_usuario";
+        // Strip table alias prefix (e.g. "u.nombre_usuario" → "nombre_usuario")
+        String col = rawOrderBy.contains(".") ? rawOrderBy.substring(rawOrderBy.lastIndexOf('.') + 1) : rawOrderBy;
+        java.util.Set<String> allowed = java.util.Set.of("nombre_usuario", "correo", "activo", "bloqueado", "created_at");
+        String orderBy = allowed.contains(col) ? col : "nombre_usuario";
         String order   = "DESC".equalsIgnoreCase(pageable.getOrder()) ? "DESC" : "ASC";
         sql.append(" ORDER BY ").append(orderBy).append(" ").append(order);
         sql.append(" OFFSET :offset LIMIT :limit");

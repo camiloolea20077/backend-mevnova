@@ -91,13 +91,8 @@ public class RolServiceImpl implements RolService {
 
         validateTenantAndNotDeleted(rol, empresa_id);
 
-        // Desactivar permisos existentes
-        List<RolPermisoEntity> existing = rolPermisoJpaRepository.findAll()
-                .stream().filter(rp -> rp.getRol_id().equals(id) && Boolean.TRUE.equals(rp.getActivo())).toList();
-        existing.forEach(rp -> {
-            rp.setActivo(false);
-            rolPermisoJpaRepository.save(rp);
-        });
+        // Eliminar permisos existentes y reemplazar con los nuevos
+        rolPermisoJpaRepository.deleteAll(rolPermisoJpaRepository.findByRolId(id));
 
         // Insertar nuevos permisos
         asignarPermisos(id, request.getPermissionIds());
@@ -166,7 +161,6 @@ public class RolServiceImpl implements RolService {
             RolPermisoEntity rp = new RolPermisoEntity();
             rp.setRol_id(rolId);
             rp.setPermiso_id(permisoId);
-            rp.setActivo(true);
             rolPermisoJpaRepository.save(rp);
         });
     }

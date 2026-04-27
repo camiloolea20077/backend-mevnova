@@ -98,10 +98,7 @@ public class RolQueryRepository {
     }
 
     public boolean hasActivePermissions(Long rolId) {
-        String sql = """
-                SELECT COUNT(*) FROM rol_permiso
-                WHERE rol_id = :rol_id AND activo = true
-                """;
+        String sql = "SELECT COUNT(*) FROM rol_permiso WHERE rol_id = :rol_id";
         Long count = jdbc.queryForObject(sql,
                 new MapSqlParameterSource("rol_id", rolId), Long.class);
         return count != null && count > 0;

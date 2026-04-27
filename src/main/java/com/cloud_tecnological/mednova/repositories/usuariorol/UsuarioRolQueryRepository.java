@@ -59,30 +59,15 @@ public class UsuarioRolQueryRepository {
     }
 
     public boolean existsAssignment(Long usuario_id, Long rol_id, Long sede_id, Long empresa_id, Long excludeId) {
-        String sql = """
-                SELECT COUNT(*) FROM usuario_rol
-                WHERE usuario_id = :usuario_id
-                  AND rol_id = :rol_id
-                  AND empresa_id = :empresa_id
-                  AND (ur_sede_match)
-                  AND deleted_at IS NULL
-                  AND id != :exclude_id
-                """;
-        // Construir la condición de sede manualmente para manejar null
-        String sedeCondition = sede_id == null
-                ? "sede_id IS NULL"
-                : "sede_id = :sede_id";
+        String sedeCondition = sede_id == null ? "sede_id IS NULL" : "sede_id = :sede_id";
 
-        String finalSql = """
-                SELECT COUNT(*) FROM usuario_rol
-                WHERE usuario_id = :usuario_id
-                  AND rol_id = :rol_id
-                  AND empresa_id = :empresa_id
-                  AND """ + sedeCondition + """
-
-                  AND deleted_at IS NULL
-                  AND id != :exclude_id
-                """;
+        String finalSql = "SELECT COUNT(*) FROM usuario_rol"
+                + " WHERE usuario_id = :usuario_id"
+                + " AND rol_id = :rol_id"
+                + " AND empresa_id = :empresa_id"
+                + " AND " + sedeCondition
+                + " AND deleted_at IS NULL"
+                + " AND id != :exclude_id";
 
         MapSqlParameterSource params = new MapSqlParameterSource()
                 .addValue("usuario_id", usuario_id)
@@ -130,7 +115,9 @@ public class UsuarioRolQueryRepository {
             params.addValue("search", "%" + search + "%");
         }
 
-        String orderBy = pageable.getOrder_by() != null ? pageable.getOrder_by() : "u.nombre_usuario";
+        java.util.Set<String> allowedCols = java.util.Set.of(
+                "u.nombre_usuario", "r.nombre", "ur.activo", "ur.fecha_vigencia_desde", "ur.created_at");
+        String orderBy = allowedCols.contains(pageable.getOrder_by()) ? pageable.getOrder_by() : "u.nombre_usuario";
         String order   = "DESC".equalsIgnoreCase(pageable.getOrder()) ? "DESC" : "ASC";
         sql.append(" ORDER BY ").append(orderBy).append(" ").append(order);
         sql.append(" OFFSET :offset LIMIT :limit");

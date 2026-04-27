@@ -22,15 +22,11 @@ public class RolPermisoEntity {
     @Column(name = "permiso_id", nullable = false)
     private Long permiso_id;
 
-    @Column(name = "activo", nullable = false)
-    private Boolean activo;
-
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime created_at;
 
     @PrePersist
     protected void onCreate() {
         created_at = LocalDateTime.now();
-        if (activo == null) activo = true;
     }
 }

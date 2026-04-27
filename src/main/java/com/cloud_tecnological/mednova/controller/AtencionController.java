@@ -48,4 +48,40 @@ public class AtencionController {
         List<ColaUrgenciasDto> result = atencionService.getColaUrgencias();
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), "OK", false, result));
     }
+
+    @GetMapping("/{id}/console")
+    public ResponseEntity<ApiResponse<ConsolaAtencionDto>> getConsola(@PathVariable Long id) {
+        ConsolaAtencionDto result = atencionService.getConsola(id);
+        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), "OK", false, result));
+    }
+
+    @PatchMapping("/{id}/start")
+    public ResponseEntity<ApiResponse<AtencionResponseDto>> startAttention(@PathVariable Long id) {
+        AtencionResponseDto result = atencionService.startAttention(id);
+        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), "Atención iniciada", false, result));
+    }
+
+    @PatchMapping("/{id}/notes")
+    public ResponseEntity<ApiResponse<AtencionResponseDto>> actualizarNotas(
+            @PathVariable Long id,
+            @RequestBody ActualizarNotasRequestDto request) {
+        AtencionResponseDto result = atencionService.actualizarNotas(id, request);
+        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), "Notas actualizadas", false, result));
+    }
+
+    @PatchMapping("/{id}/close")
+    public ResponseEntity<ApiResponse<AtencionResponseDto>> cerrarAtencion(
+            @PathVariable Long id,
+            @Valid @RequestBody CerrarAtencionRequestDto request) {
+        AtencionResponseDto result = atencionService.cerrarAtencion(id, request);
+        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), "Atención cerrada exitosamente", false, result));
+    }
+
+    @PatchMapping("/{id}/hospitalization-request")
+    public ResponseEntity<ApiResponse<AtencionResponseDto>> solicitarHospitalizacion(
+            @PathVariable Long id,
+            @Valid @RequestBody SolicitarHospitalizacionRequestDto request) {
+        AtencionResponseDto result = atencionService.solicitarHospitalizacion(id, request);
+        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), "Solicitud de hospitalización registrada", false, result));
+    }
 }
