@@ -1,5 +1,6 @@
 @port = 9001
 @token = Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIzIiwidGlwb190b2tlbiI6IkFDQ0VTUyIsInVzdWFyaW9faWQiOjMsImVtcHJlc2FfaWQiOjQsInNlZGVfaWQiOjEsInVzZXJuYW1lIjoibWFyaWEucGVyZXoiLCJyb2xlcyI6WyJNw6lkaWNvIl0sInBlcm1pc29zIjpbIkNhbWJpYXIgZXN0YWRvIGRlIGFkbWlzaW9uIiwiQ29uc3VsdGFyIGFkbWlzaW9uZXMiLCJSZWdpc3RyYXIgYWRtaXNpb24iXSwianRpIjoiM2QyNGI1NzUtYzllNy00YWM2LThiNTUtZjkxNDY4N2UzMmYxIiwiaWF0IjoxNzc3MjkzMTYyLCJleHAiOjE3NzczNzk1NjJ9.nWgFiuImOtFxaajX3KxMaC1jprRkl-gyj5OafQ7aSaZBtLqzeLQRjRcliJfLj3MCwSwrzD8AyEgJZ0AEpnoUkw
+
 @base = http://localhost:{{port}}/api/attentions
 
 ### HU-021 — Consultar atención abierta de una admisión (creada automáticamente)
@@ -117,7 +118,7 @@ Authorization: {{token}}
 ###
 
 ### HU-028 — Iniciar atención (EN_SALA_ESPERA → EN_ATENCION)
-PATCH {{base}}/1/start
+PATCH {{base}}/2/start
 Authorization: {{token}}
 
 ###
@@ -157,7 +158,7 @@ Content-Type: application/json
 Authorization: {{token}}
 
 {
-  "atencionId": 1,
+  "atencionId": 3,
   "catalogoDiagnosticoId": 183,
   "tipoDiagnostico": "PRINCIPAL",
   "esConfirmado": true,
@@ -205,7 +206,7 @@ Content-Type: application/json
 Authorization: {{token}}
 
 {
-  "atencionId": 1,
+  "atencionId": 3,
   "tipoOrden": "LABORATORIO",
   "observaciones": "Procesamiento urgente",
   "items": [
@@ -317,7 +318,7 @@ Authorization: {{token}}
 # ─────────────────────────────────────────────────────────────────────────────
 
 ### HU-033 — Solicitar hospitalización
-PATCH {{base}}/1/hospitalization-request
+PATCH {{base}}/2/hospitalization-request
 Content-Type: application/json
 Authorization: {{token}}
 

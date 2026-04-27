@@ -40,6 +40,9 @@ public class AtencionEntity {
     @Column(name = "especialidad_id")
     private Long especialidad_id;
 
+    @Column(name = "recurso_fisico_id")
+    private Long recurso_fisico_id;
+
     @Column(name = "fecha_inicio", nullable = false)
     private LocalDateTime fecha_inicio;
 

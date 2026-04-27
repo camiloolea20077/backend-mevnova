@@ -110,6 +110,20 @@ public class OrdenClinicaServiceImpl implements OrdenClinicaService {
     }
 
     @Override
+    public List<OrdenClinicaResponseDto> findActiveByAtencionId(Long atencionId) {
+        Long empresaId = TenantContext.getEmpresaId();
+        Long sedeId    = TenantContext.getSedeId();
+
+        atencionJpaRepository.findById(atencionId)
+            .filter(a -> a.getEmpresa_id().equals(empresaId)
+                      && a.getSede_id().equals(sedeId)
+                      && a.getDeleted_at() == null)
+            .orElseThrow(() -> new GlobalException(HttpStatus.NOT_FOUND, "Atención no encontrada"));
+
+        return ordenQueryRepository.findActiveByAtencionId(atencionId, empresaId, sedeId);
+    }
+
+    @Override
     @Transactional
     public Boolean delete(Long id) {
         Long empresaId = TenantContext.getEmpresaId();

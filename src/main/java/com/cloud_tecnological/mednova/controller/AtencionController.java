@@ -1,6 +1,7 @@
 package com.cloud_tecnological.mednova.controller;
 
 import com.cloud_tecnological.mednova.dto.atencion.*;
+import com.cloud_tecnological.mednova.dto.ordenclinica.OrdenClinicaResponseDto;
 import com.cloud_tecnological.mednova.services.AtencionService;
 import com.cloud_tecnological.mednova.util.ApiResponse;
 import jakarta.validation.Valid;
@@ -83,5 +84,46 @@ public class AtencionController {
             @Valid @RequestBody SolicitarHospitalizacionRequestDto request) {
         AtencionResponseDto result = atencionService.solicitarHospitalizacion(id, request);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), "Solicitud de hospitalización registrada", false, result));
+    }
+
+    // ── Hospitalización ─────────────────────────────────────────────────────
+
+    @PostMapping("/admissions/{admisionId}/assign-bed")
+    public ResponseEntity<ApiResponse<AtencionResponseDto>> assignBed(
+            @PathVariable Long admisionId,
+            @Valid @RequestBody AssignBedRequestDto request) {
+        AtencionResponseDto result = atencionService.assignBed(admisionId, request);
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body(new ApiResponse<>(HttpStatus.CREATED.value(), "Cama asignada e ingreso hospitalario registrado", false, result));
+    }
+
+    @PatchMapping("/{id}/admission-note")
+    public ResponseEntity<ApiResponse<AtencionResponseDto>> registrarNotaIngreso(
+            @PathVariable Long id,
+            @Valid @RequestBody NotaIngresoRequestDto request) {
+        AtencionResponseDto result = atencionService.registrarNotaIngreso(id, request);
+        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), "Nota de ingreso registrada", false, result));
+    }
+
+    @PatchMapping("/{id}/evolution")
+    public ResponseEntity<ApiResponse<AtencionResponseDto>> registrarEvolucion(
+            @PathVariable Long id,
+            @Valid @RequestBody EvolucionHospitalariaRequestDto request) {
+        AtencionResponseDto result = atencionService.registrarEvolucion(id, request);
+        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), "Evolución registrada", false, result));
+    }
+
+    @GetMapping("/{id}/active-orders")
+    public ResponseEntity<ApiResponse<List<OrdenClinicaResponseDto>>> getOrdenesActivas(@PathVariable Long id) {
+        List<OrdenClinicaResponseDto> result = atencionService.getOrdenesActivas(id);
+        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), "OK", false, result));
+    }
+
+    @PatchMapping("/{id}/discharge")
+    public ResponseEntity<ApiResponse<Boolean>> registrarEgreso(
+            @PathVariable Long id,
+            @Valid @RequestBody EgresoHospitalarioRequestDto request) {
+        Boolean result = atencionService.registrarEgreso(id, request);
+        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), "Egreso hospitalario registrado exitosamente", false, result));
     }
 }

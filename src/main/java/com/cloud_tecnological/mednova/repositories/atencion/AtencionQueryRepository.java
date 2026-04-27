@@ -244,6 +244,14 @@ public class AtencionQueryRepository {
         return ((Number) rows.get(0).get("id")).longValue();
     }
 
+    public String findEstadoAdmisionCodigoById(Long estadoId) {
+        String sql = "SELECT codigo FROM estado_admision WHERE id = :id LIMIT 1";
+        List<Map<String, Object>> rows = jdbc.query(sql,
+            new MapSqlParameterSource("id", estadoId), new ColumnMapRowMapper());
+        if (rows.isEmpty()) return null;
+        return (String) rows.get(0).get("codigo");
+    }
+
     public Optional<Long> findProfesionalByUsuario(Long usuarioId, Long empresaId) {
         String sql = """
             SELECT ps.id
@@ -274,6 +282,33 @@ public class AtencionQueryRepository {
         """;
         MapSqlParameterSource params = new MapSqlParameterSource()
             .addValue("atencion_id", atencionId)
+            .addValue("empresa_id", empresaId);
+        Long count = jdbc.queryForObject(sql, params, Long.class);
+        return count != null && count > 0;
+    }
+
+    public boolean isBedAvailable(Long recursoFisicoId, Long empresaId) {
+        String sql = """
+            SELECT COUNT(*) FROM atencion at
+            INNER JOIN estado_atencion eat ON eat.id = at.estado_atencion_id AND eat.codigo = 'EN_HOSPITALIZACION'
+            WHERE at.recurso_fisico_id = :recurso_fisico_id
+              AND at.empresa_id = :empresa_id
+              AND at.deleted_at IS NULL
+        """;
+        MapSqlParameterSource params = new MapSqlParameterSource()
+            .addValue("recurso_fisico_id", recursoFisicoId)
+            .addValue("empresa_id", empresaId);
+        Long count = jdbc.queryForObject(sql, params, Long.class);
+        return count == null || count == 0;
+    }
+
+    public boolean existsRecursoFisicoActivo(Long recursoFisicoId, Long sedeId, Long empresaId) {
+        String sql = "SELECT COUNT(*) FROM recurso_fisico"
+                + " WHERE id = :id AND sede_id = :sede_id AND empresa_id = :empresa_id"
+                + " AND activo = true AND deleted_at IS NULL";
+        MapSqlParameterSource params = new MapSqlParameterSource()
+            .addValue("id", recursoFisicoId)
+            .addValue("sede_id", sedeId)
             .addValue("empresa_id", empresaId);
         Long count = jdbc.queryForObject(sql, params, Long.class);
         return count != null && count > 0;

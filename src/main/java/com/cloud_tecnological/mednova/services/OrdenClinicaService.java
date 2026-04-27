@@ -8,5 +8,6 @@ import java.util.List;
 public interface OrdenClinicaService {
     OrdenClinicaResponseDto create(CreateOrdenClinicaRequestDto dto);
     List<OrdenClinicaResponseDto> findByAtencionId(Long atencionId);
+    List<OrdenClinicaResponseDto> findActiveByAtencionId(Long atencionId);
     Boolean delete(Long id);
 }

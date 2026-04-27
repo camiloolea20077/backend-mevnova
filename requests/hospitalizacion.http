@@ -1,0 +1,218 @@
+@port = 9001
+@token = Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIzIiwidGlwb190b2tlbiI6IkFDQ0VTUyIsInVzdWFyaW9faWQiOjMsImVtcHJlc2FfaWQiOjQsInNlZGVfaWQiOjEsInVzZXJuYW1lIjoibWFyaWEucGVyZXoiLCJyb2xlcyI6WyJNw6lkaWNvIl0sInBlcm1pc29zIjpbIkNhbWJpYXIgZXN0YWRvIGRlIGFkbWlzaW9uIiwiQ29uc3VsdGFyIGFkbWlzaW9uZXMiLCJSZWdpc3RyYXIgYWRtaXNpb24iXSwianRpIjoiM2QyNGI1NzUtYzllNy00YWM2LThiNTUtZjkxNDY4N2UzMmYxIiwiaWF0IjoxNzc3MjkzMTYyLCJleHAiOjE3NzczNzk1NjJ9.nWgFiuImOtFxaajX3KxMaC1jprRkl-gyj5OafQ7aSaZBtLqzeLQRjRcliJfLj3MCwSwrzD8AyEgJZ0AEpnoUkw
+
+@base_resources = http://localhost:{{port}}/api/physical-resources
+@base_attentions = http://localhost:{{port}}/api/attentions
+@atencion_hosp_id = 1
+@admision_hosp_id = 1
+
+# ===========================================================================
+# HU-FASE1-040 — Gestionar recursos físicos
+# ===========================================================================
+
+### Crear recurso físico (CAMA)
+POST {{base_resources}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "codigo": "CAMA-101",
+  "nombre": "Cama 101 - Piso 1",
+  "tipoRecurso": "CAMA",
+  "ubicacion": "Piso 1 - Ala Norte",
+  "descripcion": "Cama hospitalaria con barandas"
+}
+
+###
+
+### Crear recurso físico (UCI)
+POST {{base_resources}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "codigo": "UCI-01",
+  "nombre": "Box UCI 01",
+  "tipoRecurso": "UCI",
+  "ubicacion": "Unidad de Cuidados Intensivos",
+  "descripcion": "Box UCI con monitor multiparámetro"
+}
+
+###
+
+### Crear recurso físico (CONSULTORIO)
+POST {{base_resources}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "codigo": "CONS-01",
+  "nombre": "Consultorio 1",
+  "tipoRecurso": "CONSULTORIO",
+  "ubicacion": "Primer piso",
+  "descripcion": null
+}
+
+###
+
+### Listar recursos físicos (paginado)
+POST {{base_resources}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 10,
+  "search": "",
+  "order_by": "nombre",
+  "order": "ASC"
+}
+
+###
+
+### Buscar recursos tipo CAMA
+POST {{base_resources}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 10,
+  "search": "CAMA",
+  "order_by": "codigo",
+  "order": "ASC"
+}
+
+###
+
+### Consultar recurso por ID
+GET {{base_resources}}/1
+Authorization: {{token}}
+
+###
+
+### Actualizar recurso físico
+PUT {{base_resources}}/1
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "codigo": "CAMA-101",
+  "nombre": "Cama 101 - Piso 1 (Actualizada)",
+  "tipoRecurso": "CAMA",
+  "ubicacion": "Piso 1 - Ala Norte",
+  "descripcion": "Cama hospitalaria con barandas y oxígeno",
+  "activo": true
+}
+
+###
+
+### Eliminar recurso físico
+DELETE {{base_resources}}/2
+Authorization: {{token}}
+
+###
+
+# ===========================================================================
+# HU-FASE1-040A — Asignar cama / Ingreso hospitalario
+# Requisito previo: admision en estado PENDIENTE_HOSPITALIZACION
+#   (ya fue solicitada hospitalización desde urgencias:
+#    PATCH /api/attentions/{atencionUrgenciasId}/hospitalization-request)
+# ===========================================================================
+
+### HU-040A + HU-034 — Asignar cama y crear atención hospitalaria
+# admision_id debe estar en PENDIENTE_HOSPITALIZACION
+# recursoFisicoId = ID del recurso tipo CAMA/BOX/UCI
+POST {{base_attentions}}/admissions/6/assign-bed
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "recursoFisicoId": 2,
+  "profesionalId": null,
+  "observaciones": "Paciente recibido en piso. Estable."
+}
+
+###
+
+# ===========================================================================
+# HU-FASE1-035 — Nota de ingreso hospitalario
+# Requisito previo: atención en estado EN_HOSPITALIZACION
+# ===========================================================================
+
+### Registrar nota de ingreso
+PATCH {{base_attentions}}/3/admission-note
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "motivoIngreso": "Apendicitis aguda, requiere manejo hospitalario post-quirúrgico",
+  "enfermedadActual": "Paciente con 3 días de evolución de dolor en FID, fiebre 38.5°C, náuseas. Intervenido quirúrgicamente hoy.",
+  "antecedentes": "Sin antecedentes médicos relevantes. No alergias conocidas.",
+  "examenFisico": "PA 120/80, FC 88, FR 18, T 37.8°C. Abdomen blando con herida quirúrgica en FID, sin signos de sangrado.",
+  "analisis": "Post-operatorio de apendicectomía laparoscópica. Evolución favorable.",
+  "plan": "Analgesia IV, antibióticos 5 días, control de herida, dieta blanda",
+  "observaciones": "Paciente colaborador, refiere dolor leve 3/10"
+}
+
+###
+
+# ===========================================================================
+# HU-FASE1-036 — Evolución hospitalaria (registro diario SOAP)
+# ===========================================================================
+
+### Registrar evolución hospitalaria
+PATCH {{base_attentions}}/3/evolution
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "evolucion": "Paciente refiere mejoría del dolor, tolera vía oral, sin fiebre en las últimas 12 horas.",
+  "examenFisico": "PA 118/76, FC 82, FR 16, T 36.8°C. Herida quirúrgica sin signos de infección.",
+  "analisis": "Evolución post-quirúrgica satisfactoria. Sin complicaciones.",
+  "plan": "Continuar antibióticos. Inicio deambulación. Alta médica mañana si evolución favorable.",
+  "observaciones": null
+}
+
+###
+
+# ===========================================================================
+# HU-FASE1-037 — Órdenes activas del paciente hospitalizado
+# ===========================================================================
+
+### Consultar órdenes activas (estado PENDIENTE) de la atención
+GET {{base_attentions}}/3/active-orders
+Authorization: {{token}}
+
+###
+
+# ===========================================================================
+# HU-FASE1-038 — Egreso hospitalario
+# Requisito previo: atención en EN_HOSPITALIZACION con diagnóstico PRINCIPAL
+# ===========================================================================
+
+### Registrar egreso hospitalario
+PATCH {{base_attentions}}/3/discharge
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "tipoEgreso": "ALTA_MEDICA",
+  "conducta": "ALTA_MEDICA",
+  "observaciones": "Paciente dado de alta en buenas condiciones. Se entregan indicaciones escritas y fórmula médica."
+}
+
+###
+
+### Egreso por traslado
+PATCH {{base_attentions}}/{{atencion_hosp_id}}/discharge
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "tipoEgreso": "TRASLADO",
+  "conducta": "TRASLADO",
+  "observaciones": "Traslado a clínica de mayor nivel por requerimiento de UCI avanzada"
+}
+
+###

@@ -1,6 +1,7 @@
 package com.cloud_tecnological.mednova.services.impl;
 
 import com.cloud_tecnological.mednova.dto.atencion.*;
+import com.cloud_tecnological.mednova.dto.ordenclinica.OrdenClinicaResponseDto;
 import com.cloud_tecnological.mednova.entity.AdmisionEntity;
 import com.cloud_tecnological.mednova.entity.AtencionEntity;
 import com.cloud_tecnological.mednova.repositories.admision.AdmisionJpaRepository;
@@ -310,6 +311,201 @@ public class AtencionServiceImpl implements AtencionService {
 
         return atencionQueryRepository.findActiveById(id, empresaId, sedeId)
             .orElseThrow(() -> new GlobalException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al recuperar la atención"));
+    }
+
+    @Override
+    @Transactional
+    public AtencionResponseDto assignBed(Long admisionId, AssignBedRequestDto dto) {
+        Long empresaId = TenantContext.getEmpresaId();
+        Long sedeId    = TenantContext.getSedeId();
+        Long usuarioId = TenantContext.getUsuarioId();
+
+        AdmisionEntity admision = admisionJpaRepository.findById(admisionId)
+            .orElseThrow(() -> new GlobalException(HttpStatus.NOT_FOUND, "Admisión no encontrada"));
+
+        if (admision.getDeleted_at() != null
+                || !admision.getEmpresa_id().equals(empresaId)
+                || !admision.getSede_id().equals(sedeId)) {
+            throw new GlobalException(HttpStatus.NOT_FOUND, "Admisión no encontrada");
+        }
+
+        String estadoAdmision = atencionQueryRepository.findEstadoAdmisionCodigoById(admision.getEstado_admision_id());
+        if (!"PENDIENTE_HOSPITALIZACION".equals(estadoAdmision)) {
+            throw new GlobalException(HttpStatus.BAD_REQUEST,
+                "La admisión debe estar en estado PENDIENTE_HOSPITALIZACION para asignar cama");
+        }
+
+        if (!atencionQueryRepository.existsRecursoFisicoActivo(dto.getRecursoFisicoId(), sedeId, empresaId)) {
+            throw new GlobalException(HttpStatus.BAD_REQUEST, "Recurso físico no encontrado o inactivo");
+        }
+
+        if (!atencionQueryRepository.isBedAvailable(dto.getRecursoFisicoId(), empresaId)) {
+            throw new GlobalException(HttpStatus.CONFLICT, "El recurso físico ya está ocupado con un paciente activo");
+        }
+
+        Long estadoHospAtencionId = atencionQueryRepository.findEstadoAtencionIdByCodigo("EN_HOSPITALIZACION");
+        if (estadoHospAtencionId == null) {
+            throw new GlobalException(HttpStatus.INTERNAL_SERVER_ERROR, "Estado 'EN_HOSPITALIZACION' no configurado");
+        }
+
+        String numeroAtencion = atencionQueryRepository.generateNumeroAtencion(empresaId, sedeId);
+
+        AtencionEntity atencion = new AtencionEntity();
+        atencion.setEmpresa_id(empresaId);
+        atencion.setSede_id(sedeId);
+        atencion.setAdmision_id(admisionId);
+        atencion.setNumero_atencion(numeroAtencion);
+        atencion.setEstado_atencion_id(estadoHospAtencionId);
+        atencion.setRecurso_fisico_id(dto.getRecursoFisicoId());
+        if (dto.getObservaciones() != null) atencion.setObservaciones(dto.getObservaciones());
+
+        if (dto.getProfesionalId() != null) {
+            atencion.setProfesional_id(dto.getProfesionalId());
+        } else {
+            atencionQueryRepository.findProfesionalByUsuario(usuarioId, empresaId)
+                .ifPresent(atencion::setProfesional_id);
+        }
+
+        atencion.setUsuario_creacion(usuarioId);
+        AtencionEntity saved = atencionJpaRepository.save(atencion);
+
+        Long estadoHospAdmisionId = atencionQueryRepository.findEstadoAdmisionIdByCodigo("EN_HOSPITALIZACION");
+        if (estadoHospAdmisionId == null) {
+            throw new GlobalException(HttpStatus.INTERNAL_SERVER_ERROR,
+                "Estado admisión 'EN_HOSPITALIZACION' no configurado");
+        }
+        admision.setEstado_admision_id(estadoHospAdmisionId);
+        admision.setUsuario_modificacion(usuarioId);
+        admisionJpaRepository.save(admision);
+
+        return atencionQueryRepository.findActiveById(saved.getId(), empresaId, sedeId)
+            .orElseThrow(() -> new GlobalException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al recuperar la atención"));
+    }
+
+    @Override
+    @Transactional
+    public AtencionResponseDto registrarNotaIngreso(Long id, NotaIngresoRequestDto dto) {
+        Long empresaId = TenantContext.getEmpresaId();
+        Long sedeId    = TenantContext.getSedeId();
+        Long usuarioId = TenantContext.getUsuarioId();
+
+        AtencionEntity entity = atencionJpaRepository.findById(id)
+            .orElseThrow(() -> new GlobalException(HttpStatus.NOT_FOUND, "Atención no encontrada"));
+
+        validateTenantAndNotDeleted(entity, empresaId, sedeId);
+
+        String currentStatus = atencionQueryRepository.findEstadoAtencionCodigoById(entity.getEstado_atencion_id());
+        if (!"EN_HOSPITALIZACION".equals(currentStatus)) {
+            throw new GlobalException(HttpStatus.BAD_REQUEST,
+                "La nota de ingreso solo puede registrarse en atenciones en estado EN_HOSPITALIZACION");
+        }
+
+        entity.setMotivo_consulta(dto.getMotivoIngreso());
+        if (dto.getEnfermedadActual() != null) entity.setEnfermedad_actual(dto.getEnfermedadActual());
+        if (dto.getAntecedentes()    != null) entity.setAntecedentes(dto.getAntecedentes());
+        if (dto.getExamenFisico()    != null) entity.setExamen_fisico(dto.getExamenFisico());
+        if (dto.getAnalisis()        != null) entity.setAnalisis(dto.getAnalisis());
+        if (dto.getPlan()            != null) entity.setPlan(dto.getPlan());
+        if (dto.getObservaciones()   != null) entity.setObservaciones(dto.getObservaciones());
+        entity.setUsuario_modificacion(usuarioId);
+        atencionJpaRepository.save(entity);
+
+        return atencionQueryRepository.findActiveById(id, empresaId, sedeId)
+            .orElseThrow(() -> new GlobalException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al recuperar la atención"));
+    }
+
+    @Override
+    @Transactional
+    public AtencionResponseDto registrarEvolucion(Long id, EvolucionHospitalariaRequestDto dto) {
+        Long empresaId = TenantContext.getEmpresaId();
+        Long sedeId    = TenantContext.getSedeId();
+        Long usuarioId = TenantContext.getUsuarioId();
+
+        AtencionEntity entity = atencionJpaRepository.findById(id)
+            .orElseThrow(() -> new GlobalException(HttpStatus.NOT_FOUND, "Atención no encontrada"));
+
+        validateTenantAndNotDeleted(entity, empresaId, sedeId);
+
+        String currentStatus = atencionQueryRepository.findEstadoAtencionCodigoById(entity.getEstado_atencion_id());
+        if (!"EN_HOSPITALIZACION".equals(currentStatus)) {
+            throw new GlobalException(HttpStatus.BAD_REQUEST,
+                "La evolución solo puede registrarse en atenciones en estado EN_HOSPITALIZACION");
+        }
+
+        entity.setEnfermedad_actual(dto.getEvolucion());
+        if (dto.getExamenFisico()  != null) entity.setExamen_fisico(dto.getExamenFisico());
+        if (dto.getAnalisis()      != null) entity.setAnalisis(dto.getAnalisis());
+        if (dto.getPlan()          != null) entity.setPlan(dto.getPlan());
+        if (dto.getObservaciones() != null) entity.setObservaciones(dto.getObservaciones());
+        entity.setUsuario_modificacion(usuarioId);
+        atencionJpaRepository.save(entity);
+
+        return atencionQueryRepository.findActiveById(id, empresaId, sedeId)
+            .orElseThrow(() -> new GlobalException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al recuperar la atención"));
+    }
+
+    @Override
+    public List<OrdenClinicaResponseDto> getOrdenesActivas(Long id) {
+        Long empresaId = TenantContext.getEmpresaId();
+        Long sedeId    = TenantContext.getSedeId();
+
+        AtencionEntity entity = atencionJpaRepository.findById(id)
+            .orElseThrow(() -> new GlobalException(HttpStatus.NOT_FOUND, "Atención no encontrada"));
+
+        validateTenantAndNotDeleted(entity, empresaId, sedeId);
+
+        return ordenClinicaService.findActiveByAtencionId(id);
+    }
+
+    @Override
+    @Transactional
+    public Boolean registrarEgreso(Long id, EgresoHospitalarioRequestDto dto) {
+        Long empresaId = TenantContext.getEmpresaId();
+        Long sedeId    = TenantContext.getSedeId();
+        Long usuarioId = TenantContext.getUsuarioId();
+
+        AtencionEntity entity = atencionJpaRepository.findById(id)
+            .orElseThrow(() -> new GlobalException(HttpStatus.NOT_FOUND, "Atención no encontrada"));
+
+        validateTenantAndNotDeleted(entity, empresaId, sedeId);
+
+        String currentStatus = atencionQueryRepository.findEstadoAtencionCodigoById(entity.getEstado_atencion_id());
+        if (!"EN_HOSPITALIZACION".equals(currentStatus)) {
+            throw new GlobalException(HttpStatus.BAD_REQUEST,
+                "El egreso solo puede registrarse en atenciones en estado EN_HOSPITALIZACION");
+        }
+
+        if (!atencionQueryRepository.existsPrincipalDiagnosis(id, empresaId)) {
+            throw new GlobalException(HttpStatus.BAD_REQUEST,
+                "La atención debe tener al menos un diagnóstico PRINCIPAL antes del egreso hospitalario");
+        }
+
+        Long estadoEgresadoId = atencionQueryRepository.findEstadoAtencionIdByCodigo("EGRESADO");
+        if (estadoEgresadoId == null) {
+            throw new GlobalException(HttpStatus.INTERNAL_SERVER_ERROR, "Estado 'EGRESADO' no configurado");
+        }
+
+        if (dto.getConducta()      != null) entity.setConducta(dto.getConducta());
+        if (dto.getObservaciones() != null) entity.setObservaciones(dto.getObservaciones());
+        entity.setFecha_cierre(LocalDateTime.now());
+        entity.setEstado_atencion_id(estadoEgresadoId);
+        entity.setUsuario_modificacion(usuarioId);
+        atencionJpaRepository.save(entity);
+
+        AdmisionEntity admision = admisionJpaRepository.findById(entity.getAdmision_id())
+            .orElseThrow(() -> new GlobalException(HttpStatus.INTERNAL_SERVER_ERROR, "Admisión no encontrada"));
+
+        Long estadoEgresadoAdmisionId = atencionQueryRepository.findEstadoAdmisionIdByCodigo("EGRESADO");
+        if (estadoEgresadoAdmisionId == null) {
+            throw new GlobalException(HttpStatus.INTERNAL_SERVER_ERROR, "Estado admisión 'EGRESADO' no configurado");
+        }
+        admision.setEstado_admision_id(estadoEgresadoAdmisionId);
+        admision.setFecha_egreso(LocalDateTime.now());
+        admision.setTipo_egreso(dto.getTipoEgreso());
+        admision.setUsuario_modificacion(usuarioId);
+        admisionJpaRepository.save(admision);
+
+        return true;
     }
 
     private void validateTenantAndNotDeleted(AtencionEntity entity, Long empresaId, Long sedeId) {

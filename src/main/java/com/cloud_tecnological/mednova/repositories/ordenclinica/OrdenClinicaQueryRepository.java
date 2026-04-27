@@ -79,6 +79,54 @@ public class OrdenClinicaQueryRepository {
         return Optional.of(((Number) rows.get(0).get("id")).longValue());
     }
 
+    public List<OrdenClinicaResponseDto> findActiveByAtencionId(Long atencionId, Long empresaId, Long sedeId) {
+        String sql = """
+            SELECT
+                oc.id,
+                oc.atencion_id,
+                oc.empresa_id,
+                oc.sede_id,
+                oc.numero_orden,
+                oc.tipo_orden,
+                toc.nombre               AS tipo_orden_nombre,
+                oc.estado_orden,
+                eo.nombre                AS estado_orden_nombre,
+                oc.profesional_id,
+                t.nombre_completo        AS profesional_nombre,
+                oc.fecha_orden,
+                oc.observaciones,
+                oc.activo,
+                oc.created_at,
+                doc.id                   AS detalle_id,
+                doc.servicio_salud_id    AS detalle_servicio_id,
+                ss.nombre                AS detalle_servicio_nombre,
+                ss.codigo_interno        AS detalle_codigo_interno,
+                doc.cantidad             AS detalle_cantidad,
+                doc.indicaciones         AS detalle_indicaciones,
+                doc.urgencia             AS detalle_urgencia
+            FROM orden_clinica oc
+            INNER JOIN tipo_orden_clinica toc ON toc.codigo = oc.tipo_orden
+            INNER JOIN estado_orden eo        ON eo.codigo  = oc.estado_orden
+            LEFT  JOIN profesional_salud ps   ON ps.id  = oc.profesional_id
+            LEFT  JOIN tercero t              ON t.id   = ps.tercero_id AND t.deleted_at IS NULL
+            LEFT  JOIN detalle_orden_clinica doc ON doc.orden_clinica_id = oc.id AND doc.activo = true
+            LEFT  JOIN servicio_salud ss      ON ss.id  = doc.servicio_salud_id
+            WHERE oc.atencion_id  = :atencion_id
+              AND oc.empresa_id   = :empresa_id
+              AND oc.sede_id      = :sede_id
+              AND oc.estado_orden = 'PENDIENTE'
+              AND oc.deleted_at  IS NULL
+            ORDER BY oc.id, doc.id
+        """;
+        MapSqlParameterSource params = new MapSqlParameterSource()
+            .addValue("atencion_id", atencionId)
+            .addValue("empresa_id", empresaId)
+            .addValue("sede_id", sedeId);
+
+        List<Map<String, Object>> rows = jdbc.query(sql, params, new ColumnMapRowMapper());
+        return assembleOrdenesFromRows(rows);
+    }
+
     public List<OrdenClinicaResponseDto> findByAtencionId(Long atencionId, Long empresaId, Long sedeId) {
         String sql = """
             SELECT
