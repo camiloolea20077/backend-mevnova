@@ -15,8 +15,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.io.IOException;
 import java.util.Date;
-import springfox.documentation.spring.web.json.Json;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -179,8 +177,6 @@ public class MapperRepository {
                             field.set(instance, null);
                         }else if (field.getType().equals(String.class) ) {
                             field.set(instance, null);
-                        }else if (field.getType().equals(Json.class) ) {
-                            field.set(instance, null);
                         } else {
                             field.set(instance, "");
                         }
@@ -208,8 +204,6 @@ public class MapperRepository {
                             field.set(instance, convertToLocalDate(value));
                         } else if (field.getType().equals(LocalTime.class)) {
                             field.set(instance, convertToLocalTime(value));
-                        } else if (field.getType().equals(Json.class)) {
-                            field.set(instance, value.toString() );
                         } else {
                             field.set(instance, null );
                         }

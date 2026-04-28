@@ -4,7 +4,8 @@
       "Bash(./mvnw compile *)",
       "Bash(git stash *)",
       "Bash(mvn compile *)",
-      "Bash(dir D:\\\\Proyectos Camilo\\\\MedNova Sistema de gestion hospitalaria\\\\Frontend\\\\frontend-mednova *)"
+      "Bash(dir D:\\\\Proyectos Camilo\\\\MedNova Sistema de gestion hospitalaria\\\\Frontend\\\\frontend-mednova *)",
+      "Bash(del *)"
     ]
   }
 }

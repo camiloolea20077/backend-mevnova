@@ -1,0 +1,286 @@
+@port = 9001
+@token = Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIzIiwidGlwb190b2tlbiI6IkFDQ0VTUyIsInVzdWFyaW9faWQiOjMsImVtcHJlc2FfaWQiOjQsInNlZGVfaWQiOjEsInVzZXJuYW1lIjoibWFyaWEucGVyZXoiLCJyb2xlcyI6WyJNw6lkaWNvIl0sInBlcm1pc29zIjpbIkNhbWJpYXIgZXN0YWRvIGRlIGFkbWlzaW9uIiwiQ29uc3VsdGFyIGFkbWlzaW9uZXMiLCJSZWdpc3RyYXIgYWRtaXNpb24iXSwianRpIjoiN2Q2ZjczZmYtOGIwMi00YzFlLWFlNjktNGQxYmM4YTc1ZDI2IiwiaWF0IjoxNzc3NDEwODU0LCJleHAiOjE3Nzc0OTcyNTR9.l06hd9oN1iU__8jZplzZMz7gmjsOt2oZ6tJNAobYrcBg-kyj3Ma65QsVwG9YNdWR4cUMSi5jSh2Q-fIALIOqhg
+
+@base         = http://localhost:{{port}}/api/invoices
+@baseCobro    = http://localhost:{{port}}/api/billing/cobro-rules
+@baseLiq      = http://localhost:{{port}}/api/billing/liquidaciones
+
+# ─────────────────────────────────────────────────────────────────────────────
+# HU-FASE1-055A — Parametrización de copago y cuota moderadora
+# ─────────────────────────────────────────────────────────────────────────────
+
+### Crear regla de copago (régimen Contributivo, 2026)
+# Ajustar regimen_id al id real de "CONTRIBUTIVO" en tu BD
+POST {{baseCobro}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "vigencia": 2026,
+  "regimenId": 15,
+  "tipoCobro": "COPAGO",
+  "rangoIngresoDesde": null,
+  "rangoIngresoHasta": null,
+  "categoriaSisbenId": null,
+  "porcentajeCobro": 10.00,
+  "valorFijo": null,
+  "topeEvento": 500000.00,
+  "topeAnual": 2000000.00,
+  "unidadValor": "PESOS",
+  "observations": "Copago contributivo general 2026"
+}
+
+###
+
+### Crear regla de cuota moderadora (régimen Contributivo, 2026)
+POST {{baseCobro}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "vigencia": 2026,
+  "regimenId": 15,
+  "tipoCobro": "CUOTA_MODERADORA",
+  "rangoIngresoDesde": null,
+  "rangoIngresoHasta": null,
+  "categoriaSisbenId": null,
+  "porcentajeCobro": null,
+  "valorFijo": 15900.00,
+  "topeEvento": null,
+  "topeAnual": null,
+  "unidadValor": "PESOS",
+  "observations": "Cuota moderadora consulta 2026"
+}
+
+###
+
+### Consultar regla por ID
+GET {{baseCobro}}/3
+Authorization: {{token}}
+
+###
+
+### Actualizar regla
+PUT {{baseCobro}}/1
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "topeEvento": 600000.00,
+  "topeAnual": 2500000.00,
+  "observations": "Actualizado topes 2026"
+}
+
+###
+
+### Listar reglas paginado
+POST {{baseCobro}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 10,
+  "search": null,
+  "order_by": "r.vigencia",
+  "order": "DESC"
+}
+
+###
+
+### Eliminar regla (soft-delete)
+DELETE {{baseCobro}}/1
+Authorization: {{token}}
+
+###
+
+### Crear exención de servicio (ej: consulta urgencias exenta de cuota moderadora)
+# Ajustar servicio_salud_id al id real en tu BD
+POST {{baseCobro}}/exemptions
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "healthServiceId": 3,
+  "tipoCobro": "CUOTA_MODERADORA",
+  "motivoExencion": "Urgencias exentas de cuota moderadora por ley",
+  "vigenciaDesde": "2026-01-01",
+  "vigenciaHasta": null
+}
+
+###
+
+### Consultar exención por ID
+GET {{baseCobro}}/exemptions/2
+Authorization: {{token}}
+
+###
+
+### Listar exenciones
+POST {{baseCobro}}/exemptions/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 10,
+  "search": null,
+  "order_by": "se.vigencia_desde",
+  "order": "DESC"
+}
+
+###
+
+### Eliminar exención
+DELETE {{baseCobro}}/exemptions/1
+Authorization: {{token}}
+
+###
+
+# ─────────────────────────────────────────────────────────────────────────────
+# HU-FASE1-054 — Generación de factura desde atención
+# ─────────────────────────────────────────────────────────────────────────────
+
+### Crear factura desde admisión (precarga servicios de órdenes clínicas)
+# Ajustar admissionId al id real de una admisión EGRESADA en tu BD
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "admissionId": 6,
+  "prefix": "FV",
+  "observations": "Factura generada desde consulta externa"
+}
+
+###
+
+### Consultar factura por ID
+GET {{base}}/2
+Authorization: {{token}}
+
+###
+
+### Listar facturas (paginado + búsqueda)
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 10,
+  "search": null,
+  "order_by": "f.fecha_factura",
+  "order": "DESC"
+}
+
+###
+
+### Buscar factura por número
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 10,
+  "search": "00000001",
+  "order_by": "f.fecha_factura",
+  "order": "DESC"
+}
+
+###
+
+# ─────────────────────────────────────────────────────────────────────────────
+# HU-FASE1-055 — Gestión del detalle de factura
+# ─────────────────────────────────────────────────────────────────────────────
+
+### Listar ítems de una factura
+POST {{base}}/1/items/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 50,
+  "search": null,
+  "order_by": "df.id",
+  "order": "ASC"
+}
+
+###
+
+### Agregar ítem manualmente a factura en borrador
+# Ajustar healthServiceId al id real de un servicio en tu BD
+POST {{base}}/2/items
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "healthServiceId": 3,
+  "attentionId": 1,
+  "quantity": 1.00,
+  "unitValue": 45000.00,
+  "ivaPercentage": 0.00,
+  "discountValue": 0.00,
+  "diagnosisId": null,
+  "observations": "Consulta médica general"
+}
+
+###
+
+### Actualizar ítem de factura
+PUT {{base}}/1/items/1
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "quantity": 2.00,
+  "unitValue": 45000.00,
+  "ivaPercentage": 0.00,
+  "discountValue": 5000.00,
+  "diagnosisId": null,
+  "observations": "Dos sesiones de consulta"
+}
+
+###
+
+### Eliminar ítem de factura (soft)
+DELETE {{base}}/1/items/1
+Authorization: {{token}}
+
+###
+
+### Aprobar factura (BORRADOR → APROBADA)
+PATCH {{base}}/2/approve
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "observations": "Factura verificada y aprobada"
+}
+
+###
+
+### Anular factura (solo BORRADOR)
+PATCH {{base}}/1/cancel
+Authorization: {{token}}
+
+###
+
+# ─────────────────────────────────────────────────────────────────────────────
+# HU-FASE1-056 — Consulta de liquidaciones de copago / cuota moderadora
+# ─────────────────────────────────────────────────────────────────────────────
+
+### Ver liquidaciones de una factura
+GET {{baseLiq}}/factura/2
+Authorization: {{token}}
+
+###
+
+### Ver historial de liquidaciones de un paciente
+# Ajustar paciente_id al id real en tu BD
+GET {{baseLiq}}/paciente/5
+Authorization: {{token}}
+
+###
