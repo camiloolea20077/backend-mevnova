@@ -1,5 +1,7 @@
 package com.cloud_tecnological.mednova.services.impl;
 
+import com.cloud_tecnological.mednova.dto.cartera.CarteraAgingDto;
+import com.cloud_tecnological.mednova.dto.cartera.CarteraFiltroRequestDto;
 import com.cloud_tecnological.mednova.dto.cuentaporcobrar.CuentaPorCobrarResponseDto;
 import com.cloud_tecnological.mednova.dto.cuentaporcobrar.CuentaPorCobrarTableDto;
 import com.cloud_tecnological.mednova.dto.cuentaporcobrar.RegistrarAbonoRequestDto;
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 public class CuentaPorCobrarServiceImpl implements CuentaPorCobrarService {
@@ -147,5 +150,11 @@ public class CuentaPorCobrarServiceImpl implements CuentaPorCobrarService {
 
         return cxcQuery.findActiveById(id, empresaId)
             .orElseThrow(() -> new GlobalException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al recuperar CxC"));
+    }
+
+    @Override
+    public List<CarteraAgingDto> consultarCartera(CarteraFiltroRequestDto filtro) {
+        Long empresaId = TenantContext.getEmpresaId();
+        return cxcQuery.consultarCartera(filtro, empresaId);
     }
 }

@@ -406,3 +406,189 @@ Authorization: {{token}}
 }
 
 ###
+
+# ─────────────────────────────────────────────────────────────────────────────
+# HU-FASE1-057 — Generación de RIPS
+# ─────────────────────────────────────────────────────────────────────────────
+
+@baseRips = http://localhost:{{port}}/api/billing/rips
+
+### Generar RIPS desde una factura APROBADA
+# Ajustar facturaId al id real de una factura en estado APROBADA
+POST {{baseRips}}/generate/3
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "observations": "RIPS generado para radicación EPS Sura"
+}
+
+###
+
+### Consultar RIPS por ID
+GET {{baseRips}}/6
+Authorization: {{token}}
+
+###
+
+### Consultar RIPS de una factura
+GET {{baseRips}}/factura/3
+Authorization: {{token}}
+
+###
+
+### Consultar líneas de un RIPS (registros AC pipe-delimited)
+GET {{baseRips}}/1/lines
+Authorization: {{token}}
+
+###
+
+# ─────────────────────────────────────────────────────────────────────────────
+# HU-FASE1-058 — Radicación ante pagador
+# ─────────────────────────────────────────────────────────────────────────────
+
+@baseRad = http://localhost:{{port}}/api/billing/radicaciones
+
+### Crear radicación (radicar factura ante el pagador)
+# Ajustar facturaId al id real de una factura APROBADA en tu BD
+POST {{baseRad}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "facturaId": 3,
+  "numeroRadicado": "RAD-2026-001",
+  "fechaRadicacion": "2026-04-28",
+  "fechaLimiteRespuesta": "2026-05-28",
+  "soporteUrl": null,
+  "observaciones": "Radicación inicial ante EPS Sura"
+}
+
+###
+
+### Consultar radicación por ID
+GET {{baseRad}}/1
+Authorization: {{token}}
+
+###
+
+### Listar radicaciones (paginado)
+POST {{baseRad}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 10,
+  "search": null,
+  "order_by": "r.fecha_radicacion",
+  "order": "DESC"
+}
+
+###
+
+### Registrar respuesta del pagador (APROBADA)
+PATCH {{baseRad}}/1/respuesta
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "estadoCodigo": "APROBADA",
+  "fechaRespuesta": "2026-05-10",
+  "observaciones": "Aprobada sin glosas"
+}
+
+###
+
+### Registrar respuesta del pagador (RECHAZADA)
+PATCH {{baseRad}}/1/respuesta
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "estadoCodigo": "RECHAZADA",
+  "fechaRespuesta": "2026-05-10",
+  "observaciones": "Rechazada por falta de soportes clínicos"
+}
+
+###
+
+### Registrar respuesta del pagador (DEVUELTA con glosa)
+PATCH {{baseRad}}/1/respuesta
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "estadoCodigo": "DEVUELTA",
+  "fechaRespuesta": "2026-05-10",
+  "observaciones": "Devuelta: diagnóstico no concuerda con procedimiento"
+}
+
+###
+
+### Anular radicación (soft-delete)
+DELETE {{baseRad}}/1
+Authorization: {{token}}
+
+###
+
+# ─────────────────────────────────────────────────────────────────────────────
+# HU-FASE1-060 — Consulta de cartera (aging)
+# ─────────────────────────────────────────────────────────────────────────────
+
+### Consultar toda la cartera (sin filtros)
+POST {{baseCxC}}/cartera
+Content-Type: application/json
+Authorization: {{token}}
+
+{}
+
+###
+
+### Cartera filtrada: solo cuentas con saldo pendiente
+POST {{baseCxC}}/cartera
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "soloConSaldo": true
+}
+
+###
+
+### Cartera filtrada: por pagador específico con saldo
+POST {{baseCxC}}/cartera
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "pagadorId": 1,
+  "soloConSaldo": true
+}
+
+###
+
+### Cartera filtrada: cuentas en estado PARCIAL
+POST {{baseCxC}}/cartera
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "estadoCode": "PARCIAL",
+  "soloConSaldo": true
+}
+
+###
+
+### Cartera filtrada: cuentas PENDIENTES de un pagador
+POST {{baseCxC}}/cartera
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "pagadorId": 1,
+  "estadoCode": "PENDIENTE",
+  "soloConSaldo": false
+}
+
+###

@@ -1,5 +1,7 @@
 package com.cloud_tecnological.mednova.controller;
 
+import com.cloud_tecnological.mednova.dto.cartera.CarteraAgingDto;
+import com.cloud_tecnological.mednova.dto.cartera.CarteraFiltroRequestDto;
 import com.cloud_tecnological.mednova.dto.cuentaporcobrar.CuentaPorCobrarResponseDto;
 import com.cloud_tecnological.mednova.dto.cuentaporcobrar.CuentaPorCobrarTableDto;
 import com.cloud_tecnological.mednova.dto.cuentaporcobrar.RegistrarAbonoRequestDto;
@@ -11,6 +13,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/billing/cuentas-por-cobrar")
@@ -53,5 +57,13 @@ public class CuentaPorCobrarController {
             @Valid @RequestBody RegistrarAbonoRequestDto dto) {
         CuentaPorCobrarResponseDto result = cxcService.registrarAbono(id, dto);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), "Abono registrado exitosamente", false, result));
+    }
+
+    // HU-060: Consultar cartera con aging por pagador
+    @PostMapping("/cartera")
+    public ResponseEntity<ApiResponse<List<CarteraAgingDto>>> consultarCartera(
+            @RequestBody(required = false) CarteraFiltroRequestDto filtro) {
+        List<CarteraAgingDto> result = cxcService.consultarCartera(filtro);
+        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), "OK", false, result));
     }
 }

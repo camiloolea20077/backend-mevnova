@@ -1,5 +1,7 @@
 package com.cloud_tecnological.mednova.repositories.cuentaporcobrar;
 
+import com.cloud_tecnological.mednova.dto.cartera.CarteraAgingDto;
+import com.cloud_tecnological.mednova.dto.cartera.CarteraFiltroRequestDto;
 import com.cloud_tecnological.mednova.dto.cuentaporcobrar.CuentaPorCobrarResponseDto;
 import com.cloud_tecnological.mednova.dto.cuentaporcobrar.CuentaPorCobrarTableDto;
 import com.cloud_tecnological.mednova.util.MapperRepository;
@@ -162,5 +164,55 @@ public class CuentaPorCobrarQueryRepository {
         long count = rows.isEmpty() ? 0 : ((Number) rows.get(0).get("total_rows")).longValue();
 
         return new PageImpl<>(result, PageRequest.of(pageNumber, pageSize), count);
+    }
+
+    // HU-060: Resumen de cartera con aging por pagador
+    public List<CarteraAgingDto> consultarCartera(CarteraFiltroRequestDto filtro, Long empresaId) {
+        StringBuilder sql = new StringBuilder("""
+            SELECT
+                pag.id                          AS pagador_id,
+                t.nombre_completo               AS payer_name,
+                ec.codigo                       AS estado_code,
+                ec.nombre                       AS estado_name,
+                COUNT(c.id)                     AS total_cuentas,
+                COALESCE(SUM(c.saldo), 0)       AS saldo_total,
+                COALESCE(SUM(CASE WHEN c.fecha_vencimiento IS NULL
+                    OR CURRENT_DATE <= c.fecha_vencimiento THEN c.saldo ELSE 0 END), 0) AS saldo_vigente,
+                COALESCE(SUM(CASE WHEN CURRENT_DATE - c.fecha_vencimiento BETWEEN 1 AND 30
+                    THEN c.saldo ELSE 0 END), 0)  AS saldo_0_30,
+                COALESCE(SUM(CASE WHEN CURRENT_DATE - c.fecha_vencimiento BETWEEN 31 AND 60
+                    THEN c.saldo ELSE 0 END), 0)  AS saldo_31_60,
+                COALESCE(SUM(CASE WHEN CURRENT_DATE - c.fecha_vencimiento BETWEEN 61 AND 90
+                    THEN c.saldo ELSE 0 END), 0)  AS saldo_61_90,
+                COALESCE(SUM(CASE WHEN CURRENT_DATE - c.fecha_vencimiento > 90
+                    THEN c.saldo ELSE 0 END), 0)  AS saldo_mayor_90
+            FROM cuenta_por_cobrar c
+            INNER JOIN pagador pag        ON pag.id = c.pagador_id
+            INNER JOIN tercero t          ON t.id = pag.tercero_id
+            INNER JOIN estado_cartera ec  ON ec.id = c.estado_cartera_id
+            WHERE c.empresa_id = :empresa_id
+              AND c.deleted_at IS NULL
+              AND c.activo = true
+        """);
+
+        MapSqlParameterSource params = new MapSqlParameterSource()
+            .addValue("empresa_id", empresaId);
+
+        if (filtro != null && filtro.getPagadorId() != null) {
+            sql.append(" AND c.pagador_id = :pagador_id");
+            params.addValue("pagador_id", filtro.getPagadorId());
+        }
+        if (filtro != null && filtro.getEstadoCode() != null && !filtro.getEstadoCode().isBlank()) {
+            sql.append(" AND ec.codigo = :estado_code");
+            params.addValue("estado_code", filtro.getEstadoCode());
+        }
+        if (filtro != null && Boolean.TRUE.equals(filtro.getSoloConSaldo())) {
+            sql.append(" AND c.saldo > 0");
+        }
+
+        sql.append(" GROUP BY pag.id, t.nombre_completo, ec.codigo, ec.nombre ORDER BY saldo_total DESC");
+
+        List<Map<String, Object>> rows = jdbc.query(sql.toString(), params, new ColumnMapRowMapper());
+        return MapperRepository.mapListToDtoListNull(rows, CarteraAgingDto.class);
     }
 }
