@@ -33,6 +33,9 @@ public class CuentaPorCobrarEntity {
     @Column(name = "estado_cartera_id", nullable = false)
     private Long estado_cartera_id;
 
+    @Column(name = "fecha_inicio", nullable = false)
+    private LocalDate fecha_inicio;
+
     @Column(name = "fecha_causacion")
     private LocalDate fecha_causacion;
 
@@ -42,7 +45,7 @@ public class CuentaPorCobrarEntity {
     @Column(name = "valor_inicial", precision = 18, scale = 2)
     private BigDecimal valor_inicial;
 
-    @Column(name = "saldo_actual", precision = 18, scale = 2)
+    @Column(name = "saldo", precision = 18, scale = 2)
     private BigDecimal saldo_actual;
 
     @Column(name = "dias_mora")
@@ -74,6 +77,9 @@ public class CuentaPorCobrarEntity {
         created_at = LocalDateTime.now();
         if (activo == null) activo = true;
         if (dias_mora == null) dias_mora = 0;
+        if (fecha_inicio == null) fecha_inicio = java.time.LocalDate.now();
+        if (saldo_actual == null) saldo_actual = java.math.BigDecimal.ZERO;
+        if (valor_inicial == null) valor_inicial = java.math.BigDecimal.ZERO;
     }
 
     @PreUpdate

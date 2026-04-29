@@ -273,7 +273,7 @@ Authorization: {{token}}
 # ─────────────────────────────────────────────────────────────────────────────
 
 ### Ver liquidaciones de una factura
-GET {{baseLiq}}/factura/2
+GET {{baseLiq}}/factura/3
 Authorization: {{token}}
 
 ###
@@ -368,13 +368,13 @@ Authorization: {{token}}
 @baseCxC = http://localhost:{{port}}/api/billing/cuentas-por-cobrar
 
 ### Consultar CxC por ID
-GET {{baseCxC}}/1
+GET {{baseCxC}}/7
 Authorization: {{token}}
 
 ###
 
 ### Consultar CxC de una factura
-GET {{baseCxC}}/factura/1
+GET {{baseCxC}}/factura/3
 Authorization: {{token}}
 
 ###
@@ -395,12 +395,12 @@ Authorization: {{token}}
 ###
 
 ### Registrar abono manual sobre una CxC
-POST {{baseCxC}}/1/abono
+POST {{baseCxC}}/7/abono
 Content-Type: application/json
 Authorization: {{token}}
 
 {
-  "valor": 50000.00,
+  "valor": 20000.00,
   "referencia": "TRANSFERENCIA-2026-0001",
   "observaciones": "Abono parcial pagador EPS"
 }

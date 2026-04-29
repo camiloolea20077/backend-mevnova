@@ -66,6 +66,7 @@ public class CuentaPorCobrarServiceImpl implements CuentaPorCobrarService {
         cxc.setFactura_id(factura.getId());
         cxc.setPagador_id(factura.getPagador_id());
         cxc.setEstado_cartera_id(estadoId);
+        cxc.setFecha_inicio(hoy);
         cxc.setFecha_causacion(hoy);
         cxc.setFecha_vencimiento(factura.getFecha_vencimiento() != null
             ? factura.getFecha_vencimiento() : hoy.plusDays(30));
