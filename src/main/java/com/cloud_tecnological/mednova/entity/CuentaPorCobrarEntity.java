@@ -66,6 +66,9 @@ public class CuentaPorCobrarEntity {
     @Column(name = "usuario_modificacion")
     private Long usuario_modificacion;
 
+    @Column(name = "deleted_at")
+    private LocalDateTime deleted_at;
+
     @PrePersist
     protected void onCreate() {
         created_at = LocalDateTime.now();

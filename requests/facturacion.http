@@ -196,7 +196,7 @@ Authorization: {{token}}
 # ─────────────────────────────────────────────────────────────────────────────
 
 ### Listar ítems de una factura
-POST {{base}}/1/items/list
+POST {{base}}/3/items/list
 Content-Type: application/json
 Authorization: {{token}}
 
@@ -246,13 +246,13 @@ Authorization: {{token}}
 ###
 
 ### Eliminar ítem de factura (soft)
-DELETE {{base}}/1/items/1
+DELETE {{base}}/2/items/2
 Authorization: {{token}}
 
 ###
 
 ### Aprobar factura (BORRADOR → APROBADA)
-PATCH {{base}}/2/approve
+PATCH {{base}}/3/approve
 Content-Type: application/json
 Authorization: {{token}}
 
@@ -282,5 +282,127 @@ Authorization: {{token}}
 # Ajustar paciente_id al id real en tu BD
 GET {{baseLiq}}/paciente/5
 Authorization: {{token}}
+
+###
+
+# ─────────────────────────────────────────────────────────────────────────────
+# HU-FASE1-056A — Recaudo de copago y cuota moderadora
+# ─────────────────────────────────────────────────────────────────────────────
+
+### Registrar recaudo de una liquidación (marcar como PAGADO)
+# Ajustar id al id real de una liquidacion en estado PENDIENTE
+PATCH {{baseLiq}}/1/recaudo
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "valorCobrado": 15900.00,
+  "referencia": "RECIBO-2026-001",
+  "observaciones": "Pago en caja sede principal"
+}
+
+###
+
+# ─────────────────────────────────────────────────────────────────────────────
+# HU-FASE1-056B — Consulta de liquidación de cobros al paciente
+# ─────────────────────────────────────────────────────────────────────────────
+
+### Búsqueda filtrada de liquidaciones (todos los filtros son opcionales)
+POST {{baseLiq}}/search
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 10,
+  "pacienteId": null,
+  "facturaId": null,
+  "tipoCobro": null,
+  "estadoRecaudo": null,
+  "fechaDesde": null,
+  "fechaHasta": null
+}
+
+###
+
+### Búsqueda filtrada: copagos pendientes de un paciente
+POST {{baseLiq}}/search
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 10,
+  "pacienteId": 5,
+  "facturaId": null,
+  "tipoCobro": "COPAGO",
+  "estadoRecaudo": "PENDIENTE",
+  "fechaDesde": "2026-01-01",
+  "fechaHasta": "2026-12-31"
+}
+
+###
+
+### Búsqueda filtrada: todas las liquidaciones de una factura
+POST {{baseLiq}}/search
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 50,
+  "pacienteId": null,
+  "facturaId": 1,
+  "tipoCobro": null,
+  "estadoRecaudo": null,
+  "fechaDesde": null,
+  "fechaHasta": null
+}
+
+###
+
+# ─────────────────────────────────────────────────────────────────────────────
+# HU-FASE1-059 — Cuenta por cobrar (creada automáticamente al aprobar factura)
+# ─────────────────────────────────────────────────────────────────────────────
+
+@baseCxC = http://localhost:{{port}}/api/billing/cuentas-por-cobrar
+
+### Consultar CxC por ID
+GET {{baseCxC}}/1
+Authorization: {{token}}
+
+###
+
+### Consultar CxC de una factura
+GET {{baseCxC}}/factura/1
+Authorization: {{token}}
+
+###
+
+### Listar cuentas por cobrar (paginado)
+POST {{baseCxC}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 10,
+  "search": null,
+  "order_by": "c.fecha_causacion",
+  "order": "DESC"
+}
+
+###
+
+### Registrar abono manual sobre una CxC
+POST {{baseCxC}}/1/abono
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "valor": 50000.00,
+  "referencia": "TRANSFERENCIA-2026-0001",
+  "observaciones": "Abono parcial pagador EPS"
+}
 
 ###

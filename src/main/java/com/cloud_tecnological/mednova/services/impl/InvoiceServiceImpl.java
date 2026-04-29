@@ -9,6 +9,7 @@ import com.cloud_tecnological.mednova.repositories.detallefactura.DetalleFactura
 import com.cloud_tecnological.mednova.repositories.factura.FacturaJpaRepository;
 import com.cloud_tecnological.mednova.repositories.factura.FacturaQueryRepository;
 import com.cloud_tecnological.mednova.repositories.liquidacion.LiquidacionCobroPacienteQueryRepository;
+import com.cloud_tecnological.mednova.services.CuentaPorCobrarService;
 import com.cloud_tecnological.mednova.services.InvoiceService;
 import com.cloud_tecnological.mednova.util.GlobalException;
 import com.cloud_tecnological.mednova.util.PageableDto;
@@ -35,6 +36,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     private final DetalleFacturaQueryRepository detalleQuery;
     private final LiquidacionCobroPacienteQueryRepository liquidacionQuery;
     private final CopagoCuotaModeradoraEngine copagoCuota;
+    private final CuentaPorCobrarService cuentaPorCobrarService;
 
     public InvoiceServiceImpl(
             FacturaJpaRepository facturaJpa,
@@ -42,13 +44,15 @@ public class InvoiceServiceImpl implements InvoiceService {
             DetalleFacturaJpaRepository detalleJpa,
             DetalleFacturaQueryRepository detalleQuery,
             LiquidacionCobroPacienteQueryRepository liquidacionQuery,
-            CopagoCuotaModeradoraEngine copagoCuota) {
-        this.facturaJpa     = facturaJpa;
-        this.facturaQuery   = facturaQuery;
-        this.detalleJpa     = detalleJpa;
-        this.detalleQuery   = detalleQuery;
-        this.liquidacionQuery = liquidacionQuery;
-        this.copagoCuota    = copagoCuota;
+            CopagoCuotaModeradoraEngine copagoCuota,
+            CuentaPorCobrarService cuentaPorCobrarService) {
+        this.facturaJpa             = facturaJpa;
+        this.facturaQuery           = facturaQuery;
+        this.detalleJpa             = detalleJpa;
+        this.detalleQuery           = detalleQuery;
+        this.liquidacionQuery       = liquidacionQuery;
+        this.copagoCuota            = copagoCuota;
+        this.cuentaPorCobrarService = cuentaPorCobrarService;
     }
 
     @Override
@@ -174,6 +178,10 @@ public class InvoiceServiceImpl implements InvoiceService {
         }
         entity.setUsuario_modificacion(usuarioId);
         facturaJpa.save(entity);
+
+        // HU-059: Crear cuenta por cobrar automáticamente
+        cuentaPorCobrarService.crearDesdeFactura(entity, usuarioId);
+
         return true;
     }
 
