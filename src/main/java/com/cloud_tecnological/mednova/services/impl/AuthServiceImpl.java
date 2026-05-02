@@ -8,6 +8,7 @@ import com.cloud_tecnological.mednova.entity.HistorialPasswordEntity;
 import com.cloud_tecnological.mednova.repositories.auth.*;
 import com.cloud_tecnological.mednova.repositories.auth.HistorialPasswordJpaRepository;
 import com.cloud_tecnological.mednova.repositories.auth.HistorialPasswordQueryRepository;
+import com.cloud_tecnological.mednova.dto.empresa.EmpresaResponseDto;
 import com.cloud_tecnological.mednova.repositories.empresa.EmpresaQueryRepository;
 import com.cloud_tecnological.mednova.repositories.sede.SedeQueryRepository;
 import com.cloud_tecnological.mednova.repositories.usuario.UsuarioJpaRepository;
@@ -736,7 +737,7 @@ public class AuthServiceImpl implements AuthService {
             throw new GlobalException(HttpStatus.FORBIDDEN, "Solo super-admin puede cambiar de tenant");
         }
 
-        EmpresaEntity empresa = empresaQueryRepository.findActiveById(request.getEmpresaId())
+        EmpresaResponseDto empresa = empresaQueryRepository.findActiveById(request.getEmpresaId())
                 .orElseThrow(() -> new GlobalException(HttpStatus.NOT_FOUND, "Empresa no encontrada"));
 
         Long sedeId = null;
@@ -765,9 +766,6 @@ public class AuthServiceImpl implements AuthService {
         String accessJti  = accessClaims.getId();
         String refreshJti = refreshClaims.getId();
 
-        long accessExp  = jwtTokenProvider.getAccessExpiration();
-        long refreshExp = jwtTokenProvider.getRefreshExpiration();
-
         guardarSesion(accessJti,  null,      TIPO_ACCESS,  empresa.getId(), usuarioId, sedeId, ip, accessExp);
         guardarSesion(refreshJti, accessJti, TIPO_REFRESH, empresa.getId(), usuarioId, sedeId, ip, refreshExp);
 
@@ -777,9 +775,8 @@ public class AuthServiceImpl implements AuthService {
                 .id(usuarioId)
                 .username(TenantContext.get().getUsername())
                 .roles(List.of("SUPER_ADMIN"))
-                .empresaId(empresa.getId())
-                .empresaNombre(empresa.getRazon_social())
-                .sedeId(sedeId)
+                .companyId(empresa.getId())
+                .branchId(sedeId)
                 .build();
 
         return AuthTokensDto.builder()

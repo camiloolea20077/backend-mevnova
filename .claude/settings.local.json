@@ -5,7 +5,12 @@
       "Bash(git stash *)",
       "Bash(mvn compile *)",
       "Bash(dir D:\\\\Proyectos Camilo\\\\MedNova Sistema de gestion hospitalaria\\\\Frontend\\\\frontend-mednova *)",
-      "Bash(del *)"
+      "Bash(del *)",
+      "Bash(New-Item -ItemType Directory -Force -Path \"D:\\\\Proyectos Camilo\\\\MedNova Sistema de gestion hospitalaria\\\\Backend\\\\backend-mevnova\\\\src\\\\main\\\\resources\\\\db\\\\fase2\")",
+      "Bash(Out-Null)",
+      "Bash(Write-Host \"OK\")",
+      "PowerShell(New-Item *)",
+      "mcp__ide__getDiagnostics"
     ]
   }
 }
