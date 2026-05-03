@@ -1,0 +1,121 @@
+@port = 9001
+@token = Bearer PEGAR_TOKEN_AQUI
+
+@base = http://localhost:{{port}}/api/billing/glosas
+@glosaId = 1
+@concertacionId = 1
+
+### HU-FASE2-065 — Crear concertación y cerrar glosa (flujo exitoso)
+POST {{base}}/concertations
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "glossId": {{glosaId}},
+  "concertationDate": "2026-05-02",
+  "institutionAcceptedValue": 80000.00,
+  "payerAcceptedValue": 70000.00,
+  "actaUrl": "https://soportes.empresa.local/concertaciones/acta-001.pdf",
+  "observations": "Acta firmada en mesa de conciliación del 02-05-2026."
+}
+
+###
+
+### HU-FASE2-065 — Consultar concertación por ID
+GET {{base}}/concertations/{{concertacionId}}
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-065 — Consultar concertación por glosa
+GET {{base}}/{{glosaId}}/concertation
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-065 — Validación negativa: campos obligatorios vacíos
+POST {{base}}/concertations
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "glossId": null,
+  "concertationDate": null,
+  "institutionAcceptedValue": null,
+  "payerAcceptedValue": null,
+  "actaUrl": ""
+}
+
+###
+
+### HU-FASE2-065 — Validación negativa: glosa inexistente (404)
+POST {{base}}/concertations
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "glossId": 999999,
+  "concertationDate": "2026-05-02",
+  "institutionAcceptedValue": 50000.00,
+  "payerAcceptedValue": 50000.00,
+  "actaUrl": "https://soportes.empresa.local/concertaciones/acta-x.pdf"
+}
+
+###
+
+### HU-FASE2-065 — Validación negativa: glosa no RESPONDIDA/RATIFICADA (400)
+POST {{base}}/concertations
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "glossId": {{glosaId}},
+  "concertationDate": "2026-05-02",
+  "institutionAcceptedValue": 50000.00,
+  "payerAcceptedValue": 50000.00,
+  "actaUrl": "https://soportes.empresa.local/concertaciones/acta-x.pdf"
+}
+
+###
+
+### HU-FASE2-065 — Validación negativa: suma no cuadra con valor inicial (400)
+POST {{base}}/concertations
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "glossId": {{glosaId}},
+  "concertationDate": "2026-05-02",
+  "institutionAcceptedValue": 99999999.00,
+  "payerAcceptedValue": 0.00,
+  "actaUrl": "https://soportes.empresa.local/concertaciones/acta-x.pdf"
+}
+
+###
+
+### HU-FASE2-065 — Validación negativa: glosa ya conciliada (409)
+POST {{base}}/concertations
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "glossId": {{glosaId}},
+  "concertationDate": "2026-05-03",
+  "institutionAcceptedValue": 70000.00,
+  "payerAcceptedValue": 80000.00,
+  "actaUrl": "https://soportes.empresa.local/concertaciones/acta-002.pdf"
+}
+
+###
+
+### HU-FASE2-065 — Cross-tenant: concertación de otra empresa (404)
+GET {{base}}/concertations/999999
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-065 — Cross-tenant: glosa de otra empresa al consultar concertación (404)
+GET {{base}}/999999/concertation
+Authorization: {{token}}
+
+###

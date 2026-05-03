@@ -1,17 +1,17 @@
 @port = 9001
-@token = Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIzIiwidGlwb190b2tlbiI6IkFDQ0VTUyIsInVzdWFyaW9faWQiOjMsImVtcHJlc2FfaWQiOjQsInNlZGVfaWQiOjEsInVzZXJuYW1lIjoibWFyaWEucGVyZXoiLCJyb2xlcyI6WyJNw6lkaWNvIl0sInBlcm1pc29zIjpbIkNhbWJpYXIgZXN0YWRvIGRlIGFkbWlzaW9uIiwiQ29uc3VsdGFyIGFkbWlzaW9uZXMiLCJSZWdpc3RyYXIgYWRtaXNpb24iXSwianRpIjoiM2QyNGI1NzUtYzllNy00YWM2LThiNTUtZjkxNDY4N2UzMmYxIiwiaWF0IjoxNzc3MjkzMTYyLCJleHAiOjE3NzczNzk1NjJ9.nWgFiuImOtFxaajX3KxMaC1jprRkl-gyj5OafQ7aSaZBtLqzeLQRjRcliJfLj3MCwSwrzD8AyEgJZ0AEpnoUkw
+@token = Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIzIiwidGlwb190b2tlbiI6IkFDQ0VTUyIsInVzdWFyaW9faWQiOjMsImVtcHJlc2FfaWQiOjQsInNlZGVfaWQiOjEsInVzZXJuYW1lIjoibWFyaWEucGVyZXoiLCJyb2xlcyI6WyJNw6lkaWNvIl0sInBlcm1pc29zIjpbIkNhbWJpYXIgZXN0YWRvIGRlIGFkbWlzaW9uIiwiQ29uc3VsdGFyIGFkbWlzaW9uZXMiLCJSZWdpc3RyYXIgYWRtaXNpb24iXSwianRpIjoiNWQ1ODQ0ZGYtNjgwMy00OTVjLTk5MDYtM2U1NmQ4OWRjMzMzIiwiaWF0IjoxNzc3NzY2NTc1LCJleHAiOjE3Nzc4NTI5NzV9.T7u5V6ICFOPzQV3y4X78FyBY5hkwg_rJ9IN9XJweeKat7Tpp-i-O-ehnkuGNEwp3dM00rM2ZQ_EufPmdhP74kw
 
 @base = http://localhost:{{port}}/api/attentions
 
 ### HU-021 — Consultar atención abierta de una admisión (creada automáticamente)
-GET {{base}}/by-admission/3
+GET {{base}}/by-admission/8
 Authorization: {{token}}
 
 ###
 
 ### HU-025 — Registrar triage (nivel III — Urgente)
 # {id} = ID de la atención (atencion.id) obtenida del GET anterior
-PATCH {{base}}/1/triage
+PATCH {{base}}/4/triage
 Content-Type: application/json
 Authorization: {{token}}
 
@@ -112,19 +112,19 @@ Authorization: {{token}}
 
 ### HU-028 — Cargar consola completa del paciente
 # Retorna atencion + signos vitales + notas clínicas + diagnósticos + órdenes + prescripciones
-GET {{base}}/1/console
+GET {{base}}/4/console
 Authorization: {{token}}
 
 ###
 
 ### HU-028 — Iniciar atención (EN_SALA_ESPERA → EN_ATENCION)
-PATCH {{base}}/2/start
+PATCH {{base}}/4/start
 Authorization: {{token}}
 
 ###
 
 ### HU-028 — Actualizar notas clínicas (parcial, solo los campos enviados)
-PATCH {{base}}/1/notes
+PATCH {{base}}/4/notes
 Content-Type: application/json
 Authorization: {{token}}
 
@@ -158,7 +158,7 @@ Content-Type: application/json
 Authorization: {{token}}
 
 {
-  "atencionId": 3,
+  "atencionId": 4,
   "catalogoDiagnosticoId": 183,
   "tipoDiagnostico": "PRINCIPAL",
   "esConfirmado": true,
@@ -173,7 +173,7 @@ Content-Type: application/json
 Authorization: {{token}}
 
 {
-  "atencionId": 1,
+  "atencionId": 4,
   "catalogoDiagnosticoId": 179,
   "tipoDiagnostico": "RELACIONADO",
   "esConfirmado": false,
@@ -206,7 +206,7 @@ Content-Type: application/json
 Authorization: {{token}}
 
 {
-  "atencionId": 3,
+  "atencionId": 4,
   "tipoOrden": "LABORATORIO",
   "observaciones": "Procesamiento urgente",
   "items": [
@@ -228,7 +228,7 @@ Authorization: {{token}}
 ###
 
 ### HU-030 — Listar órdenes de la atención
-GET {{orden_base}}/by-attention/1
+GET {{orden_base}}/by-attention/4
 Authorization: {{token}}
 
 ###
@@ -251,7 +251,7 @@ Content-Type: application/json
 Authorization: {{token}}
 
 {
-  "atencionId": 1,
+  "atencionId": 4,
   "observaciones": "Administrar antes de cirugía",
   "items": [
     {
@@ -270,7 +270,7 @@ Authorization: {{token}}
 ###
 
 ### HU-031 — Listar prescripciones de la atención
-GET {{rx_base}}/by-attention/1
+GET {{rx_base}}/by-attention/4
 Authorization: {{token}}
 
 ###
@@ -286,7 +286,7 @@ Authorization: {{token}}
 # ─────────────────────────────────────────────────────────────────────────────
 
 ### HU-032 — Cerrar atención con conducta ALTA
-PATCH {{base}}/1/close
+PATCH {{base}}/4/close
 Content-Type: application/json
 Authorization: {{token}}
 

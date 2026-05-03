@@ -1,0 +1,47 @@
+@port = 9001
+@token = Bearer PEGAR_TOKEN_AQUI
+
+@base = http://localhost:{{port}}/api/billing/glosas
+@glosaId = 1
+@facturaId = 1
+@cxcBase = http://localhost:{{port}}/api/billing/cuentas-por-cobrar
+
+### HU-FASE2-066 — Disparar el impacto: crear concertación (cierra glosa y genera movimiento en CxC)
+POST {{base}}/concertations
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "glossId": {{glosaId}},
+  "concertationDate": "2026-05-02",
+  "institutionAcceptedValue": 80000.00,
+  "payerAcceptedValue": 70000.00,
+  "actaUrl": "https://soportes.empresa.local/concertaciones/acta-001.pdf",
+  "observations": "Cierre de glosa que dispara movimiento GLOSA_ACEPTADA en CxC."
+}
+
+###
+
+### HU-FASE2-066 — Consultar impacto en cartera por glosa
+GET {{base}}/{{glosaId}}/cartera-impact
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-066 — Verificar que el saldo de la CxC se actualizó
+GET {{cxcBase}}/factura/{{facturaId}}
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-066 — Validación negativa: glosa sin concertación (404)
+GET {{base}}/999999/cartera-impact
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-066 — Cross-tenant: glosa de otra empresa (404)
+GET {{base}}/0/cartera-impact
+Authorization: {{token}}
+
+###

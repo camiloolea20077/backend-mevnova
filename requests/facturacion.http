@@ -1,5 +1,5 @@
 @port = 9001
-@token = Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIzIiwidGlwb190b2tlbiI6IkFDQ0VTUyIsInVzdWFyaW9faWQiOjMsImVtcHJlc2FfaWQiOjQsInNlZGVfaWQiOjEsInVzZXJuYW1lIjoibWFyaWEucGVyZXoiLCJyb2xlcyI6WyJNw6lkaWNvIl0sInBlcm1pc29zIjpbIkNhbWJpYXIgZXN0YWRvIGRlIGFkbWlzaW9uIiwiQ29uc3VsdGFyIGFkbWlzaW9uZXMiLCJSZWdpc3RyYXIgYWRtaXNpb24iXSwianRpIjoiN2Q2ZjczZmYtOGIwMi00YzFlLWFlNjktNGQxYmM4YTc1ZDI2IiwiaWF0IjoxNzc3NDEwODU0LCJleHAiOjE3Nzc0OTcyNTR9.l06hd9oN1iU__8jZplzZMz7gmjsOt2oZ6tJNAobYrcBg-kyj3Ma65QsVwG9YNdWR4cUMSi5jSh2Q-fIALIOqhg
+@token = Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIzIiwidGlwb190b2tlbiI6IkFDQ0VTUyIsInVzdWFyaW9faWQiOjMsImVtcHJlc2FfaWQiOjQsInNlZGVfaWQiOjEsInVzZXJuYW1lIjoibWFyaWEucGVyZXoiLCJyb2xlcyI6WyJNw6lkaWNvIl0sInBlcm1pc29zIjpbIkNhbWJpYXIgZXN0YWRvIGRlIGFkbWlzaW9uIiwiQ29uc3VsdGFyIGFkbWlzaW9uZXMiLCJSZWdpc3RyYXIgYWRtaXNpb24iXSwianRpIjoiNWQ1ODQ0ZGYtNjgwMy00OTVjLTk5MDYtM2U1NmQ4OWRjMzMzIiwiaWF0IjoxNzc3NzY2NTc1LCJleHAiOjE3Nzc4NTI5NzV9.T7u5V6ICFOPzQV3y4X78FyBY5hkwg_rJ9IN9XJweeKat7Tpp-i-O-ehnkuGNEwp3dM00rM2ZQ_EufPmdhP74kw
 
 @base         = http://localhost:{{port}}/api/invoices
 @baseCobro    = http://localhost:{{port}}/api/billing/cobro-rules
@@ -148,7 +148,7 @@ Content-Type: application/json
 Authorization: {{token}}
 
 {
-  "admissionId": 6,
+  "admissionId": 8,
   "prefix": "FV",
   "observations": "Factura generada desde consulta externa"
 }
@@ -156,7 +156,7 @@ Authorization: {{token}}
 ###
 
 ### Consultar factura por ID
-GET {{base}}/2
+GET {{base}}/4
 Authorization: {{token}}
 
 ###
@@ -252,7 +252,7 @@ Authorization: {{token}}
 ###
 
 ### Aprobar factura (BORRADOR → APROBADA)
-PATCH {{base}}/3/approve
+PATCH {{base}}/4/approve
 Content-Type: application/json
 Authorization: {{token}}
 
@@ -273,14 +273,14 @@ Authorization: {{token}}
 # ─────────────────────────────────────────────────────────────────────────────
 
 ### Ver liquidaciones de una factura
-GET {{baseLiq}}/factura/3
+GET {{baseLiq}}/factura/4
 Authorization: {{token}}
 
 ###
 
 ### Ver historial de liquidaciones de un paciente
 # Ajustar paciente_id al id real en tu BD
-GET {{baseLiq}}/paciente/5
+GET {{baseLiq}}/paciente/6
 Authorization: {{token}}
 
 ###
@@ -415,7 +415,7 @@ Authorization: {{token}}
 
 ### Generar RIPS desde una factura APROBADA
 # Ajustar facturaId al id real de una factura en estado APROBADA
-POST {{baseRips}}/generate/3
+POST {{baseRips}}/generate/4
 Content-Type: application/json
 Authorization: {{token}}
 
@@ -426,13 +426,13 @@ Authorization: {{token}}
 ###
 
 ### Consultar RIPS por ID
-GET {{baseRips}}/6
+GET {{baseRips}}/7
 Authorization: {{token}}
 
 ###
 
 ### Consultar RIPS de una factura
-GET {{baseRips}}/factura/3
+GET {{baseRips}}/factura/4
 Authorization: {{token}}
 
 ###
@@ -456,8 +456,8 @@ Content-Type: application/json
 Authorization: {{token}}
 
 {
-  "facturaId": 3,
-  "numeroRadicado": "RAD-2026-001",
+  "facturaId": 4,
+  "numeroRadicado": "RAD-2026-002",
   "fechaRadicacion": "2026-04-28",
   "fechaLimiteRespuesta": "2026-05-28",
   "soporteUrl": null,
@@ -467,7 +467,7 @@ Authorization: {{token}}
 ###
 
 ### Consultar radicación por ID
-GET {{baseRad}}/1
+GET {{baseRad}}/5
 Authorization: {{token}}
 
 ###
@@ -514,7 +514,7 @@ Authorization: {{token}}
 ###
 
 ### Registrar respuesta del pagador (DEVUELTA con glosa)
-PATCH {{baseRad}}/1/respuesta
+PATCH {{baseRad}}/5/respuesta
 Content-Type: application/json
 Authorization: {{token}}
 

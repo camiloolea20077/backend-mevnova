@@ -1,114 +1,148 @@
 @port = 9001
 @token = Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwidGlwb190b2tlbiI6IkFDQ0VTUyIsInVzdWFyaW9faWQiOjIsImVtcHJlc2FfaWQiOjQsInNlZGVfaWQiOjEsInVzZXJuYW1lIjoiYWRtaW5faG9zcGl0YWwiLCJyb2xlcyI6WyJTdXBlci1BZG1pbmlzdHJhZG9yIGRlbCBTaXN0ZW1hIl0sInBlcm1pc29zIjpbIkFjdHVhbGl6YXIgdGVyY2VybyIsIkFudWxhciBmYWN0dXJhIiwiQW51bGFyIG9yZGVuIGNsaW5pY2EiLCJBbnVsYXIgcHJlc2NyaXBjaW9uIiwiQXByb2JhciBmYWN0dXJhIiwiQXNpZ25hciBjaXRhIiwiQXNpZ25hciByb2xlcyBhIHVzdWFyaW9zIiwiQXRlbmRlciB1cmdlbmNpYXMiLCJDYW1iaWFyIGVzdGFkbyBkZSBhZG1pc2lvbiIsIkNhbmNlbGFyIGNpdGEiLCJDZXJyYXIgYWRtaXNpb24iLCJDZXJyYXIgYXRlbmNpb24gZGUgdXJnZW5jaWFzIiwiQ29uc3VsdGFyIGFkbWlzaW9uZXMiLCJDb25zdWx0YXIgY2FydGVyYSIsIkNvbnN1bHRhciB0ZXJjZXJvIiwiQ3JlYXIgcGFjaWVudGUiLCJDcmVhciB0ZXJjZXJvIiwiRGFyIGVncmVzbyBob3NwaXRhbGFyaW8iLCJFZGl0YXIgZmFjdHVyYSIsIkdlbmVyYXIgZGlzcG9uaWJpbGlkYWQiLCJHZW5lcmFyIGZhY3R1cmEiLCJHZW5lcmFyIG9yZGVuIGNsaW5pY2EiLCJHZW5lcmFyIHByZXNjcmlwY2lvbiIsIkdlbmVyYXIgUklQUyIsIkdlc3Rpb25hciBhZ2VuZGFzIiwiR2VzdGlvbmFyIGNhbGVuZGFyaW9zIiwiR2VzdGlvbmFyIGNhdGFsb2dvIGRlIHNlcnZpY2lvcyIsIkdlc3Rpb25hciBjZW50cm9zIGRlIGNvc3RvIiwiR2VzdGlvbmFyIGNvYmVydHVyYSBkZSBjb250cmF0byIsIkdlc3Rpb25hciBjb250YWN0b3MiLCJHZXN0aW9uYXIgY29udHJhdG9zIiwiR2VzdGlvbmFyIGNvbnRyYXRvcyBkZWwgcGFjaWVudGUiLCJHZXN0aW9uYXIgZGlyZWNjaW9uZXMiLCJHZXN0aW9uYXIgZW1wcmVzYXMiLCJHZXN0aW9uYXIgZ2xvc2FzIiwiR2VzdGlvbmFyIGxpc3RhIGRlIGVzcGVyYSIsIkdlc3Rpb25hciBwYWdhZG9yZXMiLCJHZXN0aW9uYXIgcGVybWlzb3MiLCJHZXN0aW9uYXIgcHJvZmVzaW9uYWxlcyBkZSBzYWx1ZCIsIkdlc3Rpb25hciByZWN1cnNvcyBmaXNpY29zIiwiR2VzdGlvbmFyIHJlbGFjaW9uZXMiLCJHZXN0aW9uYXIgcm9sZXMiLCJHZXN0aW9uYXIgc2VkZXMiLCJHZXN0aW9uYXIgc2VndXJpZGFkIHNvY2lhbCIsIkdlc3Rpb25hciBzZXJ2aWNpb3MgaGFiaWxpdGFkb3MiLCJHZXN0aW9uYXIgU0lTQkVOIiwiR2VzdGlvbmFyIHRhcmlmYXJpb3MiLCJHZXN0aW9uYXIgdGFyaWZhcyBkZSBjb250cmF0byIsIkdlc3Rpb25hciB1c3VhcmlvcyIsIkluYWN0aXZhciB0ZXJjZXJvIiwiUmFkaWNhciBmYWN0dXJhIiwiUmVhbGl6YXIgdHJpYWdlIiwiUmVjaWJpciBlbiBob3NwaXRhbGl6YWNpb24iLCJSZWNsYXNpZmljYXIgdHJpYWdlIiwiUmVnaXN0cmFyIGFkbWlzaW9uIiwiUmVnaXN0cmFyIGRpYWdub3N0aWNvIiwiUmVnaXN0cmFyIGV2b2x1Y2lvbiIsIlJlZ2lzdHJhciBub3RhIGRlIGluZ3Jlc28iLCJSZWdpc3RyYXIgcGFnbyIsIlJlcHJvZ3JhbWFyIGNpdGEiLCJSZXNldGVhciBjb250cmFzZW5hIiwiU29saWNpdGFyIGhvc3BpdGFsaXphY2lvbiIsIlRyYXNsYWRhciBhZ2VuZGEiLCJWZXIgYXVkaXRvcmlhIGRlIGVtcHJlc2EiLCJWZXIgYXVkaXRvcmlhIGdsb2JhbCIsIlZlciBjb2xhIGRlIHVyZ2VuY2lhcyIsIlZlciBvcmRlbmVzIGFjdGl2YXMiXSwianRpIjoiODY3NjBjOTgtMmNiZC00ZGM0LWEyOTQtMWY4MGQxZDIwNjYyIiwiaWF0IjoxNzc3NzY1NzgzLCJleHAiOjE3Nzc4NTIxODN9.wbNcJmazn5sNz-bYTeVgm8W8YO9MBFvSwdPt-5cXaTj4YvAdbXtShaoofido_g6m3bSo2Caiaz3Iu9u3y5b9dA
-@base = http://localhost:{{port}}/api/admissions
 
-### HU-020 — Registrar admisión de urgencias
-# tipo_admision_id=1 (URGENCIAS), origen_atencion_id=1 (Enfermedad General),
-# pagador_id=1, paciente_id=1
-POST {{base}}
+@base = http://localhost:{{port}}/api/billing/glosas
+@glosaId = 1
+@detalleGlosaId = 1
+@detalleFacturaId = 4
+@motivoGlosaId = 1
+
+### HU-FASE2-063 — Agregar ítem glosado (flujo exitoso)
+POST {{base}}/items
 Content-Type: application/json
 Authorization: {{token}}
 
 {
-  "patientId": 6,
-  "admissionTypeId": 13,
-  "careOriginId": 17,
-  "payerId": 3,
-  "contractId": null,
-  "companionId": null,
-  "entryReason": "Paciente con dolor abdominal agudo en FID de 6 horas de evolución",
-  "observations": null
+  "glossId": {{glosaId}},
+  "invoiceItemId": {{detalleFacturaId}},
+  "glossReasonId": {{motivoGlosaId}},
+  "glossedValue": 50000.00,
+  "payerObservation": "Soporte clínico incompleto."
 }
 
 ###
 
-### HU-020 — Registrar admisión de consulta externa
-POST {{base}}
+### HU-FASE2-063 — Consultar ítem glosado por ID
+GET {{base}}/items/{{detalleGlosaId}}
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-063 — Listar ítems de una glosa
+GET {{base}}/{{glosaId}}/items
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-063 — Cuadre (suma vs valor total de la glosa)
+GET {{base}}/{{glosaId}}/items/reconciliation
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-063 — Actualizar ítem (motivo + valor)
+PUT {{base}}/items/{{detalleGlosaId}}
 Content-Type: application/json
 Authorization: {{token}}
 
 {
-  "patientId": 5,
-  "admissionTypeId": 14,
-  "careOriginId": 24,
-  "payerId": 3,
-  "contractId": 2,
-  "companionId": null,
-  "entryReason": "Control mensual hipertensión arterial",
-  "observations": null
+  "glossReasonId": {{motivoGlosaId}},
+  "glossedValue": 75000.00,
+  "payerObservation": "Ajuste tras mesa técnica."
 }
 
 ###
 
-### HU-022 — Consultar admisión por ID
-GET {{base}}/3
+### HU-FASE2-063 — Eliminación lógica
+DELETE {{base}}/items/{{detalleGlosaId}}
 Authorization: {{token}}
 
 ###
 
-### HU-022 — Listar admisiones activas de la sede (paginado)
-POST {{base}}/list
+### HU-FASE2-063 — Validación negativa: campos obligatorios vacíos
+POST {{base}}/items
 Content-Type: application/json
 Authorization: {{token}}
 
 {
-  "page": 0,
-  "rows": 10,
-  "search": "",
-  "order_by": "a.fecha_admision",
-  "order": "DESC"
+  "glossId": null,
+  "invoiceItemId": null,
+  "glossReasonId": null,
+  "glossedValue": 0
 }
 
 ###
 
-### HU-022 — Buscar admisión por nombre o número de documento
-POST {{base}}/list
+### HU-FASE2-063 — Validación negativa: glosa inexistente
+POST {{base}}/items
 Content-Type: application/json
 Authorization: {{token}}
 
 {
-  "page": 0,
-  "rows": 10,
-  "search": "García",
-  "order_by": "a.fecha_admision",
-  "order": "DESC"
+  "glossId": 999999,
+  "invoiceItemId": {{detalleFacturaId}},
+  "glossReasonId": {{motivoGlosaId}},
+  "glossedValue": 1000.00
 }
 
 ###
 
-### HU-023 — Cambiar estado de admisión a EN_ATENCION
-PATCH {{base}}/3/status
+### HU-FASE2-063 — Validación negativa: detalle de factura no pertenece a la glosa
+POST {{base}}/items
 Content-Type: application/json
 Authorization: {{token}}
 
 {
-  "newStatusCode": "EN_ATENCION",
-  "observations": "Paciente pasa a atención médica"
+  "glossId": {{glosaId}},
+  "invoiceItemId": 999999,
+  "glossReasonId": {{motivoGlosaId}},
+  "glossedValue": 1000.00
 }
 
 ###
 
-### HU-023 — Cancelar admisión
-PATCH {{base}}/3/status
+### HU-FASE2-063 — Validación negativa: motivo inexistente o inactivo
+POST {{base}}/items
 Content-Type: application/json
 Authorization: {{token}}
 
 {
-  "newStatusCode": "CANCELADO",
-  "observations": "Paciente se retira voluntariamente"
+  "glossId": {{glosaId}},
+  "invoiceItemId": {{detalleFacturaId}},
+  "glossReasonId": 999999,
+  "glossedValue": 1000.00
 }
 
 ###
 
-### HU-024 — Registrar egreso administrativo
-# Solo permitido si todas las atenciones están cerradas
-PATCH {{base}}/6/egreso
+### HU-FASE2-063 — Validación negativa: valor glosado supera total del ítem
+POST {{base}}/items
 Content-Type: application/json
 Authorization: {{token}}
 
 {
-  "dischargeType": "ALTA_VOLUNTARIA",
-  "observations": "Paciente solicita alta voluntaria, se educa sobre riesgos"
+  "glossId": {{glosaId}},
+  "invoiceItemId": {{detalleFacturaId}},
+  "glossReasonId": {{motivoGlosaId}},
+  "glossedValue": 999999999.00
 }
+
+###
+
+### HU-FASE2-063 — Validación negativa: glosa NO ABIERTA (debe rechazar)
+PUT {{base}}/items/{{detalleGlosaId}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "glossReasonId": {{motivoGlosaId}},
+  "glossedValue": 50000.00
+}
+
+###
+
+### HU-FASE2-063 — Cross-tenant: ID de otra empresa (404)
+GET {{base}}/items/999999
+Authorization: {{token}}
 
 ###

@@ -32,6 +32,34 @@ Reglas backend:
 - No usar @Data.
 - No usar @Autowired en campos.
 
+Regla de archivos request por HU:
+- Cada HU implementada debe crear un archivo `.http` para pruebas manuales siguiendo el estilo usado en el proyecto SGH.
+- Los archivos `.http` deben guardarse en `docs/fase2/requests/` según el módulo.
+- Glosas: `docs/fase2/requests/glosas/`
+- Farmacia: `docs/fase2/requests/farmacia/`
+- Historia clínica: `docs/fase2/requests/historia_clinica/`
+- El archivo debe llamarse `HU-FASE2-XXX_nombre_corto.http`.
+
+Formato obligatorio de los archivos `.http`:
+- Usar `@port = 9001`.
+- Usar `@token = Bearer PEGAR_TOKEN_AQUI`.
+- Usar `@base = http://localhost:{{port}}/api/<endpoint>`.
+- Separar cada request con `###`.
+- Cada bloque debe iniciar con comentario de HU y descripción.
+- Usar `Authorization: {{token}}`.
+- Usar `Content-Type: application/json` cuando el request tenga body.
+- Para listados paginados usar preferiblemente `POST {{base}}/list`.
+- El body de listado debe usar:
+  - `page`
+  - `rows`
+  - `search`
+  - `order_by`
+  - `order`
+- Para cambios de estado usar `PATCH` cuando aplique.
+- No incluir tokens reales.
+- No incluir datos sensibles reales.
+- Usar variables claras como `@bodegaId`, `@pacienteId`, `@glosaId`, `@sedeId`.
+
 Optimización de memoria:
 - No cargar agentes completos salvo necesidad.
 - Usar agentes lite por defecto.
@@ -52,6 +80,7 @@ Documentación fase 2:
 - Backlog modular: `docs/fase2/backlog/`
 - Modelo modular: `docs/fase2/modelo/`
 - Trazabilidad modular: `docs/fase2/trazabilidad/`
+- Requests por HU: `docs/fase2/requests/`
 
 Cuando se compacte:
 Preservar siempre:
@@ -60,4 +89,5 @@ Preservar siempre:
 - Decisiones técnicas tomadas.
 - Errores encontrados.
 - Tests ejecutados.
+- Archivo `.http` creado.
 - Pendientes.

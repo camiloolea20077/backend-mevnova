@@ -1,0 +1,169 @@
+@port = 9001
+@token = Bearer PEGAR_TOKEN_AQUI
+
+@base = http://localhost:{{port}}/api/billing/glosas
+@glosaId = 1
+@detalleGlosaId = 1
+@respuestaGlosaId = 1
+@profesionalId = 1
+
+### HU-FASE2-064 — Crear respuesta ACEPTA_TOTAL (flujo exitoso)
+POST {{base}}/responses
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "glossDetailId": {{detalleGlosaId}},
+  "responseType": "ACEPTA_TOTAL",
+  "acceptedValue": 0,
+  "argumentation": "Aceptamos la totalidad del valor glosado: el soporte clínico no era el correcto.",
+  "supportUrl": "https://soportes.empresa.local/respuestas/r-001.pdf",
+  "professionalId": {{profesionalId}}
+}
+
+###
+
+### HU-FASE2-064 — Crear respuesta ACEPTA_PARCIAL (debe especificar valor < glosado)
+POST {{base}}/responses
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "glossDetailId": {{detalleGlosaId}},
+  "responseType": "ACEPTA_PARCIAL",
+  "acceptedValue": 25000.00,
+  "argumentation": "Se acepta parcialmente. La diferencia se sustenta con copia de la HC, página 14.",
+  "supportUrl": "https://soportes.empresa.local/respuestas/r-002.pdf",
+  "professionalId": {{profesionalId}}
+}
+
+###
+
+### HU-FASE2-064 — Crear respuesta NO_ACEPTA
+POST {{base}}/responses
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "glossDetailId": {{detalleGlosaId}},
+  "responseType": "NO_ACEPTA",
+  "acceptedValue": 0,
+  "argumentation": "Se rechaza: la pertinencia clínica está sustentada en la nota de evolución del 22-04-2026.",
+  "supportUrl": "https://soportes.empresa.local/respuestas/r-003.pdf"
+}
+
+###
+
+### HU-FASE2-064 — Consultar respuesta por ID
+GET {{base}}/responses/{{respuestaGlosaId}}
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-064 — Consultar respuesta por detalle de glosa
+GET {{base}}/items/{{detalleGlosaId}}/response
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-064 — Listar respuestas de una glosa
+GET {{base}}/{{glosaId}}/responses
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-064 — Actualizar respuesta (cambiar a ACEPTA_PARCIAL)
+PUT {{base}}/responses/{{respuestaGlosaId}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "responseType": "ACEPTA_PARCIAL",
+  "acceptedValue": 12000.00,
+  "argumentation": "Tras revisión interna, se ajusta el valor aceptado.",
+  "professionalId": {{profesionalId}}
+}
+
+###
+
+### HU-FASE2-064 — Eliminar respuesta (soft delete)
+DELETE {{base}}/responses/{{respuestaGlosaId}}
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-064 — Validación negativa: campos obligatorios vacíos
+POST {{base}}/responses
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "glossDetailId": null,
+  "responseType": "",
+  "acceptedValue": null,
+  "argumentation": ""
+}
+
+###
+
+### HU-FASE2-064 — Validación negativa: tipo de respuesta inválido
+POST {{base}}/responses
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "glossDetailId": {{detalleGlosaId}},
+  "responseType": "OTRO",
+  "acceptedValue": 1000.00,
+  "argumentation": "Argumentación cualquiera."
+}
+
+###
+
+### HU-FASE2-064 — Validación negativa: ACEPTA_PARCIAL con valor >= glosado
+POST {{base}}/responses
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "glossDetailId": {{detalleGlosaId}},
+  "responseType": "ACEPTA_PARCIAL",
+  "acceptedValue": 999999999.00,
+  "argumentation": "Excede el valor glosado."
+}
+
+###
+
+### HU-FASE2-064 — Validación negativa: detalle de glosa inexistente
+POST {{base}}/responses
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "glossDetailId": 999999,
+  "responseType": "NO_ACEPTA",
+  "acceptedValue": 0,
+  "argumentation": "Item inexistente."
+}
+
+###
+
+### HU-FASE2-064 — Validación negativa: ítem ya tiene respuesta (409)
+POST {{base}}/responses
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "glossDetailId": {{detalleGlosaId}},
+  "responseType": "NO_ACEPTA",
+  "acceptedValue": 0,
+  "argumentation": "Intento duplicado."
+}
+
+###
+
+### HU-FASE2-064 — Cross-tenant: respuesta de otra empresa (404)
+GET {{base}}/responses/999999
+Authorization: {{token}}
+
+###

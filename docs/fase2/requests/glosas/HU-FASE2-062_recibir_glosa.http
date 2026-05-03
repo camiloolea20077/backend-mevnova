@@ -1,52 +1,34 @@
 @port = 9001
 @token = Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwidGlwb190b2tlbiI6IkFDQ0VTUyIsInVzdWFyaW9faWQiOjIsImVtcHJlc2FfaWQiOjQsInNlZGVfaWQiOjEsInVzZXJuYW1lIjoiYWRtaW5faG9zcGl0YWwiLCJyb2xlcyI6WyJTdXBlci1BZG1pbmlzdHJhZG9yIGRlbCBTaXN0ZW1hIl0sInBlcm1pc29zIjpbIkFjdHVhbGl6YXIgdGVyY2VybyIsIkFudWxhciBmYWN0dXJhIiwiQW51bGFyIG9yZGVuIGNsaW5pY2EiLCJBbnVsYXIgcHJlc2NyaXBjaW9uIiwiQXByb2JhciBmYWN0dXJhIiwiQXNpZ25hciBjaXRhIiwiQXNpZ25hciByb2xlcyBhIHVzdWFyaW9zIiwiQXRlbmRlciB1cmdlbmNpYXMiLCJDYW1iaWFyIGVzdGFkbyBkZSBhZG1pc2lvbiIsIkNhbmNlbGFyIGNpdGEiLCJDZXJyYXIgYWRtaXNpb24iLCJDZXJyYXIgYXRlbmNpb24gZGUgdXJnZW5jaWFzIiwiQ29uc3VsdGFyIGFkbWlzaW9uZXMiLCJDb25zdWx0YXIgY2FydGVyYSIsIkNvbnN1bHRhciB0ZXJjZXJvIiwiQ3JlYXIgcGFjaWVudGUiLCJDcmVhciB0ZXJjZXJvIiwiRGFyIGVncmVzbyBob3NwaXRhbGFyaW8iLCJFZGl0YXIgZmFjdHVyYSIsIkdlbmVyYXIgZGlzcG9uaWJpbGlkYWQiLCJHZW5lcmFyIGZhY3R1cmEiLCJHZW5lcmFyIG9yZGVuIGNsaW5pY2EiLCJHZW5lcmFyIHByZXNjcmlwY2lvbiIsIkdlbmVyYXIgUklQUyIsIkdlc3Rpb25hciBhZ2VuZGFzIiwiR2VzdGlvbmFyIGNhbGVuZGFyaW9zIiwiR2VzdGlvbmFyIGNhdGFsb2dvIGRlIHNlcnZpY2lvcyIsIkdlc3Rpb25hciBjZW50cm9zIGRlIGNvc3RvIiwiR2VzdGlvbmFyIGNvYmVydHVyYSBkZSBjb250cmF0byIsIkdlc3Rpb25hciBjb250YWN0b3MiLCJHZXN0aW9uYXIgY29udHJhdG9zIiwiR2VzdGlvbmFyIGNvbnRyYXRvcyBkZWwgcGFjaWVudGUiLCJHZXN0aW9uYXIgZGlyZWNjaW9uZXMiLCJHZXN0aW9uYXIgZW1wcmVzYXMiLCJHZXN0aW9uYXIgZ2xvc2FzIiwiR2VzdGlvbmFyIGxpc3RhIGRlIGVzcGVyYSIsIkdlc3Rpb25hciBwYWdhZG9yZXMiLCJHZXN0aW9uYXIgcGVybWlzb3MiLCJHZXN0aW9uYXIgcHJvZmVzaW9uYWxlcyBkZSBzYWx1ZCIsIkdlc3Rpb25hciByZWN1cnNvcyBmaXNpY29zIiwiR2VzdGlvbmFyIHJlbGFjaW9uZXMiLCJHZXN0aW9uYXIgcm9sZXMiLCJHZXN0aW9uYXIgc2VkZXMiLCJHZXN0aW9uYXIgc2VndXJpZGFkIHNvY2lhbCIsIkdlc3Rpb25hciBzZXJ2aWNpb3MgaGFiaWxpdGFkb3MiLCJHZXN0aW9uYXIgU0lTQkVOIiwiR2VzdGlvbmFyIHRhcmlmYXJpb3MiLCJHZXN0aW9uYXIgdGFyaWZhcyBkZSBjb250cmF0byIsIkdlc3Rpb25hciB1c3VhcmlvcyIsIkluYWN0aXZhciB0ZXJjZXJvIiwiUmFkaWNhciBmYWN0dXJhIiwiUmVhbGl6YXIgdHJpYWdlIiwiUmVjaWJpciBlbiBob3NwaXRhbGl6YWNpb24iLCJSZWNsYXNpZmljYXIgdHJpYWdlIiwiUmVnaXN0cmFyIGFkbWlzaW9uIiwiUmVnaXN0cmFyIGRpYWdub3N0aWNvIiwiUmVnaXN0cmFyIGV2b2x1Y2lvbiIsIlJlZ2lzdHJhciBub3RhIGRlIGluZ3Jlc28iLCJSZWdpc3RyYXIgcGFnbyIsIlJlcHJvZ3JhbWFyIGNpdGEiLCJSZXNldGVhciBjb250cmFzZW5hIiwiU29saWNpdGFyIGhvc3BpdGFsaXphY2lvbiIsIlRyYXNsYWRhciBhZ2VuZGEiLCJWZXIgYXVkaXRvcmlhIGRlIGVtcHJlc2EiLCJWZXIgYXVkaXRvcmlhIGdsb2JhbCIsIlZlciBjb2xhIGRlIHVyZ2VuY2lhcyIsIlZlciBvcmRlbmVzIGFjdGl2YXMiXSwianRpIjoiODY3NjBjOTgtMmNiZC00ZGM0LWEyOTQtMWY4MGQxZDIwNjYyIiwiaWF0IjoxNzc3NzY1NzgzLCJleHAiOjE3Nzc4NTIxODN9.wbNcJmazn5sNz-bYTeVgm8W8YO9MBFvSwdPt-5cXaTj4YvAdbXtShaoofido_g6m3bSo2Caiaz3Iu9u3y5b9dA
-@base = http://localhost:{{port}}/api/admissions
 
-### HU-020 — Registrar admisión de urgencias
-# tipo_admision_id=1 (URGENCIAS), origen_atencion_id=1 (Enfermedad General),
-# pagador_id=1, paciente_id=1
+@base = http://localhost:{{port}}/api/billing/glosas
+@facturaId = 1
+@glosaId = 1
+
+### HU-FASE2-062 — Crear glosa (flujo exitoso)
 POST {{base}}
 Content-Type: application/json
 Authorization: {{token}}
 
 {
-  "patientId": 6,
-  "admissionTypeId": 13,
-  "careOriginId": 17,
-  "payerId": 3,
-  "contractId": null,
-  "companionId": null,
-  "entryReason": "Paciente con dolor abdominal agudo en FID de 6 horas de evolución",
-  "observations": null
+  "invoiceId": 4,
+  "payerOfficeNumber": "OF-2026-00123",
+  "officeDate": "2026-04-20",
+  "notificationDate": "2026-04-22",
+  "totalGlossedValue": 45000.00,
+  "officeUrl": "https://soportes.empresa.local/oficios/of-2026-00123.pdf",
+  "observations": "Glosa parcial por soportes incompletos."
 }
 
 ###
 
-### HU-020 — Registrar admisión de consulta externa
-POST {{base}}
-Content-Type: application/json
-Authorization: {{token}}
-
-{
-  "patientId": 5,
-  "admissionTypeId": 14,
-  "careOriginId": 24,
-  "payerId": 3,
-  "contractId": 2,
-  "companionId": null,
-  "entryReason": "Control mensual hipertensión arterial",
-  "observations": null
-}
-
-###
-
-### HU-022 — Consultar admisión por ID
-GET {{base}}/3
+### HU-FASE2-062 — Consultar glosa por ID
+GET {{base}}/{{glosaId}}
 Authorization: {{token}}
 
 ###
 
-### HU-022 — Listar admisiones activas de la sede (paginado)
+### HU-FASE2-062 — Listar glosas paginado
 POST {{base}}/list
 Content-Type: application/json
 Authorization: {{token}}
@@ -55,13 +37,13 @@ Authorization: {{token}}
   "page": 0,
   "rows": 10,
   "search": "",
-  "order_by": "a.fecha_admision",
+  "order_by": "g.fecha_notificacion",
   "order": "DESC"
 }
 
 ###
 
-### HU-022 — Buscar admisión por nombre o número de documento
+### HU-FASE2-062 — Listar glosas con búsqueda
 POST {{base}}/list
 Content-Type: application/json
 Authorization: {{token}}
@@ -69,46 +51,90 @@ Authorization: {{token}}
 {
   "page": 0,
   "rows": 10,
-  "search": "García",
-  "order_by": "a.fecha_admision",
+  "search": "OF-2026",
+  "order_by": "g.fecha_notificacion",
   "order": "DESC"
 }
 
 ###
 
-### HU-023 — Cambiar estado de admisión a EN_ATENCION
-PATCH {{base}}/3/status
+### HU-FASE2-062 — Validación negativa: factura inexistente
+POST {{base}}
 Content-Type: application/json
 Authorization: {{token}}
 
 {
-  "newStatusCode": "EN_ATENCION",
-  "observations": "Paciente pasa a atención médica"
+  "invoiceId": 4,
+  "payerOfficeNumber": "OF-NULA",
+  "officeDate": "2026-04-20",
+  "notificationDate": "2026-04-22",
+  "totalGlossedValue": 45000.00
 }
 
 ###
 
-### HU-023 — Cancelar admisión
-PATCH {{base}}/3/status
+### HU-FASE2-062 — Validación negativa: factura no radicada (estado inválido)
+POST {{base}}
 Content-Type: application/json
 Authorization: {{token}}
 
 {
-  "newStatusCode": "CANCELADO",
-  "observations": "Paciente se retira voluntariamente"
+  "invoiceId": {{facturaId}},
+  "payerOfficeNumber": "OF-2026-00124",
+  "officeDate": "2026-04-20",
+  "notificationDate": "2026-04-22",
+  "totalGlossedValue": 1000.00
 }
 
 ###
 
-### HU-024 — Registrar egreso administrativo
-# Solo permitido si todas las atenciones están cerradas
-PATCH {{base}}/6/egreso
+### HU-FASE2-062 — Validación negativa: valor glosado supera total de factura
+POST {{base}}
 Content-Type: application/json
 Authorization: {{token}}
 
 {
-  "dischargeType": "ALTA_VOLUNTARIA",
-  "observations": "Paciente solicita alta voluntaria, se educa sobre riesgos"
+  "invoiceId": {{facturaId}},
+  "payerOfficeNumber": "OF-2026-00125",
+  "officeDate": "2026-04-20",
+  "notificationDate": "2026-04-22",
+  "totalGlossedValue": 999999999.00
 }
+
+###
+
+### HU-FASE2-062 — Validación negativa: campos obligatorios vacíos
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "invoiceId": null,
+  "payerOfficeNumber": "",
+  "officeDate": null,
+  "notificationDate": null,
+  "totalGlossedValue": 0
+}
+
+###
+
+### HU-FASE2-062 — Validación negativa: fecha de oficio posterior a notificación
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "invoiceId": {{facturaId}},
+  "payerOfficeNumber": "OF-2026-00126",
+  "officeDate": "2026-04-25",
+  "notificationDate": "2026-04-22",
+  "totalGlossedValue": 1000.00
+}
+
+###
+
+### HU-FASE2-062 — Cross-tenant: glosa de otra empresa (debe responder 404)
+GET {{base}}/999999
+Authorization: {{token}}
 
 ###
