@@ -1,0 +1,350 @@
+@port = 9001
+@token = Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIzIiwidGlwb190b2tlbiI6IkFDQ0VTUyIsInVzdWFyaW9faWQiOjMsImVtcHJlc2FfaWQiOjQsInNlZGVfaWQiOjEsInVzZXJuYW1lIjoibWFyaWEucGVyZXoiLCJyb2xlcyI6WyJNw6lkaWNvIl0sInBlcm1pc29zIjpbIkNhbWJpYXIgZXN0YWRvIGRlIGFkbWlzaW9uIiwiQ29uc3VsdGFyIGFkbWlzaW9uZXMiLCJSZWdpc3RyYXIgYWRtaXNpb24iXSwianRpIjoiZWFjNTEzYmEtNGJjMS00ZTc2LTg3ODMtYjRlZWY4NWQ3Njc5IiwiaWF0IjoxNzc3ODYyMzc4LCJleHAiOjE3Nzc5NDg3Nzh9.jxtKrQ88wrmr-OXDtEV1SikFrkzsWT49kM0nj2-CGxoXAulW1BqJR5XM78jTHidEwXI_Uk1YZHULq0fAUg6fBA
+
+@base = http://localhost:{{port}}/api/dispensations
+
+@dispensacionId = 2
+@prescripcionId = 1
+@bodegaId = 1
+@detallePrescripcionId = 1
+@detallePrescripcionId2 = 2
+@profesionalDispensadorId = 2
+@profesionalReceptorId = 2
+@loteId = 1
+@otroLoteId = 2
+
+### HU-FASE2-074 — Sugerencias FEFO por prescripción y bodega
+GET {{base}}/suggestions?prescriptionId={{prescripcionId}}&warehouseId={{bodegaId}}
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-074 — Crear dispensación usando sugerencia FEFO (sin batchId)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "prescriptionId": {{prescripcionId}},
+  "warehouseId": {{bodegaId}},
+  "dispensingProfessionalId": {{profesionalDispensadorId}},
+  "receivingProfessionalId": {{profesionalReceptorId}},
+  "observations": "Dispensación normal de turno",
+  "items": [
+    {
+      "prescriptionDetailId": {{detallePrescripcionId}},
+      "quantity": 3,
+      "observations": "Aplicar cada 8 horas"
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-074 — Crear dispensación especificando lote (coincide con FEFO)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "prescriptionId": {{prescripcionId}},
+  "warehouseId": {{bodegaId}},
+  "dispensingProfessionalId": {{profesionalDispensadorId}},
+  "items": [
+    {
+      "prescriptionDetailId": {{detallePrescripcionId}},
+      "batchId": {{loteId}},
+      "quantity": 0
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-074 — Crear dispensación con override de lote (justificación obligatoria)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "prescriptionId": {{prescripcionId}},
+  "warehouseId": {{bodegaId}},
+  "dispensingProfessionalId": {{profesionalDispensadorId}},
+  "items": [
+    {
+      "prescriptionDetailId": {{detallePrescripcionId}},
+      "batchId": {{otroLoteId}},
+      "quantity": 5,
+      "overrideReason": "Lote sugerido reservado para urgencias"
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-074 — Crear dispensación con varios ítems
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "prescriptionId": {{prescripcionId}},
+  "warehouseId": {{bodegaId}},
+  "dispensingProfessionalId": {{profesionalDispensadorId}},
+  "items": [
+    {
+      "prescriptionDetailId": {{detallePrescripcionId}},
+      "quantity": 3
+    },
+    {
+      "prescriptionDetailId": {{detallePrescripcionId2}},
+      "quantity": 2
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-074 — Consultar dispensación por ID (incluye items con trazabilidad de lote)
+GET {{base}}/{{dispensacionId}}
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-074 — Listar dispensaciones (paginado, ordenado por fecha DESC por defecto)
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 10,
+  "search": "",
+  "order_by": "fecha_dispensacion",
+  "order": "DESC"
+}
+
+###
+
+### HU-FASE2-074 — Listar con búsqueda por número de dispensación o paciente
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 10,
+  "search": "DSP-",
+  "order_by": "fecha_dispensacion",
+  "order": "DESC"
+}
+
+###
+
+### HU-FASE2-074 — Anular dispensación (revierte stock + DEVOLUCION_PACIENTE)
+PATCH {{base}}/{{dispensacionId}}/cancel
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "reason": "Paciente egresado antes de aplicar el medicamento"
+}
+
+###
+
+### HU-FASE2-074 — Validación: prescripción inexistente o no activa (404)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "prescriptionId": 999999,
+  "warehouseId": {{bodegaId}},
+  "dispensingProfessionalId": {{profesionalDispensadorId}},
+  "items": [
+    {
+      "prescriptionDetailId": {{detallePrescripcionId}},
+      "quantity": 1
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-074 — Validación: bodega no permite dispensar (404)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "prescriptionId": {{prescripcionId}},
+  "warehouseId": 999999,
+  "dispensingProfessionalId": {{profesionalDispensadorId}},
+  "items": [
+    {
+      "prescriptionDetailId": {{detallePrescripcionId}},
+      "quantity": 1
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-074 — Validación: profesional dispensador no existe (404)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "prescriptionId": {{prescripcionId}},
+  "warehouseId": {{bodegaId}},
+  "dispensingProfessionalId": 999999,
+  "items": [
+    {
+      "prescriptionDetailId": {{detallePrescripcionId}},
+      "quantity": 1
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-074 — Validación: detalle de prescripción ajeno (404)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "prescriptionId": {{prescripcionId}},
+  "warehouseId": {{bodegaId}},
+  "dispensingProfessionalId": {{profesionalDispensadorId}},
+  "items": [
+    {
+      "prescriptionDetailId": 999999,
+      "quantity": 1
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-074 — Validación: items vacíos (400)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "prescriptionId": {{prescripcionId}},
+  "warehouseId": {{bodegaId}},
+  "dispensingProfessionalId": {{profesionalDispensadorId}},
+  "items": []
+}
+
+###
+
+### HU-FASE2-074 — Validación: cantidad cero o negativa (400)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "prescriptionId": {{prescripcionId}},
+  "warehouseId": {{bodegaId}},
+  "dispensingProfessionalId": {{profesionalDispensadorId}},
+  "items": [
+    {
+      "prescriptionDetailId": {{detallePrescripcionId}},
+      "quantity": 0
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-074 — Validación: cantidad excede pendiente del detalle prescrito (400)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "prescriptionId": {{prescripcionId}},
+  "warehouseId": {{bodegaId}},
+  "dispensingProfessionalId": {{profesionalDispensadorId}},
+  "items": [
+    {
+      "prescriptionDetailId": {{detallePrescripcionId}},
+      "quantity": 9999999
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-074 — Validación: lote inexistente o sin stock en bodega (404)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "prescriptionId": {{prescripcionId}},
+  "warehouseId": {{bodegaId}},
+  "dispensingProfessionalId": {{profesionalDispensadorId}},
+  "items": [
+    {
+      "prescriptionDetailId": {{detallePrescripcionId}},
+      "batchId": 999999,
+      "quantity": 1,
+      "overrideReason": "Probar lote inexistente"
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-074 — Validación: override sin justificación cuando difiere de FEFO (400)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "prescriptionId": {{prescripcionId}},
+  "warehouseId": {{bodegaId}},
+  "dispensingProfessionalId": {{profesionalDispensadorId}},
+  "items": [
+    {
+      "prescriptionDetailId": {{detallePrescripcionId}},
+      "batchId": {{otroLoteId}},
+      "quantity": 1
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-074 — Validación: dispensación inexistente al consultar (404)
+GET {{base}}/999999
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-074 — Validación: anular dispensación ya anulada (409)
+PATCH {{base}}/{{dispensacionId}}/cancel
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "reason": "Reintento de anulación"
+}
+
+###
+
+### HU-FASE2-074 — Validación: anular sin justificación (400)
+PATCH {{base}}/{{dispensacionId}}/cancel
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "reason": ""
+}
+
+###

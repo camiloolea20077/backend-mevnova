@@ -12,7 +12,12 @@
       "PowerShell(New-Item *)",
       "mcp__ide__getDiagnostics",
       "Bash(./mvnw -q compile -pl .)",
-      "PowerShell(.\\\\mvnw.cmd -q compile 2>&1 | Select-Object -Last 80)"
+      "PowerShell(.\\\\mvnw.cmd -q compile 2>&1 | Select-Object -Last 80)",
+      "Bash(./mvnw -q -DskipTests compile)",
+      "Bash(./mvnw -DskipTests compile)",
+      "Bash(./mvnw -DskipTests clean compile)",
+      "Bash(mvn -q -DskipTests compile)",
+      "Bash(echo \"EXIT=$?\")"
     ]
   }
 }

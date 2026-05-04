@@ -1,0 +1,295 @@
+@port = 9001
+@token = Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwidGlwb190b2tlbiI6IkFDQ0VTUyIsInVzdWFyaW9faWQiOjIsImVtcHJlc2FfaWQiOjQsInNlZGVfaWQiOjEsInVzZXJuYW1lIjoiYWRtaW5faG9zcGl0YWwiLCJyb2xlcyI6WyJTdXBlci1BZG1pbmlzdHJhZG9yIGRlbCBTaXN0ZW1hIl0sInBlcm1pc29zIjpbIkFjdHVhbGl6YXIgdGVyY2VybyIsIkFudWxhciBmYWN0dXJhIiwiQW51bGFyIG9yZGVuIGNsaW5pY2EiLCJBbnVsYXIgcHJlc2NyaXBjaW9uIiwiQXByb2JhciBmYWN0dXJhIiwiQXNpZ25hciBjaXRhIiwiQXNpZ25hciByb2xlcyBhIHVzdWFyaW9zIiwiQXRlbmRlciB1cmdlbmNpYXMiLCJDYW1iaWFyIGVzdGFkbyBkZSBhZG1pc2lvbiIsIkNhbmNlbGFyIGNpdGEiLCJDZXJyYXIgYWRtaXNpb24iLCJDZXJyYXIgYXRlbmNpb24gZGUgdXJnZW5jaWFzIiwiQ29uc3VsdGFyIGFkbWlzaW9uZXMiLCJDb25zdWx0YXIgY2FydGVyYSIsIkNvbnN1bHRhciB0ZXJjZXJvIiwiQ3JlYXIgcGFjaWVudGUiLCJDcmVhciB0ZXJjZXJvIiwiRGFyIGVncmVzbyBob3NwaXRhbGFyaW8iLCJFZGl0YXIgZmFjdHVyYSIsIkdlbmVyYXIgZGlzcG9uaWJpbGlkYWQiLCJHZW5lcmFyIGZhY3R1cmEiLCJHZW5lcmFyIG9yZGVuIGNsaW5pY2EiLCJHZW5lcmFyIHByZXNjcmlwY2lvbiIsIkdlbmVyYXIgUklQUyIsIkdlc3Rpb25hciBhZ2VuZGFzIiwiR2VzdGlvbmFyIGNhbGVuZGFyaW9zIiwiR2VzdGlvbmFyIGNhdGFsb2dvIGRlIHNlcnZpY2lvcyIsIkdlc3Rpb25hciBjZW50cm9zIGRlIGNvc3RvIiwiR2VzdGlvbmFyIGNvYmVydHVyYSBkZSBjb250cmF0byIsIkdlc3Rpb25hciBjb250YWN0b3MiLCJHZXN0aW9uYXIgY29udHJhdG9zIiwiR2VzdGlvbmFyIGNvbnRyYXRvcyBkZWwgcGFjaWVudGUiLCJHZXN0aW9uYXIgZGlyZWNjaW9uZXMiLCJHZXN0aW9uYXIgZW1wcmVzYXMiLCJHZXN0aW9uYXIgZ2xvc2FzIiwiR2VzdGlvbmFyIGxpc3RhIGRlIGVzcGVyYSIsIkdlc3Rpb25hciBwYWdhZG9yZXMiLCJHZXN0aW9uYXIgcGVybWlzb3MiLCJHZXN0aW9uYXIgcHJvZmVzaW9uYWxlcyBkZSBzYWx1ZCIsIkdlc3Rpb25hciByZWN1cnNvcyBmaXNpY29zIiwiR2VzdGlvbmFyIHJlbGFjaW9uZXMiLCJHZXN0aW9uYXIgcm9sZXMiLCJHZXN0aW9uYXIgc2VkZXMiLCJHZXN0aW9uYXIgc2VndXJpZGFkIHNvY2lhbCIsIkdlc3Rpb25hciBzZXJ2aWNpb3MgaGFiaWxpdGFkb3MiLCJHZXN0aW9uYXIgU0lTQkVOIiwiR2VzdGlvbmFyIHRhcmlmYXJpb3MiLCJHZXN0aW9uYXIgdGFyaWZhcyBkZSBjb250cmF0byIsIkdlc3Rpb25hciB1c3VhcmlvcyIsIkluYWN0aXZhciB0ZXJjZXJvIiwiUmFkaWNhciBmYWN0dXJhIiwiUmVhbGl6YXIgdHJpYWdlIiwiUmVjaWJpciBlbiBob3NwaXRhbGl6YWNpb24iLCJSZWNsYXNpZmljYXIgdHJpYWdlIiwiUmVnaXN0cmFyIGFkbWlzaW9uIiwiUmVnaXN0cmFyIGRpYWdub3N0aWNvIiwiUmVnaXN0cmFyIGV2b2x1Y2lvbiIsIlJlZ2lzdHJhciBub3RhIGRlIGluZ3Jlc28iLCJSZWdpc3RyYXIgcGFnbyIsIlJlcHJvZ3JhbWFyIGNpdGEiLCJSZXNldGVhciBjb250cmFzZW5hIiwiU29saWNpdGFyIGhvc3BpdGFsaXphY2lvbiIsIlRyYXNsYWRhciBhZ2VuZGEiLCJWZXIgYXVkaXRvcmlhIGRlIGVtcHJlc2EiLCJWZXIgYXVkaXRvcmlhIGdsb2JhbCIsIlZlciBjb2xhIGRlIHVyZ2VuY2lhcyIsIlZlciBvcmRlbmVzIGFjdGl2YXMiXSwianRpIjoiODY3NjBjOTgtMmNiZC00ZGM0LWEyOTQtMWY4MGQxZDIwNjYyIiwiaWF0IjoxNzc3NzY1NzgzLCJleHAiOjE3Nzc4NTIxODN9.wbNcJmazn5sNz-bYTeVgm8W8YO9MBFvSwdPt-5cXaTj4YvAdbXtShaoofido_g6m3bSo2Caiaz3Iu9u3y5b9dA
+
+@base = http://localhost:{{port}}/api/purchases
+
+@compraId = 1
+@bodegaId = 1
+@proveedorId = 1
+@servicioId = 4
+
+### HU-FASE2-069 — Crear compra en BORRADOR (flujo principal)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "warehouseId": {{bodegaId}},
+  "supplierId": {{proveedorId}},
+  "supplierInvoiceNumber": "FACT-PROV-001",
+  "purchaseDate": "2026-05-01",
+  "receptionDate": "2026-05-03",
+  "supportUrl": "https://files.mednova.com/soportes/compra-001.pdf",
+  "observations": "Recepción mensual de medicamentos",
+  "items": [
+    {
+      "healthServiceId": {{servicioId}},
+      "batchNumber": "LOTE-A-001",
+      "manufacturingDate": "2026-01-15",
+      "expirationDate": "2027-12-31",
+      "invimaRegister": "INV-12345",
+      "quantity": 100,
+      "unitValue": 1500.00,
+      "vatPercentage": 19.00,
+      "discountPercentage": 5.00,
+      "observations": "Caja de 100 unidades"
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-069 — Consultar compra por ID (incluye detalles)
+GET {{base}}/{{compraId}}
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-069 — Listar compras
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 10,
+  "search": "",
+  "order_by": "c.fecha_compra",
+  "order": "DESC"
+}
+
+###
+
+### HU-FASE2-069 — Buscar compra por número o factura
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 10,
+  "search": "COMP-",
+  "order_by": "c.fecha_compra",
+  "order": "DESC"
+}
+
+###
+
+### HU-FASE2-069 — Confirmar recepción (BORRADOR → RECIBIDA)
+PATCH {{base}}/{{compraId}}/receive
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-069 — Anular compra (con justificación)
+PATCH {{base}}/{{compraId}}/cancel
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "reason": "Factura duplicada por error del proveedor"
+}
+
+###
+
+### HU-FASE2-069 — Validación: crear sin items
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "warehouseId": {{bodegaId}},
+  "supplierId": {{proveedorId}},
+  "purchaseDate": "2026-05-01",
+  "items": []
+}
+
+###
+
+### HU-FASE2-069 — Validación: crear sin bodega (campo obligatorio)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "supplierId": {{proveedorId}},
+  "purchaseDate": "2026-05-01",
+  "items": [
+    {
+      "healthServiceId": {{servicioId}},
+      "batchNumber": "LOTE-X",
+      "expirationDate": "2027-01-01",
+      "quantity": 10,
+      "unitValue": 1000
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-069 — Validación: cantidad cero
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "warehouseId": {{bodegaId}},
+  "supplierId": {{proveedorId}},
+  "purchaseDate": "2026-05-01",
+  "items": [
+    {
+      "healthServiceId": {{servicioId}},
+      "batchNumber": "LOTE-CERO",
+      "expirationDate": "2027-01-01",
+      "quantity": 0,
+      "unitValue": 1000
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-069 — Validación: fecha de vencimiento en el pasado
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "warehouseId": {{bodegaId}},
+  "supplierId": {{proveedorId}},
+  "purchaseDate": "2026-05-01",
+  "items": [
+    {
+      "healthServiceId": {{servicioId}},
+      "batchNumber": "LOTE-VENCIDO",
+      "expirationDate": "2024-01-01",
+      "quantity": 10,
+      "unitValue": 1000
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-069 — Validación: fecha de recepción anterior a fecha de compra
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "warehouseId": {{bodegaId}},
+  "supplierId": {{proveedorId}},
+  "purchaseDate": "2026-05-10",
+  "receptionDate": "2026-05-01",
+  "items": [
+    {
+      "healthServiceId": {{servicioId}},
+      "batchNumber": "LOTE-OK",
+      "expirationDate": "2027-01-01",
+      "quantity": 10,
+      "unitValue": 1000
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-069 — Validación: bodega de otra empresa o que no permite recibir (404)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "warehouseId": 999999,
+  "supplierId": {{proveedorId}},
+  "purchaseDate": "2026-05-01",
+  "items": [
+    {
+      "healthServiceId": {{servicioId}},
+      "batchNumber": "LOTE-X",
+      "expirationDate": "2027-01-01",
+      "quantity": 10,
+      "unitValue": 1000
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-069 — Validación: proveedor inexistente (404)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "warehouseId": {{bodegaId}},
+  "supplierId": 999999,
+  "purchaseDate": "2026-05-01",
+  "items": [
+    {
+      "healthServiceId": {{servicioId}},
+      "batchNumber": "LOTE-X",
+      "expirationDate": "2027-01-01",
+      "quantity": 10,
+      "unitValue": 1000
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-069 — Validación: servicio que no es MEDICAMENTO ni INSUMO
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "warehouseId": {{bodegaId}},
+  "supplierId": {{proveedorId}},
+  "purchaseDate": "2026-05-01",
+  "items": [
+    {
+      "healthServiceId": 999999,
+      "batchNumber": "LOTE-X",
+      "expirationDate": "2027-01-01",
+      "quantity": 10,
+      "unitValue": 1000
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-069 — Validación: confirmar compra que no está en BORRADOR (conflict)
+PATCH {{base}}/{{compraId}}/receive
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-069 — Validación: anular compra ya recibida (conflict)
+PATCH {{base}}/{{compraId}}/cancel
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "reason": "Intento de anular compra ya recibida"
+}
+
+###
+
+### HU-FASE2-069 — Validación: anular sin justificación
+PATCH {{base}}/{{compraId}}/cancel
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "reason": ""
+}
+
+###
+
+### HU-FASE2-069 — Validación: consultar compra inexistente (404)
+GET {{base}}/999999
+Authorization: {{token}}
+
+###

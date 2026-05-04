@@ -1,0 +1,229 @@
+@port = 9001
+@token = Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIzIiwidGlwb190b2tlbiI6IkFDQ0VTUyIsInVzdWFyaW9faWQiOjMsImVtcHJlc2FfaWQiOjQsInNlZGVfaWQiOjEsInVzZXJuYW1lIjoibWFyaWEucGVyZXoiLCJyb2xlcyI6WyJNw6lkaWNvIl0sInBlcm1pc29zIjpbIkNhbWJpYXIgZXN0YWRvIGRlIGFkbWlzaW9uIiwiQ29uc3VsdGFyIGFkbWlzaW9uZXMiLCJSZWdpc3RyYXIgYWRtaXNpb24iXSwianRpIjoiZWFjNTEzYmEtNGJjMS00ZTc2LTg3ODMtYjRlZWY4NWQ3Njc5IiwiaWF0IjoxNzc3ODYyMzc4LCJleHAiOjE3Nzc5NDg3Nzh9.jxtKrQ88wrmr-OXDtEV1SikFrkzsWT49kM0nj2-CGxoXAulW1BqJR5XM78jTHidEwXI_Uk1YZHULq0fAUg6fBA
+
+@base = http://localhost:{{port}}/api/dispensations
+
+@dispensacionId = 2
+@detalleDispensacionId = 1
+@detalleDispensacionId2 = 2
+@bodegaDestinoId = 1
+
+### HU-FASE2-075 — Registrar devolución (lote no vencido => DEVOLUCION_PACIENTE + stock)
+POST {{base}}/{{dispensacionId}}/returns
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "targetWarehouseId": {{bodegaDestinoId}},
+  "items": [
+    {
+      "dispensationDetailId": {{detalleDispensacionId}},
+      "quantity": 2,
+      "reason": "Paciente egresado, medicamento no aplicado"
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-075 — Registrar devolución parcial multi-ítem
+POST {{base}}/{{dispensacionId}}/returns
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "targetWarehouseId": {{bodegaDestinoId}},
+  "items": [
+    {
+      "dispensationDetailId": {{detalleDispensacionId}},
+      "quantity": 1,
+      "reason": "Suspensión médica"
+    },
+    {
+      "dispensationDetailId": {{detalleDispensacionId2}},
+      "quantity": 1,
+      "reason": "Sobrante de turno"
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-075 — Devolución de lote vencido (genera BAJA_VENCIMIENTO sin stock)
+POST {{base}}/{{dispensacionId}}/returns
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "targetWarehouseId": {{bodegaDestinoId}},
+  "items": [
+    {
+      "dispensationDetailId": {{detalleDispensacionId}},
+      "quantity": 1,
+      "reason": "Devolución de lote vencido"
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-075 — Validación: dispensación inexistente o de otra sede (404)
+POST {{base}}/999999/returns
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "targetWarehouseId": {{bodegaDestinoId}},
+  "items": [
+    {
+      "dispensationDetailId": {{detalleDispensacionId}},
+      "quantity": 1,
+      "reason": "Prueba"
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-075 — Validación: dispensación anulada no admite devolución (409)
+POST {{base}}/{{dispensacionId}}/returns
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "targetWarehouseId": {{bodegaDestinoId}},
+  "items": [
+    {
+      "dispensationDetailId": {{detalleDispensacionId}},
+      "quantity": 1,
+      "reason": "Sobre dispensación anulada"
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-075 — Validación: bodega de destino no permite recibir (404)
+POST {{base}}/{{dispensacionId}}/returns
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "targetWarehouseId": 999999,
+  "items": [
+    {
+      "dispensationDetailId": {{detalleDispensacionId}},
+      "quantity": 1,
+      "reason": "Bodega inválida"
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-075 — Validación: detalle de dispensación ajeno (404)
+POST {{base}}/{{dispensacionId}}/returns
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "targetWarehouseId": {{bodegaDestinoId}},
+  "items": [
+    {
+      "dispensationDetailId": 999999,
+      "quantity": 1,
+      "reason": "Detalle inexistente"
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-075 — Validación: items vacíos (400)
+POST {{base}}/{{dispensacionId}}/returns
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "targetWarehouseId": {{bodegaDestinoId}},
+  "items": []
+}
+
+###
+
+### HU-FASE2-075 — Validación: cantidad cero (400)
+POST {{base}}/{{dispensacionId}}/returns
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "targetWarehouseId": {{bodegaDestinoId}},
+  "items": [
+    {
+      "dispensationDetailId": {{detalleDispensacionId}},
+      "quantity": 0,
+      "reason": "Probar cantidad cero"
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-075 — Validación: motivo vacío (400)
+POST {{base}}/{{dispensacionId}}/returns
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "targetWarehouseId": {{bodegaDestinoId}},
+  "items": [
+    {
+      "dispensationDetailId": {{detalleDispensacionId}},
+      "quantity": 1,
+      "reason": ""
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-075 — Validación: cantidad excede dispensada pendiente (400)
+POST {{base}}/{{dispensacionId}}/returns
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "targetWarehouseId": {{bodegaDestinoId}},
+  "items": [
+    {
+      "dispensationDetailId": {{detalleDispensacionId}},
+      "quantity": 9999999,
+      "reason": "Excede dispensación"
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-075 — Validación: targetWarehouseId faltante (400)
+POST {{base}}/{{dispensacionId}}/returns
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "items": [
+    {
+      "dispensationDetailId": {{detalleDispensacionId}},
+      "quantity": 1,
+      "reason": "Sin bodega destino"
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-075 — Consultar dispensación tras la devolución (verifica stock revertido vía kardex)
+GET {{base}}/{{dispensacionId}}
+Authorization: {{token}}
+
+###

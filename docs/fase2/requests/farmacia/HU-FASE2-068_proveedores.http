@@ -1,0 +1,196 @@
+@port = 9001
+@token = Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwidGlwb190b2tlbiI6IkFDQ0VTUyIsInVzdWFyaW9faWQiOjIsImVtcHJlc2FfaWQiOjQsInNlZGVfaWQiOjEsInVzZXJuYW1lIjoiYWRtaW5faG9zcGl0YWwiLCJyb2xlcyI6WyJTdXBlci1BZG1pbmlzdHJhZG9yIGRlbCBTaXN0ZW1hIl0sInBlcm1pc29zIjpbIkFjdHVhbGl6YXIgdGVyY2VybyIsIkFudWxhciBmYWN0dXJhIiwiQW51bGFyIG9yZGVuIGNsaW5pY2EiLCJBbnVsYXIgcHJlc2NyaXBjaW9uIiwiQXByb2JhciBmYWN0dXJhIiwiQXNpZ25hciBjaXRhIiwiQXNpZ25hciByb2xlcyBhIHVzdWFyaW9zIiwiQXRlbmRlciB1cmdlbmNpYXMiLCJDYW1iaWFyIGVzdGFkbyBkZSBhZG1pc2lvbiIsIkNhbmNlbGFyIGNpdGEiLCJDZXJyYXIgYWRtaXNpb24iLCJDZXJyYXIgYXRlbmNpb24gZGUgdXJnZW5jaWFzIiwiQ29uc3VsdGFyIGFkbWlzaW9uZXMiLCJDb25zdWx0YXIgY2FydGVyYSIsIkNvbnN1bHRhciB0ZXJjZXJvIiwiQ3JlYXIgcGFjaWVudGUiLCJDcmVhciB0ZXJjZXJvIiwiRGFyIGVncmVzbyBob3NwaXRhbGFyaW8iLCJFZGl0YXIgZmFjdHVyYSIsIkdlbmVyYXIgZGlzcG9uaWJpbGlkYWQiLCJHZW5lcmFyIGZhY3R1cmEiLCJHZW5lcmFyIG9yZGVuIGNsaW5pY2EiLCJHZW5lcmFyIHByZXNjcmlwY2lvbiIsIkdlbmVyYXIgUklQUyIsIkdlc3Rpb25hciBhZ2VuZGFzIiwiR2VzdGlvbmFyIGNhbGVuZGFyaW9zIiwiR2VzdGlvbmFyIGNhdGFsb2dvIGRlIHNlcnZpY2lvcyIsIkdlc3Rpb25hciBjZW50cm9zIGRlIGNvc3RvIiwiR2VzdGlvbmFyIGNvYmVydHVyYSBkZSBjb250cmF0byIsIkdlc3Rpb25hciBjb250YWN0b3MiLCJHZXN0aW9uYXIgY29udHJhdG9zIiwiR2VzdGlvbmFyIGNvbnRyYXRvcyBkZWwgcGFjaWVudGUiLCJHZXN0aW9uYXIgZGlyZWNjaW9uZXMiLCJHZXN0aW9uYXIgZW1wcmVzYXMiLCJHZXN0aW9uYXIgZ2xvc2FzIiwiR2VzdGlvbmFyIGxpc3RhIGRlIGVzcGVyYSIsIkdlc3Rpb25hciBwYWdhZG9yZXMiLCJHZXN0aW9uYXIgcGVybWlzb3MiLCJHZXN0aW9uYXIgcHJvZmVzaW9uYWxlcyBkZSBzYWx1ZCIsIkdlc3Rpb25hciByZWN1cnNvcyBmaXNpY29zIiwiR2VzdGlvbmFyIHJlbGFjaW9uZXMiLCJHZXN0aW9uYXIgcm9sZXMiLCJHZXN0aW9uYXIgc2VkZXMiLCJHZXN0aW9uYXIgc2VndXJpZGFkIHNvY2lhbCIsIkdlc3Rpb25hciBzZXJ2aWNpb3MgaGFiaWxpdGFkb3MiLCJHZXN0aW9uYXIgU0lTQkVOIiwiR2VzdGlvbmFyIHRhcmlmYXJpb3MiLCJHZXN0aW9uYXIgdGFyaWZhcyBkZSBjb250cmF0byIsIkdlc3Rpb25hciB1c3VhcmlvcyIsIkluYWN0aXZhciB0ZXJjZXJvIiwiUmFkaWNhciBmYWN0dXJhIiwiUmVhbGl6YXIgdHJpYWdlIiwiUmVjaWJpciBlbiBob3NwaXRhbGl6YWNpb24iLCJSZWNsYXNpZmljYXIgdHJpYWdlIiwiUmVnaXN0cmFyIGFkbWlzaW9uIiwiUmVnaXN0cmFyIGRpYWdub3N0aWNvIiwiUmVnaXN0cmFyIGV2b2x1Y2lvbiIsIlJlZ2lzdHJhciBub3RhIGRlIGluZ3Jlc28iLCJSZWdpc3RyYXIgcGFnbyIsIlJlcHJvZ3JhbWFyIGNpdGEiLCJSZXNldGVhciBjb250cmFzZW5hIiwiU29saWNpdGFyIGhvc3BpdGFsaXphY2lvbiIsIlRyYXNsYWRhciBhZ2VuZGEiLCJWZXIgYXVkaXRvcmlhIGRlIGVtcHJlc2EiLCJWZXIgYXVkaXRvcmlhIGdsb2JhbCIsIlZlciBjb2xhIGRlIHVyZ2VuY2lhcyIsIlZlciBvcmRlbmVzIGFjdGl2YXMiXSwianRpIjoiODY3NjBjOTgtMmNiZC00ZGM0LWEyOTQtMWY4MGQxZDIwNjYyIiwiaWF0IjoxNzc3NzY1NzgzLCJleHAiOjE3Nzc4NTIxODN9.wbNcJmazn5sNz-bYTeVgm8W8YO9MBFvSwdPt-5cXaTj4YvAdbXtShaoofido_g6m3bSo2Caiaz3Iu9u3y5b9dA
+
+@base = http://localhost:{{port}}/api/suppliers
+
+@proveedorId = 1
+@terceroId = 8
+
+### HU-FASE2-068 — Crear proveedor (flujo principal)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "thirdPartyId": 14,
+  "code": "PROV-001",
+  "accountingAccount": "220505",
+  "paymentTermDays": 30,
+  "earlyPaymentDiscount": 2.50,
+  "requiresPurchaseOrder": true,
+  "observations": "Proveedor principal de medicamentos"
+}
+
+###
+
+### HU-FASE2-068 — Crear proveedor con valores mínimos
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "thirdPartyId": 11,
+  "code": "PROV-002"
+}
+
+###
+
+### HU-FASE2-068 — Consultar proveedor por ID
+GET {{base}}/{{proveedorId}}
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-068 — Listar proveedores activos
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 10,
+  "search": "",
+  "order_by": "p.codigo",
+  "order": "ASC"
+}
+
+###
+
+### HU-FASE2-068 — Buscar proveedor por código o nombre del tercero
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 10,
+  "search": "PROV",
+  "order_by": "p.codigo",
+  "order": "ASC"
+}
+
+###
+
+### HU-FASE2-068 — Actualizar proveedor
+PUT {{base}}/{{proveedorId}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "accountingAccount": "220510",
+  "paymentTermDays": 45,
+  "earlyPaymentDiscount": 3.00,
+  "requiresPurchaseOrder": false,
+  "observations": "Plazo de pago renegociado"
+}
+
+###
+
+### HU-FASE2-068 — Activar/Inactivar proveedor (toggle)
+PATCH {{base}}/{{proveedorId}}/toggle-active
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-068 — Validación: crear sin código (campo obligatorio)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "thirdPartyId": {{terceroId}}
+}
+
+###
+
+### HU-FASE2-068 — Validación: crear sin tercero (campo obligatorio)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "code": "PROV-SIN-TERCERO"
+}
+
+###
+
+### HU-FASE2-068 — Validación: descuento por pronto pago fuera de rango
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "thirdPartyId": 14,
+  "code": "PROV-DESC-INVALIDO",
+  "earlyPaymentDiscount": 150.00
+}
+
+###
+
+### HU-FASE2-068 — Validación: plazo de pago negativo
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "thirdPartyId": {{terceroId}},
+  "code": "PROV-PLAZO-INVALIDO",
+  "paymentTermDays": -10
+}
+
+###
+
+### HU-FASE2-068 — Validación: tercero inexistente o no es PROVEEDOR
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "thirdPartyId": 999999,
+  "code": "PROV-TERCERO-INVALIDO"
+}
+
+###
+
+### HU-FASE2-068 — Validación: código duplicado en la empresa
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "thirdPartyId": 12,
+  "code": "PROV-001",
+  "observations": "Debe fallar porque el código ya existe en la empresa"
+}
+
+###
+
+### HU-FASE2-068 — Validación: tercero ya registrado como proveedor
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "thirdPartyId": {{terceroId}},
+  "code": "PROV-DUPLICADO-TERCERO",
+  "observations": "Debe fallar porque el tercero ya es proveedor"
+}
+
+###
+
+### HU-FASE2-068 — Validación: consultar proveedor inexistente
+GET {{base}}/999999
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-068 — Validación: actualizar proveedor inexistente
+PUT {{base}}/999999
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "paymentTermDays": 60
+}
+
+###

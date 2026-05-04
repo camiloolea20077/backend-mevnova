@@ -1,0 +1,266 @@
+@port = 9001
+@token = Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIzIiwidGlwb190b2tlbiI6IkFDQ0VTUyIsInVzdWFyaW9faWQiOjMsImVtcHJlc2FfaWQiOjQsInNlZGVfaWQiOjEsInVzZXJuYW1lIjoibWFyaWEucGVyZXoiLCJyb2xlcyI6WyJNw6lkaWNvIl0sInBlcm1pc29zIjpbIkNhbWJpYXIgZXN0YWRvIGRlIGFkbWlzaW9uIiwiQ29uc3VsdGFyIGFkbWlzaW9uZXMiLCJSZWdpc3RyYXIgYWRtaXNpb24iXSwianRpIjoiZWFjNTEzYmEtNGJjMS00ZTc2LTg3ODMtYjRlZWY4NWQ3Njc5IiwiaWF0IjoxNzc3ODYyMzc4LCJleHAiOjE3Nzc5NDg3Nzh9.jxtKrQ88wrmr-OXDtEV1SikFrkzsWT49kM0nj2-CGxoXAulW1BqJR5XM78jTHidEwXI_Uk1YZHULq0fAUg6fBA
+
+@base = http://localhost:{{port}}/api/inventory-transfers
+
+@bodegaOrigenId = 1
+@bodegaDestinoId = 2
+@bodegaOtraSedeId = 3
+@loteId = 1
+@otroLoteId = 2
+
+### HU-FASE2-076 — Traslado dentro de la misma sede (un ítem)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "sourceWarehouseId": {{bodegaOrigenId}},
+  "targetWarehouseId": {{bodegaDestinoId}},
+  "reason": "Reabastecimiento botiquín de piso",
+  "items": [
+    {
+      "batchId": {{loteId}},
+      "quantity": 10
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-076 — Traslado entre sedes (mismo empresa)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "sourceWarehouseId": {{bodegaOrigenId}},
+  "targetWarehouseId": {{bodegaOtraSedeId}},
+  "reason": "Apoyo a otra sede por desabastecimiento",
+  "items": [
+    {
+      "batchId": {{loteId}},
+      "quantity": 5
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-076 — Traslado multi-ítem
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "sourceWarehouseId": {{bodegaOrigenId}},
+  "targetWarehouseId": {{bodegaDestinoId}},
+  "reason": "Transferencia mensual programada",
+  "items": [
+    {
+      "batchId": {{loteId}},
+      "quantity": 3
+    },
+    {
+      "batchId": {{otroLoteId}},
+      "quantity": 7
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-076 — Validación: bodega origen igual a destino (400)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "sourceWarehouseId": {{bodegaOrigenId}},
+  "targetWarehouseId": {{bodegaOrigenId}},
+  "items": [
+    {
+      "batchId": {{loteId}},
+      "quantity": 1
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-076 — Validación: bodega origen inexistente o de otra empresa (404)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "sourceWarehouseId": 999999,
+  "targetWarehouseId": {{bodegaDestinoId}},
+  "items": [
+    {
+      "batchId": {{loteId}},
+      "quantity": 1
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-076 — Validación: bodega destino inexistente o de otra empresa (404)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "sourceWarehouseId": {{bodegaOrigenId}},
+  "targetWarehouseId": 999999,
+  "items": [
+    {
+      "batchId": {{loteId}},
+      "quantity": 1
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-076 — Validación: lote inexistente o de otra empresa (404)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "sourceWarehouseId": {{bodegaOrigenId}},
+  "targetWarehouseId": {{bodegaDestinoId}},
+  "items": [
+    {
+      "batchId": 999999,
+      "quantity": 1
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-076 — Validación: lote sin stock en bodega origen (404)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "sourceWarehouseId": {{bodegaOrigenId}},
+  "targetWarehouseId": {{bodegaDestinoId}},
+  "items": [
+    {
+      "batchId": {{otroLoteId}},
+      "quantity": 1
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-076 — Validación: stock insuficiente (409)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "sourceWarehouseId": {{bodegaOrigenId}},
+  "targetWarehouseId": {{bodegaDestinoId}},
+  "items": [
+    {
+      "batchId": {{loteId}},
+      "quantity": 9999999
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-076 — Validación: lote vencido (400)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "sourceWarehouseId": {{bodegaOrigenId}},
+  "targetWarehouseId": {{bodegaDestinoId}},
+  "items": [
+    {
+      "batchId": {{loteId}},
+      "quantity": 1
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-076 — Validación: items vacíos (400)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "sourceWarehouseId": {{bodegaOrigenId}},
+  "targetWarehouseId": {{bodegaDestinoId}},
+  "items": []
+}
+
+###
+
+### HU-FASE2-076 — Validación: cantidad cero o negativa (400)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "sourceWarehouseId": {{bodegaOrigenId}},
+  "targetWarehouseId": {{bodegaDestinoId}},
+  "items": [
+    {
+      "batchId": {{loteId}},
+      "quantity": 0
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-076 — Validación: lote duplicado en el mismo traslado (400)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "sourceWarehouseId": {{bodegaOrigenId}},
+  "targetWarehouseId": {{bodegaDestinoId}},
+  "items": [
+    {
+      "batchId": {{loteId}},
+      "quantity": 2
+    },
+    {
+      "batchId": {{loteId}},
+      "quantity": 3
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-076 — Validación: campos obligatorios faltantes (400)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "items": [
+    {
+      "batchId": {{loteId}},
+      "quantity": 1
+    }
+  ]
+}
+
+###

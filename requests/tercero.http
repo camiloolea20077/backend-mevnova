@@ -8,10 +8,10 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-    "thirdPartyTypeId": 17,
+    "thirdPartyTypeId": 19,
     "documentTypeId": 21,
-    "documentNumber": "12345678911",
-    "firstName": "Karen",
+    "documentNumber": "19845678911",
+    "firstName": "Ricardo",
     "secondName": "Lorena",
     "firstLastName": "Vergara",
     "secondLastName": "Suarez",

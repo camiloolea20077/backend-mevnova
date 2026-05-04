@@ -1,0 +1,330 @@
+@port = 9001
+@token = Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwidGlwb190b2tlbiI6IkFDQ0VTUyIsInVzdWFyaW9faWQiOjIsImVtcHJlc2FfaWQiOjQsInNlZGVfaWQiOjEsInVzZXJuYW1lIjoiYWRtaW5faG9zcGl0YWwiLCJyb2xlcyI6WyJTdXBlci1BZG1pbmlzdHJhZG9yIGRlbCBTaXN0ZW1hIl0sInBlcm1pc29zIjpbIkFjdHVhbGl6YXIgdGVyY2VybyIsIkFudWxhciBmYWN0dXJhIiwiQW51bGFyIG9yZGVuIGNsaW5pY2EiLCJBbnVsYXIgcHJlc2NyaXBjaW9uIiwiQXByb2JhciBmYWN0dXJhIiwiQXNpZ25hciBjaXRhIiwiQXNpZ25hciByb2xlcyBhIHVzdWFyaW9zIiwiQXRlbmRlciB1cmdlbmNpYXMiLCJDYW1iaWFyIGVzdGFkbyBkZSBhZG1pc2lvbiIsIkNhbmNlbGFyIGNpdGEiLCJDZXJyYXIgYWRtaXNpb24iLCJDZXJyYXIgYXRlbmNpb24gZGUgdXJnZW5jaWFzIiwiQ29uc3VsdGFyIGFkbWlzaW9uZXMiLCJDb25zdWx0YXIgY2FydGVyYSIsIkNvbnN1bHRhciB0ZXJjZXJvIiwiQ3JlYXIgcGFjaWVudGUiLCJDcmVhciB0ZXJjZXJvIiwiRGFyIGVncmVzbyBob3NwaXRhbGFyaW8iLCJFZGl0YXIgZmFjdHVyYSIsIkdlbmVyYXIgZGlzcG9uaWJpbGlkYWQiLCJHZW5lcmFyIGZhY3R1cmEiLCJHZW5lcmFyIG9yZGVuIGNsaW5pY2EiLCJHZW5lcmFyIHByZXNjcmlwY2lvbiIsIkdlbmVyYXIgUklQUyIsIkdlc3Rpb25hciBhZ2VuZGFzIiwiR2VzdGlvbmFyIGNhbGVuZGFyaW9zIiwiR2VzdGlvbmFyIGNhdGFsb2dvIGRlIHNlcnZpY2lvcyIsIkdlc3Rpb25hciBjZW50cm9zIGRlIGNvc3RvIiwiR2VzdGlvbmFyIGNvYmVydHVyYSBkZSBjb250cmF0byIsIkdlc3Rpb25hciBjb250YWN0b3MiLCJHZXN0aW9uYXIgY29udHJhdG9zIiwiR2VzdGlvbmFyIGNvbnRyYXRvcyBkZWwgcGFjaWVudGUiLCJHZXN0aW9uYXIgZGlyZWNjaW9uZXMiLCJHZXN0aW9uYXIgZW1wcmVzYXMiLCJHZXN0aW9uYXIgZ2xvc2FzIiwiR2VzdGlvbmFyIGxpc3RhIGRlIGVzcGVyYSIsIkdlc3Rpb25hciBwYWdhZG9yZXMiLCJHZXN0aW9uYXIgcGVybWlzb3MiLCJHZXN0aW9uYXIgcHJvZmVzaW9uYWxlcyBkZSBzYWx1ZCIsIkdlc3Rpb25hciByZWN1cnNvcyBmaXNpY29zIiwiR2VzdGlvbmFyIHJlbGFjaW9uZXMiLCJHZXN0aW9uYXIgcm9sZXMiLCJHZXN0aW9uYXIgc2VkZXMiLCJHZXN0aW9uYXIgc2VndXJpZGFkIHNvY2lhbCIsIkdlc3Rpb25hciBzZXJ2aWNpb3MgaGFiaWxpdGFkb3MiLCJHZXN0aW9uYXIgU0lTQkVOIiwiR2VzdGlvbmFyIHRhcmlmYXJpb3MiLCJHZXN0aW9uYXIgdGFyaWZhcyBkZSBjb250cmF0byIsIkdlc3Rpb25hciB1c3VhcmlvcyIsIkluYWN0aXZhciB0ZXJjZXJvIiwiUmFkaWNhciBmYWN0dXJhIiwiUmVhbGl6YXIgdHJpYWdlIiwiUmVjaWJpciBlbiBob3NwaXRhbGl6YWNpb24iLCJSZWNsYXNpZmljYXIgdHJpYWdlIiwiUmVnaXN0cmFyIGFkbWlzaW9uIiwiUmVnaXN0cmFyIGRpYWdub3N0aWNvIiwiUmVnaXN0cmFyIGV2b2x1Y2lvbiIsIlJlZ2lzdHJhciBub3RhIGRlIGluZ3Jlc28iLCJSZWdpc3RyYXIgcGFnbyIsIlJlcHJvZ3JhbWFyIGNpdGEiLCJSZXNldGVhciBjb250cmFzZW5hIiwiU29saWNpdGFyIGhvc3BpdGFsaXphY2lvbiIsIlRyYXNsYWRhciBhZ2VuZGEiLCJWZXIgYXVkaXRvcmlhIGRlIGVtcHJlc2EiLCJWZXIgYXVkaXRvcmlhIGdsb2JhbCIsIlZlciBjb2xhIGRlIHVyZ2VuY2lhcyIsIlZlciBvcmRlbmVzIGFjdGl2YXMiXSwianRpIjoiODY3NjBjOTgtMmNiZC00ZGM0LWEyOTQtMWY4MGQxZDIwNjYyIiwiaWF0IjoxNzc3NzY1NzgzLCJleHAiOjE3Nzc4NTIxODN9.wbNcJmazn5sNz-bYTeVgm8W8YO9MBFvSwdPt-5cXaTj4YvAdbXtShaoofido_g6m3bSo2Caiaz3Iu9u3y5b9dA
+
+@base = http://localhost:{{port}}/api/medication-requests
+
+@solicitudId = 1
+@bodegaOrigenId = 1
+@bodegaDestinoId = 2
+@profesionalId = 2
+@servicioId = 4
+
+### HU-FASE2-072 — Crear solicitud de medicamento (flujo principal — prioridad NORMAL)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "sourceWarehouseId": {{bodegaOrigenId}},
+  "destinationWarehouseId": {{bodegaDestinoId}},
+  "requestingProfessionalId": {{profesionalId}},
+  "priority": "NORMAL",
+  "reason": "Reabastecimiento mensual del botiquín de piso",
+  "observations": "Solicitud regular de medicamentos del servicio de hospitalización",
+  "items": [
+    {
+      "healthServiceId": {{servicioId}},
+      "requestedQuantity": 20
+    },
+    {
+      "healthServiceId": {{servicioId}},
+      "requestedQuantity": 5
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-072 — Crear solicitud URGENTE (un solo ítem)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "sourceWarehouseId": {{bodegaOrigenId}},
+  "destinationWarehouseId": {{bodegaDestinoId}},
+  "priority": "URGENTE",
+  "reason": "Atención de paciente en urgencias",
+  "items": [
+    {
+      "healthServiceId": {{servicioId}},
+      "requestedQuantity": 2
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-072 — Crear solicitud VITAL (carro de paro)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "sourceWarehouseId": {{bodegaOrigenId}},
+  "destinationWarehouseId": {{bodegaDestinoId}},
+  "priority": "VITAL",
+  "reason": "Reposición carro de paro tras código azul",
+  "items": [
+    {
+      "healthServiceId": {{servicioId}},
+      "requestedQuantity": 1
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-072 — Consultar solicitud por ID (incluye items)
+GET {{base}}/{{solicitudId}}
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-072 — Listar solicitudes (orden por defecto: VITAL → URGENTE → NORMAL)
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 10,
+  "search": ""
+}
+
+###
+
+### HU-FASE2-072 — Buscar solicitud por número o estado
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 10,
+  "search": "PENDIENTE",
+  "order_by": "s.fecha_solicitud",
+  "order": "DESC"
+}
+
+###
+
+### HU-FASE2-072 — Listar por número de solicitud
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 10,
+  "search": "SOL-",
+  "order_by": "s.fecha_solicitud",
+  "order": "DESC"
+}
+
+###
+
+### HU-FASE2-072 — Anular solicitud pendiente (con justificación)
+PATCH {{base}}/{{solicitudId}}/cancel
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "reason": "El servicio ya no requiere los medicamentos solicitados"
+}
+
+###
+
+### HU-FASE2-072 — Validación: crear sin items
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "sourceWarehouseId": {{bodegaOrigenId}},
+  "destinationWarehouseId": {{bodegaDestinoId}},
+  "priority": "NORMAL",
+  "items": []
+}
+
+###
+
+### HU-FASE2-072 — Validación: crear sin bodega origen (campo obligatorio)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "destinationWarehouseId": {{bodegaDestinoId}},
+  "priority": "NORMAL",
+  "items": [
+    {
+      "healthServiceId": {{servicioId}},
+      "requestedQuantity": 5
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-072 — Validación: cantidad cero
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "sourceWarehouseId": {{bodegaOrigenId}},
+  "destinationWarehouseId": {{bodegaDestinoId}},
+  "priority": "NORMAL",
+  "items": [
+    {
+      "healthServiceId": {{servicioId}},
+      "requestedQuantity": 0
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-072 — Validación: prioridad inválida
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "sourceWarehouseId": {{bodegaOrigenId}},
+  "destinationWarehouseId": {{bodegaDestinoId}},
+  "priority": "EMERGENCIA",
+  "items": [
+    {
+      "healthServiceId": {{servicioId}},
+      "requestedQuantity": 1
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-072 — Validación: bodega origen = destino
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "sourceWarehouseId": {{bodegaOrigenId}},
+  "destinationWarehouseId": {{bodegaOrigenId}},
+  "priority": "NORMAL",
+  "items": [
+    {
+      "healthServiceId": {{servicioId}},
+      "requestedQuantity": 5
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-072 — Validación: bodega origen no permite despachar (404)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "sourceWarehouseId": 999999,
+  "destinationWarehouseId": {{bodegaDestinoId}},
+  "priority": "NORMAL",
+  "items": [
+    {
+      "healthServiceId": {{servicioId}},
+      "requestedQuantity": 5
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-072 — Validación: bodega destino no permite recibir (404)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "sourceWarehouseId": {{bodegaOrigenId}},
+  "destinationWarehouseId": 999999,
+  "priority": "NORMAL",
+  "items": [
+    {
+      "healthServiceId": {{servicioId}},
+      "requestedQuantity": 5
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-072 — Validación: profesional inexistente o de otra empresa (404)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "sourceWarehouseId": {{bodegaOrigenId}},
+  "destinationWarehouseId": {{bodegaDestinoId}},
+  "requestingProfessionalId": 999999,
+  "priority": "NORMAL",
+  "items": [
+    {
+      "healthServiceId": {{servicioId}},
+      "requestedQuantity": 5
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-072 — Validación: servicio que no es MEDICAMENTO ni INSUMO (400)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "sourceWarehouseId": {{bodegaOrigenId}},
+  "destinationWarehouseId": {{bodegaDestinoId}},
+  "priority": "NORMAL",
+  "items": [
+    {
+      "healthServiceId": 999999,
+      "requestedQuantity": 5
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-072 — Validación: anular sin justificación
+PATCH {{base}}/{{solicitudId}}/cancel
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "reason": ""
+}
+
+###
+
+### HU-FASE2-072 — Validación: anular solicitud no pendiente (conflict)
+PATCH {{base}}/{{solicitudId}}/cancel
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "reason": "Intento de anular solicitud ya despachada"
+}
+
+###
+
+### HU-FASE2-072 — Validación: consultar solicitud inexistente (404)
+GET {{base}}/999999
+Authorization: {{token}}
+
+###
