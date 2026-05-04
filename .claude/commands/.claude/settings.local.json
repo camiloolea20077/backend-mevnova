@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(\"/d/Proyectos Camilo/MedNova Sistema de gestion hospitalaria/Backend/backend-mevnova/mvnw.cmd\" -q -f \"/d/Proyectos Camilo/MedNova Sistema de gestion hospitalaria/Backend/backend-mevnova/pom.xml\" -DskipTests compile)",
+      "Bash(./mvnw.cmd -q -DskipTests compile)"
+    ]
+  }
+}

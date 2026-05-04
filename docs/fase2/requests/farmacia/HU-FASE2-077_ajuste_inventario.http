@@ -1,0 +1,254 @@
+@port = 9001
+@token = Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIzIiwidGlwb190b2tlbiI6IkFDQ0VTUyIsInVzdWFyaW9faWQiOjMsImVtcHJlc2FfaWQiOjQsInNlZGVfaWQiOjEsInVzZXJuYW1lIjoibWFyaWEucGVyZXoiLCJyb2xlcyI6WyJNw6lkaWNvIl0sInBlcm1pc29zIjpbIkNhbWJpYXIgZXN0YWRvIGRlIGFkbWlzaW9uIiwiQ29uc3VsdGFyIGFkbWlzaW9uZXMiLCJSZWdpc3RyYXIgYWRtaXNpb24iXSwianRpIjoiN2E3YTc5Y2QtOGM1Yy00MDI2LWI5ZDEtZDEwMjVhM2ZkOTU3IiwiaWF0IjoxNzc3OTE1Njk2LCJleHAiOjE3NzgwMDIwOTZ9.x03GWJijsBLCDZL53kJPd-gU6xV_UuMXwULM_SjqNTlK8bDDK_eE2iRmBynarmh3P7jAHn1EgOaHpeo73-It_w
+@tokenAprobador = Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwidGlwb190b2tlbiI6IkFDQ0VTUyIsInVzdWFyaW9faWQiOjIsImVtcHJlc2FfaWQiOjQsInNlZGVfaWQiOjEsInVzZXJuYW1lIjoiYWRtaW5faG9zcGl0YWwiLCJyb2xlcyI6WyJTdXBlci1BZG1pbmlzdHJhZG9yIGRlbCBTaXN0ZW1hIl0sInBlcm1pc29zIjpbIkFjdHVhbGl6YXIgdGVyY2VybyIsIkFudWxhciBmYWN0dXJhIiwiQW51bGFyIG9yZGVuIGNsaW5pY2EiLCJBbnVsYXIgcHJlc2NyaXBjaW9uIiwiQXByb2JhciBmYWN0dXJhIiwiQXNpZ25hciBjaXRhIiwiQXNpZ25hciByb2xlcyBhIHVzdWFyaW9zIiwiQXRlbmRlciB1cmdlbmNpYXMiLCJDYW1iaWFyIGVzdGFkbyBkZSBhZG1pc2lvbiIsIkNhbmNlbGFyIGNpdGEiLCJDZXJyYXIgYWRtaXNpb24iLCJDZXJyYXIgYXRlbmNpb24gZGUgdXJnZW5jaWFzIiwiQ29uc3VsdGFyIGFkbWlzaW9uZXMiLCJDb25zdWx0YXIgY2FydGVyYSIsIkNvbnN1bHRhciB0ZXJjZXJvIiwiQ3JlYXIgcGFjaWVudGUiLCJDcmVhciB0ZXJjZXJvIiwiRGFyIGVncmVzbyBob3NwaXRhbGFyaW8iLCJFZGl0YXIgZmFjdHVyYSIsIkdlbmVyYXIgZGlzcG9uaWJpbGlkYWQiLCJHZW5lcmFyIGZhY3R1cmEiLCJHZW5lcmFyIG9yZGVuIGNsaW5pY2EiLCJHZW5lcmFyIHByZXNjcmlwY2lvbiIsIkdlbmVyYXIgUklQUyIsIkdlc3Rpb25hciBhZ2VuZGFzIiwiR2VzdGlvbmFyIGNhbGVuZGFyaW9zIiwiR2VzdGlvbmFyIGNhdGFsb2dvIGRlIHNlcnZpY2lvcyIsIkdlc3Rpb25hciBjZW50cm9zIGRlIGNvc3RvIiwiR2VzdGlvbmFyIGNvYmVydHVyYSBkZSBjb250cmF0byIsIkdlc3Rpb25hciBjb250YWN0b3MiLCJHZXN0aW9uYXIgY29udHJhdG9zIiwiR2VzdGlvbmFyIGNvbnRyYXRvcyBkZWwgcGFjaWVudGUiLCJHZXN0aW9uYXIgZGlyZWNjaW9uZXMiLCJHZXN0aW9uYXIgZW1wcmVzYXMiLCJHZXN0aW9uYXIgZ2xvc2FzIiwiR2VzdGlvbmFyIGxpc3RhIGRlIGVzcGVyYSIsIkdlc3Rpb25hciBwYWdhZG9yZXMiLCJHZXN0aW9uYXIgcGVybWlzb3MiLCJHZXN0aW9uYXIgcHJvZmVzaW9uYWxlcyBkZSBzYWx1ZCIsIkdlc3Rpb25hciByZWN1cnNvcyBmaXNpY29zIiwiR2VzdGlvbmFyIHJlbGFjaW9uZXMiLCJHZXN0aW9uYXIgcm9sZXMiLCJHZXN0aW9uYXIgc2VkZXMiLCJHZXN0aW9uYXIgc2VndXJpZGFkIHNvY2lhbCIsIkdlc3Rpb25hciBzZXJ2aWNpb3MgaGFiaWxpdGFkb3MiLCJHZXN0aW9uYXIgU0lTQkVOIiwiR2VzdGlvbmFyIHRhcmlmYXJpb3MiLCJHZXN0aW9uYXIgdGFyaWZhcyBkZSBjb250cmF0byIsIkdlc3Rpb25hciB1c3VhcmlvcyIsIkluYWN0aXZhciB0ZXJjZXJvIiwiUmFkaWNhciBmYWN0dXJhIiwiUmVhbGl6YXIgdHJpYWdlIiwiUmVjaWJpciBlbiBob3NwaXRhbGl6YWNpb24iLCJSZWNsYXNpZmljYXIgdHJpYWdlIiwiUmVnaXN0cmFyIGFkbWlzaW9uIiwiUmVnaXN0cmFyIGRpYWdub3N0aWNvIiwiUmVnaXN0cmFyIGV2b2x1Y2lvbiIsIlJlZ2lzdHJhciBub3RhIGRlIGluZ3Jlc28iLCJSZWdpc3RyYXIgcGFnbyIsIlJlcHJvZ3JhbWFyIGNpdGEiLCJSZXNldGVhciBjb250cmFzZW5hIiwiU29saWNpdGFyIGhvc3BpdGFsaXphY2lvbiIsIlRyYXNsYWRhciBhZ2VuZGEiLCJWZXIgYXVkaXRvcmlhIGRlIGVtcHJlc2EiLCJWZXIgYXVkaXRvcmlhIGdsb2JhbCIsIlZlciBjb2xhIGRlIHVyZ2VuY2lhcyIsIlZlciBvcmRlbmVzIGFjdGl2YXMiXSwianRpIjoiZWM4OTEwYTgtMDk2Yi00ZTljLThkYzktMjUzMDFkY2EyMmFhIiwiaWF0IjoxNzc3OTE1ODc2LCJleHAiOjE3NzgwMDIyNzZ9.ybGHbjJ9dGpr6WmuidzUJ3lbASsmdWx_4UXhDezD-6kJ666VKb8UHeqOPtoGAsHCRmZ5nLnleb6Q9u84QTa1mg
+
+@base = http://localhost:{{port}}/api/inventory-adjustments
+
+@bodegaId = 1
+@bodegaInexistenteId = 99999
+@loteId = 1
+@otroLoteId = 2
+@ajusteId = 2
+@ajusteInexistenteId = 99999
+
+### HU-FASE2-077 — Crear ajuste BORRADOR (inventario físico)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "warehouseId": {{bodegaId}},
+  "adjustmentType": "FISICO",
+  "adjustmentDate": "2026-05-04",
+  "reason": "Conteo físico mensual de bodega central. Diferencias detectadas en dos lotes.",
+  "items": [
+    {
+      "batchId": {{loteId}},
+      "systemQuantity": 100.000,
+      "realQuantity": 95.000,
+      "unitValue": 1500.00,
+      "observations": "5 unidades faltantes detectadas en conteo"
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-077 — Crear ajuste BORRADOR (deterioro)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "warehouseId": {{bodegaId}},
+  "adjustmentType": "DETERIORO",
+  "adjustmentDate": "2026-05-04",
+  "reason": "Empaque dañado durante manipulación",
+  "items": [
+    {
+      "batchId": {{loteId}},
+      "systemQuantity": 95.000,
+      "realQuantity": 90.000,
+      "unitValue": 1500.00,
+      "observations": "5 unidades con empaque roto"
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-077 — Consultar ajuste por ID
+GET {{base}}/{{ajusteId}}
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-077 — Listar ajustes (paginado)
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 10,
+  "search": "",
+  "order_by": "a.fecha_ajuste",
+  "order": "DESC"
+}
+
+###
+
+### HU-FASE2-077 — Buscar ajustes por número o tipo
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 10,
+  "search": "FISICO",
+  "order_by": "a.created_at",
+  "order": "DESC"
+}
+
+###
+
+### HU-FASE2-077 — Aprobar ajuste (debe ejecutarlo un usuario distinto al creador)
+PATCH {{base}}/{{ajusteId}}/approve
+Authorization: {{tokenAprobador}}
+
+###
+
+### HU-FASE2-077 — Aplicar ajuste (genera movimiento_inventario y actualiza stock_lote)
+PATCH {{base}}/{{ajusteId}}/apply
+Authorization: {{tokenAprobador}}
+
+###
+
+### HU-FASE2-077 — Anular ajuste con justificación
+PATCH {{base}}/{{ajusteId}}/cancel
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "reason": "Diferencias atribuidas a error de captura, se anula ajuste"
+}
+
+###
+
+### HU-FASE2-077 — Validación: campo obligatorio (warehouseId faltante)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "adjustmentType": "FISICO",
+  "adjustmentDate": "2026-05-04",
+  "reason": "Faltó la bodega",
+  "items": [
+    {
+      "batchId": {{loteId}},
+      "systemQuantity": 10.000,
+      "realQuantity": 9.000,
+      "unitValue": 1000.00
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-077 — Validación: tipo de ajuste inválido
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "warehouseId": {{bodegaId}},
+  "adjustmentType": "INVENTADO",
+  "adjustmentDate": "2026-05-04",
+  "reason": "Tipo no permitido por CHECK",
+  "items": [
+    {
+      "batchId": {{loteId}},
+      "systemQuantity": 10.000,
+      "realQuantity": 9.000,
+      "unitValue": 1000.00
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-077 — Validación: lista de ítems vacía
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "warehouseId": {{bodegaId}},
+  "adjustmentType": "FISICO",
+  "adjustmentDate": "2026-05-04",
+  "reason": "Sin ítems",
+  "items": []
+}
+
+###
+
+### HU-FASE2-077 — Validación: bodega inexistente o de otra empresa (404)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "warehouseId": {{bodegaInexistenteId}},
+  "adjustmentType": "FISICO",
+  "adjustmentDate": "2026-05-04",
+  "reason": "Bodega que no existe",
+  "items": [
+    {
+      "batchId": {{loteId}},
+      "systemQuantity": 10.000,
+      "realQuantity": 9.000,
+      "unitValue": 1000.00
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-077 — Validación: lote duplicado dentro del mismo ajuste
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "warehouseId": {{bodegaId}},
+  "adjustmentType": "FISICO",
+  "adjustmentDate": "2026-05-04",
+  "reason": "Mismo lote dos veces",
+  "items": [
+    {
+      "batchId": {{loteId}},
+      "systemQuantity": 10.000,
+      "realQuantity": 9.000,
+      "unitValue": 1000.00
+    },
+    {
+      "batchId": {{loteId}},
+      "systemQuantity": 5.000,
+      "realQuantity": 4.000,
+      "unitValue": 1000.00
+    }
+  ]
+}
+
+###
+
+### HU-FASE2-077 — Validación: ID inexistente al consultar (404)
+GET {{base}}/{{ajusteInexistenteId}}
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-077 — Validación: aprobador igual al creador (403)
+PATCH {{base}}/{{ajusteId}}/approve
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-077 — Validación: aplicar ajuste no aprobado (409)
+PATCH {{base}}/{{ajusteId}}/apply
+Authorization: {{tokenAprobador}}
+
+###
+
+### HU-FASE2-077 — Validación: anular ajuste APLICADO (409)
+PATCH {{base}}/{{ajusteId}}/cancel
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "reason": "Intento de anular un ajuste ya aplicado"
+}
+
+###

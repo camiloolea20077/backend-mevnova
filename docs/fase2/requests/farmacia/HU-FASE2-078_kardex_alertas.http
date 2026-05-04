@@ -1,0 +1,354 @@
+@port = 9001
+@token = Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIzIiwidGlwb190b2tlbiI6IkFDQ0VTUyIsInVzdWFyaW9faWQiOjMsImVtcHJlc2FfaWQiOjQsInNlZGVfaWQiOjEsInVzZXJuYW1lIjoibWFyaWEucGVyZXoiLCJyb2xlcyI6WyJNw6lkaWNvIl0sInBlcm1pc29zIjpbIkNhbWJpYXIgZXN0YWRvIGRlIGFkbWlzaW9uIiwiQ29uc3VsdGFyIGFkbWlzaW9uZXMiLCJSZWdpc3RyYXIgYWRtaXNpb24iXSwianRpIjoiN2E3YTc5Y2QtOGM1Yy00MDI2LWI5ZDEtZDEwMjVhM2ZkOTU3IiwiaWF0IjoxNzc3OTE1Njk2LCJleHAiOjE3NzgwMDIwOTZ9.x03GWJijsBLCDZL53kJPd-gU6xV_UuMXwULM_SjqNTlK8bDDK_eE2iRmBynarmh3P7jAHn1EgOaHpeo73-It_w
+
+
+@base = http://localhost:{{port}}/api/kardex
+
+@loteId = 1
+@otroLoteId = 2
+@servicioSaludId = 1
+@bodegaId = 1
+@sedeId = 1
+@loteInexistenteId = 99999
+
+### HU-FASE2-078 — Kardex por lote (movimientos cronológicos con saldo acumulado)
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 20,
+  "search": "",
+  "order_by": "fecha_movimiento",
+  "order": "DESC",
+  "params": {
+    "batchId": {{loteId}}
+  }
+}
+
+###
+
+### HU-FASE2-078 — Kardex por servicio (todos los lotes del medicamento)
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 20,
+  "search": "",
+  "order_by": "fecha_movimiento",
+  "order": "DESC",
+  "params": {
+    "healthServiceId": {{servicioSaludId}}
+  }
+}
+
+###
+
+### HU-FASE2-078 — Kardex con filtros de bodega y rango de fechas
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 50,
+  "search": "",
+  "order_by": "fecha_movimiento",
+  "order": "ASC",
+  "params": {
+    "batchId": {{loteId}},
+    "warehouseId": {{bodegaId}},
+    "fromDate": "2026-01-01",
+    "toDate": "2026-12-31"
+  }
+}
+
+###
+
+### HU-FASE2-078 — Kardex filtrado por tipo de movimiento (solo dispensaciones)
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 20,
+  "search": "",
+  "order_by": "fecha_movimiento",
+  "order": "DESC",
+  "params": {
+    "batchId": {{loteId}},
+    "movementType": "SALIDA_DISPENSACION"
+  }
+}
+
+###
+
+### HU-FASE2-078 — Alertas de vencimiento próximas (próximos 30 días)
+POST {{base}}/expiration-alerts
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 20,
+  "search": "",
+  "order_by": "l.fecha_vencimiento",
+  "order": "ASC",
+  "params": {
+    "daysThreshold": 30
+  }
+}
+
+###
+
+### HU-FASE2-078 — Alertas de vencimiento (próximos 60 días)
+POST {{base}}/expiration-alerts
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 20,
+  "search": "",
+  "order_by": "l.fecha_vencimiento",
+  "order": "ASC",
+  "params": {
+    "daysThreshold": 60
+  }
+}
+
+###
+
+### HU-FASE2-078 — Alertas de vencimiento (próximos 90 días)
+POST {{base}}/expiration-alerts
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 50,
+  "search": "",
+  "order_by": "l.fecha_vencimiento",
+  "order": "ASC",
+  "params": {
+    "daysThreshold": 90
+  }
+}
+
+###
+
+### HU-FASE2-078 — Alertas de lotes ya vencidos con stock disponible
+POST {{base}}/expiration-alerts
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 20,
+  "search": "",
+  "order_by": "l.fecha_vencimiento",
+  "order": "DESC",
+  "params": {
+    "expired": true
+  }
+}
+
+###
+
+### HU-FASE2-078 — Alertas de vencimiento con búsqueda por nombre o lote
+POST {{base}}/expiration-alerts
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 20,
+  "search": "ACETAMINOFEN",
+  "order_by": "l.fecha_vencimiento",
+  "order": "ASC",
+  "params": {
+    "daysThreshold": 90
+  }
+}
+
+###
+
+### HU-FASE2-078 — Alertas de vencimiento filtrando por bodega y sede
+POST {{base}}/expiration-alerts
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 20,
+  "search": "",
+  "order_by": "l.fecha_vencimiento",
+  "order": "ASC",
+  "params": {
+    "daysThreshold": 60,
+    "warehouseId": {{bodegaId}},
+    "branchId": {{sedeId}}
+  }
+}
+
+###
+
+### HU-FASE2-078 — Alertas de stock mínimo (umbral 10 unidades)
+POST {{base}}/low-stock-alerts
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 20,
+  "search": "",
+  "order_by": "agg.cantidad_total",
+  "order": "ASC",
+  "params": {
+    "minimumQuantity": 10
+  }
+}
+
+###
+
+### HU-FASE2-078 — Alertas de stock mínimo (umbral 50 unidades, por bodega)
+POST {{base}}/low-stock-alerts
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 20,
+  "search": "",
+  "order_by": "agg.cantidad_total",
+  "order": "ASC",
+  "params": {
+    "minimumQuantity": 50,
+    "warehouseId": {{bodegaId}}
+  }
+}
+
+###
+
+### HU-FASE2-078 — Alertas de stock mínimo por servicio específico
+POST {{base}}/low-stock-alerts
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 20,
+  "search": "",
+  "order_by": "agg.cantidad_total",
+  "order": "ASC",
+  "params": {
+    "minimumQuantity": 100,
+    "healthServiceId": {{servicioSaludId}}
+  }
+}
+
+###
+
+### HU-FASE2-078 — Alertas de stock mínimo con búsqueda
+POST {{base}}/low-stock-alerts
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 20,
+  "search": "ACETAMINOFEN",
+  "order_by": "agg.cantidad_total",
+  "order": "ASC",
+  "params": {
+    "minimumQuantity": 50
+  }
+}
+
+###
+
+### HU-FASE2-078 — Validación: kardex sin batchId ni healthServiceId (400)
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 20,
+  "search": "",
+  "order_by": "fecha_movimiento",
+  "order": "DESC",
+  "params": {}
+}
+
+###
+
+### HU-FASE2-078 — Validación: kardex sin params (400)
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 20,
+  "search": "",
+  "order_by": "fecha_movimiento",
+  "order": "DESC"
+}
+
+###
+
+### HU-FASE2-078 — Validación: kardex con lote inexistente o de otra empresa (lista vacía)
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 20,
+  "search": "",
+  "order_by": "fecha_movimiento",
+  "order": "DESC",
+  "params": {
+    "batchId": {{loteInexistenteId}}
+  }
+}
+
+###
+
+### HU-FASE2-078 — Validación: page o rows faltantes (400)
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "search": "",
+  "order_by": "fecha_movimiento",
+  "order": "DESC",
+  "params": {
+    "batchId": {{loteId}}
+  }
+}
+
+###
+
+### HU-FASE2-078 — Validación: token faltante (401)
+POST {{base}}/list
+Content-Type: application/json
+
+{
+  "page": 0,
+  "rows": 10,
+  "search": "",
+  "order_by": "fecha_movimiento",
+  "order": "DESC",
+  "params": {
+    "batchId": {{loteId}}
+  }
+}
+
+###

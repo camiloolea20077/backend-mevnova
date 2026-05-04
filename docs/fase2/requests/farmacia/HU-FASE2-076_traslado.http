@@ -196,7 +196,7 @@ Authorization: {{token}}
 
 ###
 
-### HU-FASE2-076 — Validación: items vacíos (400)
+### HU-FASE2-076 — Validación: items vacíos (40
 POST {{base}}
 Content-Type: application/json
 Authorization: {{token}}

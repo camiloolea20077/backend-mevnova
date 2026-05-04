@@ -17,7 +17,10 @@
       "Bash(./mvnw -DskipTests compile)",
       "Bash(./mvnw -DskipTests clean compile)",
       "Bash(mvn -q -DskipTests compile)",
-      "Bash(echo \"EXIT=$?\")"
+      "Bash(echo \"EXIT=$?\")",
+      "PowerShell(.\\\\mvnw.cmd -q -DskipTests compile 2>&1 | Select-Object -Last 50)",
+      "PowerShell(.\\\\mvnw.cmd -DskipTests compile 2>&1 | Select-Object -Last 80)",
+      "PowerShell(.\\\\mvnw.cmd -DskipTests clean compile 2>&1 | Select-Object -Last 80)"
     ]
   }
 }
