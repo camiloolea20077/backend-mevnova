@@ -1,0 +1,349 @@
+@port = 9001
+@token = Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwidGlwb190b2tlbiI6IkFDQ0VTUyIsInVzdWFyaW9faWQiOjIsImVtcHJlc2FfaWQiOjQsInNlZGVfaWQiOjEsInVzZXJuYW1lIjoiYWRtaW5faG9zcGl0YWwiLCJyb2xlcyI6WyJTdXBlci1BZG1pbmlzdHJhZG9yIGRlbCBTaXN0ZW1hIl0sInBlcm1pc29zIjpbIkFjdHVhbGl6YXIgdGVyY2VybyIsIkFudWxhciBmYWN0dXJhIiwiQW51bGFyIG9yZGVuIGNsaW5pY2EiLCJBbnVsYXIgcHJlc2NyaXBjaW9uIiwiQXByb2JhciBmYWN0dXJhIiwiQXNpZ25hciBjaXRhIiwiQXNpZ25hciByb2xlcyBhIHVzdWFyaW9zIiwiQXRlbmRlciB1cmdlbmNpYXMiLCJDYW1iaWFyIGVzdGFkbyBkZSBhZG1pc2lvbiIsIkNhbmNlbGFyIGNpdGEiLCJDZXJyYXIgYWRtaXNpb24iLCJDZXJyYXIgYXRlbmNpb24gZGUgdXJnZW5jaWFzIiwiQ29uc3VsdGFyIGFkbWlzaW9uZXMiLCJDb25zdWx0YXIgY2FydGVyYSIsIkNvbnN1bHRhciB0ZXJjZXJvIiwiQ3JlYXIgcGFjaWVudGUiLCJDcmVhciB0ZXJjZXJvIiwiRGFyIGVncmVzbyBob3NwaXRhbGFyaW8iLCJFZGl0YXIgZmFjdHVyYSIsIkdlbmVyYXIgZGlzcG9uaWJpbGlkYWQiLCJHZW5lcmFyIGZhY3R1cmEiLCJHZW5lcmFyIG9yZGVuIGNsaW5pY2EiLCJHZW5lcmFyIHByZXNjcmlwY2lvbiIsIkdlbmVyYXIgUklQUyIsIkdlc3Rpb25hciBhZ2VuZGFzIiwiR2VzdGlvbmFyIGNhbGVuZGFyaW9zIiwiR2VzdGlvbmFyIGNhdGFsb2dvIGRlIHNlcnZpY2lvcyIsIkdlc3Rpb25hciBjZW50cm9zIGRlIGNvc3RvIiwiR2VzdGlvbmFyIGNvYmVydHVyYSBkZSBjb250cmF0byIsIkdlc3Rpb25hciBjb250YWN0b3MiLCJHZXN0aW9uYXIgY29udHJhdG9zIiwiR2VzdGlvbmFyIGNvbnRyYXRvcyBkZWwgcGFjaWVudGUiLCJHZXN0aW9uYXIgZGlyZWNjaW9uZXMiLCJHZXN0aW9uYXIgZW1wcmVzYXMiLCJHZXN0aW9uYXIgZ2xvc2FzIiwiR2VzdGlvbmFyIGxpc3RhIGRlIGVzcGVyYSIsIkdlc3Rpb25hciBwYWdhZG9yZXMiLCJHZXN0aW9uYXIgcGVybWlzb3MiLCJHZXN0aW9uYXIgcHJvZmVzaW9uYWxlcyBkZSBzYWx1ZCIsIkdlc3Rpb25hciByZWN1cnNvcyBmaXNpY29zIiwiR2VzdGlvbmFyIHJlbGFjaW9uZXMiLCJHZXN0aW9uYXIgcm9sZXMiLCJHZXN0aW9uYXIgc2VkZXMiLCJHZXN0aW9uYXIgc2VndXJpZGFkIHNvY2lhbCIsIkdlc3Rpb25hciBzZXJ2aWNpb3MgaGFiaWxpdGFkb3MiLCJHZXN0aW9uYXIgU0lTQkVOIiwiR2VzdGlvbmFyIHRhcmlmYXJpb3MiLCJHZXN0aW9uYXIgdGFyaWZhcyBkZSBjb250cmF0byIsIkdlc3Rpb25hciB1c3VhcmlvcyIsIkluYWN0aXZhciB0ZXJjZXJvIiwiUmFkaWNhciBmYWN0dXJhIiwiUmVhbGl6YXIgdHJpYWdlIiwiUmVjaWJpciBlbiBob3NwaXRhbGl6YWNpb24iLCJSZWNsYXNpZmljYXIgdHJpYWdlIiwiUmVnaXN0cmFyIGFkbWlzaW9uIiwiUmVnaXN0cmFyIGRpYWdub3N0aWNvIiwiUmVnaXN0cmFyIGV2b2x1Y2lvbiIsIlJlZ2lzdHJhciBub3RhIGRlIGluZ3Jlc28iLCJSZWdpc3RyYXIgcGFnbyIsIlJlcHJvZ3JhbWFyIGNpdGEiLCJSZXNldGVhciBjb250cmFzZW5hIiwiU29saWNpdGFyIGhvc3BpdGFsaXphY2lvbiIsIlRyYXNsYWRhciBhZ2VuZGEiLCJWZXIgYXVkaXRvcmlhIGRlIGVtcHJlc2EiLCJWZXIgYXVkaXRvcmlhIGdsb2JhbCIsIlZlciBjb2xhIGRlIHVyZ2VuY2lhcyIsIlZlciBvcmRlbmVzIGFjdGl2YXMiXSwianRpIjoiYTdlNjg1MjAtMGExZi00NzlhLWFhYTUtODI3NjQ2OTI5Njk3IiwiaWF0IjoxNzc4Mjg0MDM1LCJleHAiOjE3NzgzNzA0MzV9.5alQHZv6qS411enEHOGrH-KKL_NhwohmLA8D9B_8NBdzedB24t8XJAW8X0SSOgTbZv_xoz_8qi6nn1WIaAkBdQ
+
+@base = http://localhost:{{port}}/api/nursing-care-plans
+
+@atencionId = 1
+@otraAtencionId = 2
+@pacienteId = 5
+@profesionalId = 2
+@planId = 1
+@planInexistenteId = 99999
+@atencionInexistenteId = 99999
+@pacienteInexistenteId = 99999
+@profesionalInexistenteId = 99999
+
+### HU-FASE2-085 — Crear plan de cuidados (NANDA/NOC/NIC)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "encounterId": {{atencionId}},
+  "patientId": {{pacienteId}},
+  "professionalId": {{profesionalId}},
+  "planDate": "2026-05-08",
+  "nursingDiagnosis": "(NANDA) Riesgo de caídas R/C debilidad muscular y deterioro del equilibrio.",
+  "objectives": "(NOC) Mantener seguridad ambiental. Reducir el riesgo de caídas a 0 durante la hospitalización.",
+  "interventions": "(NIC) Prevención de caídas: barandillas elevadas, timbre al alcance, asistencia para movilización, calzado antideslizante.",
+  "status": "ACTIVO"
+}
+
+###
+
+### HU-FASE2-085 — Crear plan de cuidados con evaluación inicial
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "encounterId": {{atencionId}},
+  "patientId": {{pacienteId}},
+  "professionalId": {{profesionalId}},
+  "nursingDiagnosis": "(NANDA) Dolor agudo R/C proceso quirúrgico EVI.",
+  "objectives": "(NOC) Control del dolor: EVA <= 3 a las 24 horas postquirúrgicas.",
+  "interventions": "(NIC) Manejo del dolor: administración analgésica programada, monitoreo EVA c/4h, técnicas de relajación.",
+  "evaluation": "EVA inicial 7/10. Inicia esquema analgésico.",
+  "status": "ACTIVO"
+}
+
+###
+
+### HU-FASE2-085 — Consultar plan por ID
+GET {{base}}/{{planId}}
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-085 — Listar planes de la atención
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 20,
+  "search": "",
+  "order_by": "p.fecha_plan",
+  "order": "DESC",
+  "params": {
+    "encounterId": {{atencionId}}
+  }
+}
+
+###
+
+### HU-FASE2-085 — Listar planes ACTIVO del paciente
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 20,
+  "search": "",
+  "order_by": "p.fecha_plan",
+  "order": "DESC",
+  "params": {
+    "patientId": {{pacienteId}},
+    "onlyActiveStatus": true
+  }
+}
+
+###
+
+### HU-FASE2-085 — Filtrar por estado SUSPENDIDO
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 20,
+  "search": "",
+  "order_by": "p.fecha_plan",
+  "order": "DESC",
+  "params": {
+    "patientId": {{pacienteId}},
+    "status": "SUSPENDIDO"
+  }
+}
+
+###
+
+### HU-FASE2-085 — Filtrar por profesional responsable
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 20,
+  "search": "",
+  "order_by": "p.fecha_plan",
+  "order": "DESC",
+  "params": {
+    "professionalId": {{profesionalId}}
+  }
+}
+
+###
+
+### HU-FASE2-085 — Búsqueda por texto en diagnostico/objetivos/intervenciones
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 20,
+  "search": "caidas",
+  "order_by": "p.fecha_plan",
+  "order": "DESC",
+  "params": {
+    "patientId": {{pacienteId}}
+  }
+}
+
+###
+
+### HU-FASE2-085 — Actualizar plan (agrega evaluación periódica)
+PUT {{base}}/{{planId}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "professionalId": {{profesionalId}},
+  "planDate": "2026-05-08",
+  "nursingDiagnosis": "(NANDA) Riesgo de caídas R/C debilidad muscular.",
+  "objectives": "(NOC) Mantener seguridad ambiental. Reducir el riesgo de caídas.",
+  "interventions": "(NIC) Prevención de caídas + ejercicios pasivos en cama.",
+  "evaluation": "Sin caídas en las últimas 48 horas. Mejora del balance al sentarse.",
+  "status": "ACTIVO"
+}
+
+###
+
+### HU-FASE2-085 — Cambiar estado a CUMPLIDO (al egreso)
+PATCH {{base}}/{{planId}}/status
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "status": "CUMPLIDO",
+  "evaluation": "Plan cumplido al egreso. Paciente sin caídas durante hospitalización."
+}
+
+###
+
+### HU-FASE2-085 — Cambiar estado a SUSPENDIDO con motivo
+PATCH {{base}}/{{planId}}/status
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "status": "SUSPENDIDO",
+  "evaluation": "Plan suspendido por traslado a UCI."
+}
+
+###
+
+### HU-FASE2-085 — Cambiar estado a MODIFICADO
+PATCH {{base}}/{{planId}}/status
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "status": "MODIFICADO",
+  "evaluation": "Se ajustan intervenciones según nueva orden médica."
+}
+
+###
+
+### HU-FASE2-085 — Inactivar plan
+PATCH {{base}}/{{planId}}/deactivate
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-085 — Reactivar plan
+PATCH {{base}}/{{planId}}/activate
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-085 — Eliminación lógica
+DELETE {{base}}/{{planId}}
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-085 — Validación: campo obligatorio (nursingDiagnosis faltante)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "encounterId": {{atencionId}},
+  "patientId": {{pacienteId}},
+  "professionalId": {{profesionalId}},
+  "objectives": "Sólo objetivos sin diagnóstico",
+  "interventions": "Intervenciones genéricas"
+}
+
+###
+
+### HU-FASE2-085 — Validación: estado inválido (400)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "encounterId": {{atencionId}},
+  "patientId": {{pacienteId}},
+  "professionalId": {{profesionalId}},
+  "nursingDiagnosis": "Diagnóstico de prueba",
+  "objectives": "Objetivo",
+  "interventions": "Intervenciones",
+  "status": "EN_PAUSA"
+}
+
+###
+
+### HU-FASE2-085 — Validación: paciente inexistente (404)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "encounterId": {{atencionId}},
+  "patientId": {{pacienteInexistenteId}},
+  "professionalId": {{profesionalId}},
+  "nursingDiagnosis": "Diag",
+  "objectives": "Obj",
+  "interventions": "Int"
+}
+
+###
+
+### HU-FASE2-085 — Validación: atención inexistente o de otra sede (404)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "encounterId": {{atencionInexistenteId}},
+  "patientId": {{pacienteId}},
+  "professionalId": {{profesionalId}},
+  "nursingDiagnosis": "Diag",
+  "objectives": "Obj",
+  "interventions": "Int"
+}
+
+###
+
+### HU-FASE2-085 — Validación: atención no corresponde al paciente (400)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "encounterId": {{otraAtencionId}},
+  "patientId": {{pacienteId}},
+  "professionalId": {{profesionalId}},
+  "nursingDiagnosis": "Diag",
+  "objectives": "Obj",
+  "interventions": "Int"
+}
+
+###
+
+### HU-FASE2-085 — Validación: profesional inexistente (404)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "encounterId": {{atencionId}},
+  "patientId": {{pacienteId}},
+  "professionalId": {{profesionalInexistenteId}},
+  "nursingDiagnosis": "Diag",
+  "objectives": "Obj",
+  "interventions": "Int"
+}
+
+###
+
+### HU-FASE2-085 — Validación: ID inexistente al consultar (404)
+GET {{base}}/{{planInexistenteId}}
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-085 — Validación: ID inexistente al cambiar estado (404)
+PATCH {{base}}/{{planInexistenteId}}/status
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "status": "CUMPLIDO"
+}
+
+###
+
+### HU-FASE2-085 — Validación: token faltante (401)
+POST {{base}}/list
+Content-Type: application/json
+
+{
+  "page": 0,
+  "rows": 10,
+  "search": "",
+  "order_by": "p.fecha_plan",
+  "order": "DESC",
+  "params": {
+    "patientId": {{pacienteId}}
+  }
+}
+
+###
