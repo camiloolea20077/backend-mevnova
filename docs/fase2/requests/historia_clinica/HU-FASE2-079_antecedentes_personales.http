@@ -1,0 +1,294 @@
+@port = 9001
+@token = Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIzIiwidGlwb190b2tlbiI6IkFDQ0VTUyIsInVzdWFyaW9faWQiOjMsImVtcHJlc2FfaWQiOjQsInNlZGVfaWQiOjEsInVzZXJuYW1lIjoibWFyaWEucGVyZXoiLCJyb2xlcyI6WyJNw6lkaWNvIl0sInBlcm1pc29zIjpbIkNhbWJpYXIgZXN0YWRvIGRlIGFkbWlzaW9uIiwiQ29uc3VsdGFyIGFkbWlzaW9uZXMiLCJSZWdpc3RyYXIgYWRtaXNpb24iXSwianRpIjoiN2E3YTc5Y2QtOGM1Yy00MDI2LWI5ZDEtZDEwMjVhM2ZkOTU3IiwiaWF0IjoxNzc3OTE1Njk2LCJleHAiOjE3NzgwMDIwOTZ9.x03GWJijsBLCDZL53kJPd-gU6xV_UuMXwULM_SjqNTlK8bDDK_eE2iRmBynarmh3P7jAHn1EgOaHpeo73-It_w
+
+@base = http://localhost:{{port}}/api/personal-antecedents
+
+@pacienteId = 5
+@otroPacienteId = 2
+@tipoAntecedenteAlergico = 146
+@tipoAntecedentePatologico = 147
+@tipoInexistenteId = 99999
+@catalogoDiagnosticoId = 145
+@profesionalId = 2
+@antecedenteId = 1
+@antecedenteInexistenteId = 99999
+@pacienteInexistenteId = 99999
+
+### HU-FASE2-079 — Crear antecedente patológico
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "patientId": {{pacienteId}},
+  "antecedentTypeId": {{tipoAntecedentePatologico}},
+  "catalogDiagnosisId": {{catalogoDiagnosticoId}},
+  "description": "Hipertensión arterial diagnosticada hace 5 años, en manejo con losartán 50 mg/día.",
+  "startDate": "2021-03-12",
+  "severity": "MODERADA",
+  "observations": "Buen control con tratamiento actual",
+  "registeringProfessionalId": {{profesionalId}},
+  "isActiveCondition": true
+}
+
+###
+
+### HU-FASE2-079 — Crear antecedente alérgico (se destaca en la HC)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "patientId": {{pacienteId}},
+  "antecedentTypeId": {{tipoAntecedenteAlergico}},
+  "description": "Alergia a penicilina con reacción anafiláctica documentada en 2023.",
+  "severity": "CRITICA",
+  "observations": "Evitar betalactámicos. Brazalete rojo en HC.",
+  "isActiveCondition": true
+}
+
+###
+
+### HU-FASE2-079 — Consultar antecedente por ID
+GET {{base}}/{{antecedenteId}}
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-079 — Listar antecedentes del paciente
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 20,
+  "search": "",
+  "order_by": "a.created_at",
+  "order": "DESC",
+  "params": {
+    "patientId": {{pacienteId}}
+  }
+}
+
+###
+
+### HU-FASE2-079 — Listar solo antecedentes alérgicos del paciente
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 20,
+  "search": "",
+  "order_by": "a.created_at",
+  "order": "DESC",
+  "params": {
+    "patientId": {{pacienteId}},
+    "onlyAllergies": true
+  }
+}
+
+###
+
+### HU-FASE2-079 — Listar antecedentes vigentes (es_activo = true)
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 20,
+  "search": "",
+  "order_by": "a.created_at",
+  "order": "DESC",
+  "params": {
+    "patientId": {{pacienteId}},
+    "onlyActiveCondition": true
+  }
+}
+
+###
+
+### HU-FASE2-079 — Listar filtrando por tipo de antecedente
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 20,
+  "search": "",
+  "order_by": "a.created_at",
+  "order": "DESC",
+  "params": {
+    "patientId": {{pacienteId}},
+    "antecedentTypeId": {{tipoAntecedentePatologico}}
+  }
+}
+
+###
+
+### HU-FASE2-079 — Búsqueda por texto en descripción/diagnóstico
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 20,
+  "search": "penicilina",
+  "order_by": "a.created_at",
+  "order": "DESC",
+  "params": {
+    "patientId": {{pacienteId}}
+  }
+}
+
+###
+
+### HU-FASE2-079 — Catálogo de tipos de antecedente
+GET {{base}}/types
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-079 — Actualizar antecedente
+PUT {{base}}/{{antecedenteId}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "antecedentTypeId": {{tipoAntecedentePatologico}},
+  "catalogDiagnosisId": {{catalogoDiagnosticoId}},
+  "description": "Hipertensión arterial controlada con losartán 50 mg + hidroclorotiazida 12.5 mg.",
+  "startDate": "2021-03-12",
+  "severity": "LEVE",
+  "observations": "Cifras tensionales en metas. Reevaluar en 6 meses.",
+  "registeringProfessionalId": {{profesionalId}},
+  "isActiveCondition": true
+}
+
+###
+
+### HU-FASE2-079 — Inactivar antecedente (no se elimina, queda histórico)
+PATCH {{base}}/{{antecedenteId}}/deactivate
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-079 — Reactivar antecedente
+PATCH {{base}}/{{antecedenteId}}/activate
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-079 — Eliminación lógica
+DELETE {{base}}/{{antecedenteId}}
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-079 — Validación: campo obligatorio (description faltante)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "patientId": {{pacienteId}},
+  "antecedentTypeId": {{tipoAntecedentePatologico}},
+  "severity": "LEVE"
+}
+
+###
+
+### HU-FASE2-079 — Validación: severidad inválida
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "patientId": {{pacienteId}},
+  "antecedentTypeId": {{tipoAntecedentePatologico}},
+  "description": "Test de severidad inválida",
+  "severity": "EXTREMA"
+}
+
+###
+
+### HU-FASE2-079 — Validación: fecha inicio posterior a fecha fin (400)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "patientId": {{pacienteId}},
+  "antecedentTypeId": {{tipoAntecedentePatologico}},
+  "description": "Rangos de fecha invertidos",
+  "startDate": "2026-12-31",
+  "endDate": "2024-01-01"
+}
+
+###
+
+### HU-FASE2-079 — Validación: paciente inexistente o de otra empresa (404)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "patientId": {{pacienteInexistenteId}},
+  "antecedentTypeId": {{tipoAntecedentePatologico}},
+  "description": "Paciente que no existe en mi empresa"
+}
+
+###
+
+### HU-FASE2-079 — Validación: tipo de antecedente inexistente (404)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "patientId": {{pacienteId}},
+  "antecedentTypeId": {{tipoInexistenteId}},
+  "description": "Tipo no existe"
+}
+
+###
+
+### HU-FASE2-079 — Validación: ID inexistente al consultar (404)
+GET {{base}}/{{antecedenteInexistenteId}}
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-079 — Validación: ID inexistente al actualizar (404)
+PUT {{base}}/{{antecedenteInexistenteId}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "antecedentTypeId": {{tipoAntecedentePatologico}},
+  "description": "Update de antecedente que no existe"
+}
+
+###
+
+### HU-FASE2-079 — Validación: token faltante (401)
+POST {{base}}/list
+Content-Type: application/json
+
+{
+  "page": 0,
+  "rows": 10,
+  "search": "",
+  "order_by": "a.created_at",
+  "order": "DESC",
+  "params": {
+    "patientId": {{pacienteId}}
+  }
+}
+
+###

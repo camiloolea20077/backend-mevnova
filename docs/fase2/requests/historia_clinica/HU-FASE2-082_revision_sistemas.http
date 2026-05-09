@@ -1,0 +1,305 @@
+@port = 9001
+@token = Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwidGlwb190b2tlbiI6IkFDQ0VTUyIsInVzdWFyaW9faWQiOjIsImVtcHJlc2FfaWQiOjQsInNlZGVfaWQiOjEsInVzZXJuYW1lIjoiYWRtaW5faG9zcGl0YWwiLCJyb2xlcyI6WyJTdXBlci1BZG1pbmlzdHJhZG9yIGRlbCBTaXN0ZW1hIl0sInBlcm1pc29zIjpbIkFjdHVhbGl6YXIgdGVyY2VybyIsIkFudWxhciBmYWN0dXJhIiwiQW51bGFyIG9yZGVuIGNsaW5pY2EiLCJBbnVsYXIgcHJlc2NyaXBjaW9uIiwiQXByb2JhciBmYWN0dXJhIiwiQXNpZ25hciBjaXRhIiwiQXNpZ25hciByb2xlcyBhIHVzdWFyaW9zIiwiQXRlbmRlciB1cmdlbmNpYXMiLCJDYW1iaWFyIGVzdGFkbyBkZSBhZG1pc2lvbiIsIkNhbmNlbGFyIGNpdGEiLCJDZXJyYXIgYWRtaXNpb24iLCJDZXJyYXIgYXRlbmNpb24gZGUgdXJnZW5jaWFzIiwiQ29uc3VsdGFyIGFkbWlzaW9uZXMiLCJDb25zdWx0YXIgY2FydGVyYSIsIkNvbnN1bHRhciB0ZXJjZXJvIiwiQ3JlYXIgcGFjaWVudGUiLCJDcmVhciB0ZXJjZXJvIiwiRGFyIGVncmVzbyBob3NwaXRhbGFyaW8iLCJFZGl0YXIgZmFjdHVyYSIsIkdlbmVyYXIgZGlzcG9uaWJpbGlkYWQiLCJHZW5lcmFyIGZhY3R1cmEiLCJHZW5lcmFyIG9yZGVuIGNsaW5pY2EiLCJHZW5lcmFyIHByZXNjcmlwY2lvbiIsIkdlbmVyYXIgUklQUyIsIkdlc3Rpb25hciBhZ2VuZGFzIiwiR2VzdGlvbmFyIGNhbGVuZGFyaW9zIiwiR2VzdGlvbmFyIGNhdGFsb2dvIGRlIHNlcnZpY2lvcyIsIkdlc3Rpb25hciBjZW50cm9zIGRlIGNvc3RvIiwiR2VzdGlvbmFyIGNvYmVydHVyYSBkZSBjb250cmF0byIsIkdlc3Rpb25hciBjb250YWN0b3MiLCJHZXN0aW9uYXIgY29udHJhdG9zIiwiR2VzdGlvbmFyIGNvbnRyYXRvcyBkZWwgcGFjaWVudGUiLCJHZXN0aW9uYXIgZGlyZWNjaW9uZXMiLCJHZXN0aW9uYXIgZW1wcmVzYXMiLCJHZXN0aW9uYXIgZ2xvc2FzIiwiR2VzdGlvbmFyIGxpc3RhIGRlIGVzcGVyYSIsIkdlc3Rpb25hciBwYWdhZG9yZXMiLCJHZXN0aW9uYXIgcGVybWlzb3MiLCJHZXN0aW9uYXIgcHJvZmVzaW9uYWxlcyBkZSBzYWx1ZCIsIkdlc3Rpb25hciByZWN1cnNvcyBmaXNpY29zIiwiR2VzdGlvbmFyIHJlbGFjaW9uZXMiLCJHZXN0aW9uYXIgcm9sZXMiLCJHZXN0aW9uYXIgc2VkZXMiLCJHZXN0aW9uYXIgc2VndXJpZGFkIHNvY2lhbCIsIkdlc3Rpb25hciBzZXJ2aWNpb3MgaGFiaWxpdGFkb3MiLCJHZXN0aW9uYXIgU0lTQkVOIiwiR2VzdGlvbmFyIHRhcmlmYXJpb3MiLCJHZXN0aW9uYXIgdGFyaWZhcyBkZSBjb250cmF0byIsIkdlc3Rpb25hciB1c3VhcmlvcyIsIkluYWN0aXZhciB0ZXJjZXJvIiwiUmFkaWNhciBmYWN0dXJhIiwiUmVhbGl6YXIgdHJpYWdlIiwiUmVjaWJpciBlbiBob3NwaXRhbGl6YWNpb24iLCJSZWNsYXNpZmljYXIgdHJpYWdlIiwiUmVnaXN0cmFyIGFkbWlzaW9uIiwiUmVnaXN0cmFyIGRpYWdub3N0aWNvIiwiUmVnaXN0cmFyIGV2b2x1Y2lvbiIsIlJlZ2lzdHJhciBub3RhIGRlIGluZ3Jlc28iLCJSZWdpc3RyYXIgcGFnbyIsIlJlcHJvZ3JhbWFyIGNpdGEiLCJSZXNldGVhciBjb250cmFzZW5hIiwiU29saWNpdGFyIGhvc3BpdGFsaXphY2lvbiIsIlRyYXNsYWRhciBhZ2VuZGEiLCJWZXIgYXVkaXRvcmlhIGRlIGVtcHJlc2EiLCJWZXIgYXVkaXRvcmlhIGdsb2JhbCIsIlZlciBjb2xhIGRlIHVyZ2VuY2lhcyIsIlZlciBvcmRlbmVzIGFjdGl2YXMiXSwianRpIjoiYTdlNjg1MjAtMGExZi00NzlhLWFhYTUtODI3NjQ2OTI5Njk3IiwiaWF0IjoxNzc4Mjg0MDM1LCJleHAiOjE3NzgzNzA0MzV9.5alQHZv6qS411enEHOGrH-KKL_NhwohmLA8D9B_8NBdzedB24t8XJAW8X0SSOgTbZv_xoz_8qi6nn1WIaAkBdQ
+
+@base = http://localhost:{{port}}/api/system-reviews
+
+@atencionId = 1
+@otraAtencionId = 2
+@pacienteId = 5
+@revisionId = 1
+@revisionInexistenteId = 99999
+@atencionInexistenteId = 99999
+
+### HU-FASE2-082 — Crear revisión CARDIOVASCULAR sin alteración
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "encounterId": {{atencionId}},
+  "system": "CARDIOVASCULAR",
+  "withoutAlteration": true
+}
+
+###
+
+### HU-FASE2-082 — Crear revisión RESPIRATORIO con hallazgos
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "encounterId": {{atencionId}},
+  "system": "RESPIRATORIO",
+  "withoutAlteration": false,
+  "findings": "Estertores bibasales finos, predominio en base derecha. SatO2 92% en aire ambiente."
+}
+
+###
+
+### HU-FASE2-082 — Crear revisión NEUROLOGICO sin alteración
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "encounterId": {{atencionId}},
+  "system": "NEUROLOGICO",
+  "withoutAlteration": true
+}
+
+###
+
+### HU-FASE2-082 — Crear revisión GASTROINTESTINAL con hallazgos
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "encounterId": {{atencionId}},
+  "system": "GASTROINTESTINAL",
+  "withoutAlteration": false,
+  "findings": "Dolor abdominal en epigastrio leve, sin signos de irritación peritoneal."
+}
+
+###
+
+### HU-FASE2-082 — Consultar revisión por ID
+GET {{base}}/{{revisionId}}
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-082 — Listar revisiones de una atención
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 20,
+  "search": "",
+  "order_by": "r.created_at",
+  "order": "DESC",
+  "params": {
+    "encounterId": {{atencionId}}
+  }
+}
+
+###
+
+### HU-FASE2-082 — Listar todas las revisiones de un paciente (cronología)
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 50,
+  "search": "",
+  "order_by": "r.created_at",
+  "order": "DESC",
+  "params": {
+    "patientId": {{pacienteId}}
+  }
+}
+
+###
+
+### HU-FASE2-082 — Filtrar por sistema (CARDIOVASCULAR) en una atención
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 20,
+  "search": "",
+  "order_by": "r.created_at",
+  "order": "DESC",
+  "params": {
+    "encounterId": {{atencionId}},
+    "system": "CARDIOVASCULAR"
+  }
+}
+
+###
+
+### HU-FASE2-082 — Listar solo sistemas con alteración (hallazgos)
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 20,
+  "search": "",
+  "order_by": "r.created_at",
+  "order": "DESC",
+  "params": {
+    "encounterId": {{atencionId}},
+    "withoutAlteration": false
+  }
+}
+
+###
+
+### HU-FASE2-082 — Búsqueda por texto en hallazgos
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 20,
+  "search": "estertores",
+  "order_by": "r.created_at",
+  "order": "DESC",
+  "params": {
+    "encounterId": {{atencionId}}
+  }
+}
+
+###
+
+### HU-FASE2-082 — Actualizar revisión (cambia a con alteración + hallazgos)
+PUT {{base}}/{{revisionId}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "system": "CARDIOVASCULAR",
+  "withoutAlteration": false,
+  "findings": "Soplo sistólico II/VI en foco aórtico, sin irradiación. Pulsos simétricos."
+}
+
+###
+
+### HU-FASE2-082 — Inactivar revisión
+PATCH {{base}}/{{revisionId}}/deactivate
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-082 — Reactivar revisión
+PATCH {{base}}/{{revisionId}}/activate
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-082 — Eliminación lógica
+DELETE {{base}}/{{revisionId}}
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-082 — Validación: campo obligatorio (system faltante)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "encounterId": {{atencionId}},
+  "withoutAlteration": true
+}
+
+###
+
+### HU-FASE2-082 — Validación: encounterId faltante (400)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "system": "CARDIOVASCULAR",
+  "withoutAlteration": true
+}
+
+###
+
+### HU-FASE2-082 — Validación: sistema inválido (400)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "encounterId": {{atencionId}},
+  "system": "INMUNOLOGICO",
+  "withoutAlteration": true
+}
+
+###
+
+### HU-FASE2-082 — Validación: regla de negocio — duplicado por sistema/atención (409)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "encounterId": {{atencionId}},
+  "system": "CARDIOVASCULAR",
+  "withoutAlteration": true
+}
+
+###
+
+### HU-FASE2-082 — Validación: con alteración pero sin hallazgos (400)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "encounterId": {{atencionId}},
+  "system": "ENDOCRINO",
+  "withoutAlteration": false
+}
+
+###
+
+### HU-FASE2-082 — Validación: atención inexistente o de otra empresa (404)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "encounterId": {{atencionInexistenteId}},
+  "system": "CARDIOVASCULAR",
+  "withoutAlteration": true
+}
+
+###
+
+### HU-FASE2-082 — Validación: ID inexistente al consultar (404)
+GET {{base}}/{{revisionInexistenteId}}
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-082 — Validación: ID inexistente al actualizar (404)
+PUT {{base}}/{{revisionInexistenteId}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "system": "CARDIOVASCULAR",
+  "withoutAlteration": true
+}
+
+###
+
+### HU-FASE2-082 — Validación: token faltante (401)
+POST {{base}}/list
+Content-Type: application/json
+
+{
+  "page": 0,
+  "rows": 10,
+  "search": "",
+  "order_by": "r.created_at",
+  "order": "DESC",
+  "params": {
+    "encounterId": {{atencionId}}
+  }
+}
+
+###

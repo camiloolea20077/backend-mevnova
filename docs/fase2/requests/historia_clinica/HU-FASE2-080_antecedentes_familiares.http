@@ -1,0 +1,295 @@
+@port = 9001
+@token = Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwidGlwb190b2tlbiI6IkFDQ0VTUyIsInVzdWFyaW9faWQiOjIsImVtcHJlc2FfaWQiOjQsInNlZGVfaWQiOjEsInVzZXJuYW1lIjoiYWRtaW5faG9zcGl0YWwiLCJyb2xlcyI6WyJTdXBlci1BZG1pbmlzdHJhZG9yIGRlbCBTaXN0ZW1hIl0sInBlcm1pc29zIjpbIkFjdHVhbGl6YXIgdGVyY2VybyIsIkFudWxhciBmYWN0dXJhIiwiQW51bGFyIG9yZGVuIGNsaW5pY2EiLCJBbnVsYXIgcHJlc2NyaXBjaW9uIiwiQXByb2JhciBmYWN0dXJhIiwiQXNpZ25hciBjaXRhIiwiQXNpZ25hciByb2xlcyBhIHVzdWFyaW9zIiwiQXRlbmRlciB1cmdlbmNpYXMiLCJDYW1iaWFyIGVzdGFkbyBkZSBhZG1pc2lvbiIsIkNhbmNlbGFyIGNpdGEiLCJDZXJyYXIgYWRtaXNpb24iLCJDZXJyYXIgYXRlbmNpb24gZGUgdXJnZW5jaWFzIiwiQ29uc3VsdGFyIGFkbWlzaW9uZXMiLCJDb25zdWx0YXIgY2FydGVyYSIsIkNvbnN1bHRhciB0ZXJjZXJvIiwiQ3JlYXIgcGFjaWVudGUiLCJDcmVhciB0ZXJjZXJvIiwiRGFyIGVncmVzbyBob3NwaXRhbGFyaW8iLCJFZGl0YXIgZmFjdHVyYSIsIkdlbmVyYXIgZGlzcG9uaWJpbGlkYWQiLCJHZW5lcmFyIGZhY3R1cmEiLCJHZW5lcmFyIG9yZGVuIGNsaW5pY2EiLCJHZW5lcmFyIHByZXNjcmlwY2lvbiIsIkdlbmVyYXIgUklQUyIsIkdlc3Rpb25hciBhZ2VuZGFzIiwiR2VzdGlvbmFyIGNhbGVuZGFyaW9zIiwiR2VzdGlvbmFyIGNhdGFsb2dvIGRlIHNlcnZpY2lvcyIsIkdlc3Rpb25hciBjZW50cm9zIGRlIGNvc3RvIiwiR2VzdGlvbmFyIGNvYmVydHVyYSBkZSBjb250cmF0byIsIkdlc3Rpb25hciBjb250YWN0b3MiLCJHZXN0aW9uYXIgY29udHJhdG9zIiwiR2VzdGlvbmFyIGNvbnRyYXRvcyBkZWwgcGFjaWVudGUiLCJHZXN0aW9uYXIgZGlyZWNjaW9uZXMiLCJHZXN0aW9uYXIgZW1wcmVzYXMiLCJHZXN0aW9uYXIgZ2xvc2FzIiwiR2VzdGlvbmFyIGxpc3RhIGRlIGVzcGVyYSIsIkdlc3Rpb25hciBwYWdhZG9yZXMiLCJHZXN0aW9uYXIgcGVybWlzb3MiLCJHZXN0aW9uYXIgcHJvZmVzaW9uYWxlcyBkZSBzYWx1ZCIsIkdlc3Rpb25hciByZWN1cnNvcyBmaXNpY29zIiwiR2VzdGlvbmFyIHJlbGFjaW9uZXMiLCJHZXN0aW9uYXIgcm9sZXMiLCJHZXN0aW9uYXIgc2VkZXMiLCJHZXN0aW9uYXIgc2VndXJpZGFkIHNvY2lhbCIsIkdlc3Rpb25hciBzZXJ2aWNpb3MgaGFiaWxpdGFkb3MiLCJHZXN0aW9uYXIgU0lTQkVOIiwiR2VzdGlvbmFyIHRhcmlmYXJpb3MiLCJHZXN0aW9uYXIgdGFyaWZhcyBkZSBjb250cmF0byIsIkdlc3Rpb25hciB1c3VhcmlvcyIsIkluYWN0aXZhciB0ZXJjZXJvIiwiUmFkaWNhciBmYWN0dXJhIiwiUmVhbGl6YXIgdHJpYWdlIiwiUmVjaWJpciBlbiBob3NwaXRhbGl6YWNpb24iLCJSZWNsYXNpZmljYXIgdHJpYWdlIiwiUmVnaXN0cmFyIGFkbWlzaW9uIiwiUmVnaXN0cmFyIGRpYWdub3N0aWNvIiwiUmVnaXN0cmFyIGV2b2x1Y2lvbiIsIlJlZ2lzdHJhciBub3RhIGRlIGluZ3Jlc28iLCJSZWdpc3RyYXIgcGFnbyIsIlJlcHJvZ3JhbWFyIGNpdGEiLCJSZXNldGVhciBjb250cmFzZW5hIiwiU29saWNpdGFyIGhvc3BpdGFsaXphY2lvbiIsIlRyYXNsYWRhciBhZ2VuZGEiLCJWZXIgYXVkaXRvcmlhIGRlIGVtcHJlc2EiLCJWZXIgYXVkaXRvcmlhIGdsb2JhbCIsIlZlciBjb2xhIGRlIHVyZ2VuY2lhcyIsIlZlciBvcmRlbmVzIGFjdGl2YXMiXSwianRpIjoiYTdlNjg1MjAtMGExZi00NzlhLWFhYTUtODI3NjQ2OTI5Njk3IiwiaWF0IjoxNzc4Mjg0MDM1LCJleHAiOjE3NzgzNzA0MzV9.5alQHZv6qS411enEHOGrH-KKL_NhwohmLA8D9B_8NBdzedB24t8XJAW8X0SSOgTbZv_xoz_8qi6nn1WIaAkBdQ
+
+@base = http://localhost:{{port}}/api/family-antecedents
+
+@pacienteId = 5
+@otroPacienteId = 2
+@catalogoDiagnosticoId = 145
+@antecedenteFamiliarId = 1
+@antecedenteFamiliarInexistenteId = 99999
+@pacienteInexistenteId = 99999
+
+### HU-FASE2-080 — Crear antecedente familiar (madre con HTA)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "patientId": {{pacienteId}},
+  "kinship": "MADRE",
+  "catalogDiagnosisId": {{catalogoDiagnosticoId}},
+  "description": "Hipertensión arterial diagnosticada a los 45 años, controlada con tratamiento.",
+  "ageOfOnset": 45,
+  "isDeceased": false,
+  "observations": "Antecedente relevante de riesgo cardiovascular hereditario."
+}
+
+###
+
+### HU-FASE2-080 — Crear antecedente familiar (padre fallecido por IAM)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "patientId": {{pacienteId}},
+  "kinship": "PADRE",
+  "description": "Infarto agudo de miocardio a los 60 años.",
+  "ageOfOnset": 58,
+  "isDeceased": true,
+  "causeOfDeath": "Infarto agudo de miocardio masivo",
+  "observations": "Padre fallecido por IAM. Reforzar tamizaje cardiovascular en el paciente."
+}
+
+###
+
+### HU-FASE2-080 — Crear antecedente familiar (hermano con diabetes)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "patientId": {{pacienteId}},
+  "kinship": "HERMANO",
+  "description": "Diabetes mellitus tipo 2 en manejo con metformina.",
+  "ageOfOnset": 38,
+  "isDeceased": false
+}
+
+###
+
+### HU-FASE2-080 — Consultar antecedente familiar por ID
+GET {{base}}/{{antecedenteFamiliarId}}
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-080 — Listar antecedentes familiares del paciente
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 20,
+  "search": "",
+  "order_by": "a.created_at",
+  "order": "DESC",
+  "params": {
+    "patientId": {{pacienteId}}
+  }
+}
+
+###
+
+### HU-FASE2-080 — Listar solo familiares fallecidos del paciente
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 20,
+  "search": "",
+  "order_by": "a.created_at",
+  "order": "DESC",
+  "params": {
+    "patientId": {{pacienteId}},
+    "onlyDeceased": true
+  }
+}
+
+###
+
+### HU-FASE2-080 — Listar filtrando por parentesco (MADRE)
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 20,
+  "search": "",
+  "order_by": "a.created_at",
+  "order": "DESC",
+  "params": {
+    "patientId": {{pacienteId}},
+    "kinship": "MADRE"
+  }
+}
+
+###
+
+### HU-FASE2-080 — Búsqueda por texto (descripción/causa/diagnóstico)
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 20,
+  "search": "infarto",
+  "order_by": "a.created_at",
+  "order": "DESC",
+  "params": {
+    "patientId": {{pacienteId}}
+  }
+}
+
+###
+
+### HU-FASE2-080 — Listar solo antecedentes familiares activos
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 20,
+  "search": "",
+  "order_by": "a.created_at",
+  "order": "DESC",
+  "params": {
+    "patientId": {{pacienteId}},
+    "onlyActive": true
+  }
+}
+
+###
+
+### HU-FASE2-080 — Actualizar antecedente familiar
+PUT {{base}}/{{antecedenteFamiliarId}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "kinship": "MADRE",
+  "catalogDiagnosisId": {{catalogoDiagnosticoId}},
+  "description": "Hipertensión arterial controlada con losartán y dieta hiposódica.",
+  "ageOfOnset": 45,
+  "isDeceased": false,
+  "observations": "Buen control en último año."
+}
+
+###
+
+### HU-FASE2-080 — Inactivar antecedente familiar (queda histórico)
+PATCH {{base}}/{{antecedenteFamiliarId}}/deactivate
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-080 — Reactivar antecedente familiar
+PATCH {{base}}/{{antecedenteFamiliarId}}/activate
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-080 — Eliminación lógica
+DELETE {{base}}/{{antecedenteFamiliarId}}
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-080 — Validación: campo obligatorio (description faltante)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "patientId": {{pacienteId}},
+  "kinship": "TIO"
+}
+
+###
+
+### HU-FASE2-080 — Validación: parentesco vacío (400)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "patientId": {{pacienteId}},
+  "kinship": "",
+  "description": "Sin parentesco"
+}
+
+###
+
+### HU-FASE2-080 — Validación: edad de aparición negativa (400)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "patientId": {{pacienteId}},
+  "kinship": "ABUELO_MATERNO",
+  "description": "Edad inválida",
+  "ageOfOnset": -5
+}
+
+###
+
+### HU-FASE2-080 — Validación: causa de fallecimiento sin estar fallecido (400)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "patientId": {{pacienteId}},
+  "kinship": "TIA",
+  "description": "Inconsistencia: causa de muerte sin fallecimiento",
+  "isDeceased": false,
+  "causeOfDeath": "Cáncer"
+}
+
+###
+
+### HU-FASE2-080 — Validación: paciente inexistente o de otra empresa (404)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "patientId": {{pacienteInexistenteId}},
+  "kinship": "PADRE",
+  "description": "Paciente que no existe en mi empresa"
+}
+
+###
+
+### HU-FASE2-080 — Validación: ID inexistente al consultar (404)
+GET {{base}}/{{antecedenteFamiliarInexistenteId}}
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-080 — Validación: ID inexistente al actualizar (404)
+PUT {{base}}/{{antecedenteFamiliarInexistenteId}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "kinship": "MADRE",
+  "description": "Update de antecedente familiar que no existe"
+}
+
+###
+
+### HU-FASE2-080 — Validación: token faltante (401)
+POST {{base}}/list
+Content-Type: application/json
+
+{
+  "page": 0,
+  "rows": 10,
+  "search": "",
+  "order_by": "a.created_at",
+  "order": "DESC",
+  "params": {
+    "patientId": {{pacienteId}}
+  }
+}
+
+###

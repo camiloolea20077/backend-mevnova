@@ -41,7 +41,7 @@ Authorization: {{token}}
   "order_by": "fecha_movimiento",
   "order": "DESC",
   "params": {
-    "healthServiceId": {{servicioSaludId}}
+    "healthServiceId": {{servicioSaludId}}  
   }
 }
 

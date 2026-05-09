@@ -1,0 +1,371 @@
+@port = 9001
+@token = Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwidGlwb190b2tlbiI6IkFDQ0VTUyIsInVzdWFyaW9faWQiOjIsImVtcHJlc2FfaWQiOjQsInNlZGVfaWQiOjEsInVzZXJuYW1lIjoiYWRtaW5faG9zcGl0YWwiLCJyb2xlcyI6WyJTdXBlci1BZG1pbmlzdHJhZG9yIGRlbCBTaXN0ZW1hIl0sInBlcm1pc29zIjpbIkFjdHVhbGl6YXIgdGVyY2VybyIsIkFudWxhciBmYWN0dXJhIiwiQW51bGFyIG9yZGVuIGNsaW5pY2EiLCJBbnVsYXIgcHJlc2NyaXBjaW9uIiwiQXByb2JhciBmYWN0dXJhIiwiQXNpZ25hciBjaXRhIiwiQXNpZ25hciByb2xlcyBhIHVzdWFyaW9zIiwiQXRlbmRlciB1cmdlbmNpYXMiLCJDYW1iaWFyIGVzdGFkbyBkZSBhZG1pc2lvbiIsIkNhbmNlbGFyIGNpdGEiLCJDZXJyYXIgYWRtaXNpb24iLCJDZXJyYXIgYXRlbmNpb24gZGUgdXJnZW5jaWFzIiwiQ29uc3VsdGFyIGFkbWlzaW9uZXMiLCJDb25zdWx0YXIgY2FydGVyYSIsIkNvbnN1bHRhciB0ZXJjZXJvIiwiQ3JlYXIgcGFjaWVudGUiLCJDcmVhciB0ZXJjZXJvIiwiRGFyIGVncmVzbyBob3NwaXRhbGFyaW8iLCJFZGl0YXIgZmFjdHVyYSIsIkdlbmVyYXIgZGlzcG9uaWJpbGlkYWQiLCJHZW5lcmFyIGZhY3R1cmEiLCJHZW5lcmFyIG9yZGVuIGNsaW5pY2EiLCJHZW5lcmFyIHByZXNjcmlwY2lvbiIsIkdlbmVyYXIgUklQUyIsIkdlc3Rpb25hciBhZ2VuZGFzIiwiR2VzdGlvbmFyIGNhbGVuZGFyaW9zIiwiR2VzdGlvbmFyIGNhdGFsb2dvIGRlIHNlcnZpY2lvcyIsIkdlc3Rpb25hciBjZW50cm9zIGRlIGNvc3RvIiwiR2VzdGlvbmFyIGNvYmVydHVyYSBkZSBjb250cmF0byIsIkdlc3Rpb25hciBjb250YWN0b3MiLCJHZXN0aW9uYXIgY29udHJhdG9zIiwiR2VzdGlvbmFyIGNvbnRyYXRvcyBkZWwgcGFjaWVudGUiLCJHZXN0aW9uYXIgZGlyZWNjaW9uZXMiLCJHZXN0aW9uYXIgZW1wcmVzYXMiLCJHZXN0aW9uYXIgZ2xvc2FzIiwiR2VzdGlvbmFyIGxpc3RhIGRlIGVzcGVyYSIsIkdlc3Rpb25hciBwYWdhZG9yZXMiLCJHZXN0aW9uYXIgcGVybWlzb3MiLCJHZXN0aW9uYXIgcHJvZmVzaW9uYWxlcyBkZSBzYWx1ZCIsIkdlc3Rpb25hciByZWN1cnNvcyBmaXNpY29zIiwiR2VzdGlvbmFyIHJlbGFjaW9uZXMiLCJHZXN0aW9uYXIgcm9sZXMiLCJHZXN0aW9uYXIgc2VkZXMiLCJHZXN0aW9uYXIgc2VndXJpZGFkIHNvY2lhbCIsIkdlc3Rpb25hciBzZXJ2aWNpb3MgaGFiaWxpdGFkb3MiLCJHZXN0aW9uYXIgU0lTQkVOIiwiR2VzdGlvbmFyIHRhcmlmYXJpb3MiLCJHZXN0aW9uYXIgdGFyaWZhcyBkZSBjb250cmF0byIsIkdlc3Rpb25hciB1c3VhcmlvcyIsIkluYWN0aXZhciB0ZXJjZXJvIiwiUmFkaWNhciBmYWN0dXJhIiwiUmVhbGl6YXIgdHJpYWdlIiwiUmVjaWJpciBlbiBob3NwaXRhbGl6YWNpb24iLCJSZWNsYXNpZmljYXIgdHJpYWdlIiwiUmVnaXN0cmFyIGFkbWlzaW9uIiwiUmVnaXN0cmFyIGRpYWdub3N0aWNvIiwiUmVnaXN0cmFyIGV2b2x1Y2lvbiIsIlJlZ2lzdHJhciBub3RhIGRlIGluZ3Jlc28iLCJSZWdpc3RyYXIgcGFnbyIsIlJlcHJvZ3JhbWFyIGNpdGEiLCJSZXNldGVhciBjb250cmFzZW5hIiwiU29saWNpdGFyIGhvc3BpdGFsaXphY2lvbiIsIlRyYXNsYWRhciBhZ2VuZGEiLCJWZXIgYXVkaXRvcmlhIGRlIGVtcHJlc2EiLCJWZXIgYXVkaXRvcmlhIGdsb2JhbCIsIlZlciBjb2xhIGRlIHVyZ2VuY2lhcyIsIlZlciBvcmRlbmVzIGFjdGl2YXMiXSwianRpIjoiYTdlNjg1MjAtMGExZi00NzlhLWFhYTUtODI3NjQ2OTI5Njk3IiwiaWF0IjoxNzc4Mjg0MDM1LCJleHAiOjE3NzgzNzA0MzV9.5alQHZv6qS411enEHOGrH-KKL_NhwohmLA8D9B_8NBdzedB24t8XJAW8X0SSOgTbZv_xoz_8qi6nn1WIaAkBdQ
+
+@base = http://localhost:{{port}}/api/patient-vaccines
+
+@pacienteId = 5
+@otroPacienteId = 2
+@viaIntramuscularId = 30
+@viaOralId = 2
+@profesionalId = 2
+@vacunaId = 1
+@vacunaInexistenteId = 99999
+@pacienteInexistenteId = 99999
+@viaInexistenteId = 99999
+
+### HU-FASE2-083 — Registrar vacuna COVID-19 dosis 1
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "patientId": {{pacienteId}},
+  "vaccineName": "COVID-19 Pfizer/BioNTech",
+  "vaccineCode": "COVID19",
+  "doseNumber": 1,
+  "totalSchemeDoses": 3,
+  "applicationDate": "2024-03-10",
+  "nextDoseDate": "2024-04-10",
+  "laboratory": "Pfizer",
+  "batchNumber": "FA1234-22",
+  "administrationRouteId": {{viaIntramuscularId}},
+  "applyingProfessionalId": {{profesionalId}},
+  "observations": "Vacuna aplicada en deltoides izquierdo, sin reacciones inmediatas."
+}
+
+###
+
+### HU-FASE2-083 — Registrar vacuna COVID-19 dosis 2
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "patientId": {{pacienteId}},
+  "vaccineName": "COVID-19 Pfizer/BioNTech",
+  "vaccineCode": "COVID19",
+  "doseNumber": 2,
+  "totalSchemeDoses": 3,
+  "applicationDate": "2024-04-10",
+  "nextDoseDate": "2024-10-10",
+  "laboratory": "Pfizer",
+  "batchNumber": "FA5678-22",
+  "administrationRouteId": {{viaIntramuscularId}},
+  "applyingProfessionalId": {{profesionalId}}
+}
+
+###
+
+### HU-FASE2-083 — Registrar vacuna aplicada en otra institución
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "patientId": {{pacienteId}},
+  "vaccineName": "Tétanos (toxoide tetánico)",
+  "vaccineCode": "TT",
+  "doseNumber": 1,
+  "totalSchemeDoses": 1,
+  "applicationDate": "2023-08-22",
+  "laboratory": "Sanofi",
+  "batchNumber": "T2023-09",
+  "administrationRouteId": {{viaIntramuscularId}},
+  "applyingInstitution": "Hospital San Vicente — Medellín",
+  "observations": "Aplicación reportada por el paciente; no hay registro local."
+}
+
+###
+
+### HU-FASE2-083 — Registrar vacuna BCG (recién nacido)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "patientId": {{pacienteId}},
+  "vaccineName": "BCG",
+  "vaccineCode": "BCG",
+  "doseNumber": 1,
+  "totalSchemeDoses": 1,
+  "applicationDate": "2024-01-15",
+  "administrationRouteId": {{viaIntramuscularId}},
+  "applyingProfessionalId": {{profesionalId}}
+}
+
+###
+
+### HU-FASE2-083 — Consultar vacuna por ID
+GET {{base}}/{{vacunaId}}
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-083 — Cronología de vacunas del paciente
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 50,
+  "search": "",
+  "order_by": "v.fecha_aplicacion",
+  "order": "DESC",
+  "params": {
+    "patientId": {{pacienteId}}
+  }
+}
+
+###
+
+### HU-FASE2-083 — Filtrar por código de vacuna (esquema COVID)
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 20,
+  "search": "",
+  "order_by": "v.dosis",
+  "order": "ASC",
+  "params": {
+    "patientId": {{pacienteId}},
+    "vaccineCode": "COVID19"
+  }
+}
+
+###
+
+### HU-FASE2-083 — Próximas dosis pendientes en una ventana
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 50,
+  "search": "",
+  "order_by": "v.fecha_proxima_dosis",
+  "order": "ASC",
+  "params": {
+    "patientId": {{pacienteId}},
+    "nextDoseFrom": "2024-04-01",
+    "nextDoseTo": "2024-12-31"
+  }
+}
+
+###
+
+### HU-FASE2-083 — Búsqueda por texto (nombre, lote o laboratorio)
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 20,
+  "search": "pfizer",
+  "order_by": "v.fecha_aplicacion",
+  "order": "DESC",
+  "params": {
+    "patientId": {{pacienteId}}
+  }
+}
+
+###
+
+### HU-FASE2-083 — Listar solo vacunas activas
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 20,
+  "search": "",
+  "order_by": "v.fecha_aplicacion",
+  "order": "DESC",
+  "params": {
+    "patientId": {{pacienteId}},
+    "onlyActive": true
+  }
+}
+
+###
+
+### HU-FASE2-083 — Actualizar vacuna (corrige fecha próxima dosis)
+PUT {{base}}/{{vacunaId}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "vaccineName": "COVID-19 Pfizer/BioNTech",
+  "vaccineCode": "COVID19",
+  "doseNumber": 1,
+  "totalSchemeDoses": 3,
+  "applicationDate": "2024-03-10",
+  "nextDoseDate": "2024-05-10",
+  "laboratory": "Pfizer",
+  "batchNumber": "FA1234-22",
+  "administrationRouteId": {{viaIntramuscularId}},
+  "applyingProfessionalId": {{profesionalId}},
+  "observations": "Se reprograma 2da dosis por desabasto temporal."
+}
+
+###
+
+### HU-FASE2-083 — Inactivar vacuna
+PATCH {{base}}/{{vacunaId}}/deactivate
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-083 — Reactivar vacuna
+PATCH {{base}}/{{vacunaId}}/activate
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-083 — Eliminación lógica
+DELETE {{base}}/{{vacunaId}}
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-083 — Validación: campo obligatorio (vaccineName faltante)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "patientId": {{pacienteId}},
+  "doseNumber": 1,
+  "applicationDate": "2024-03-10"
+}
+
+###
+
+### HU-FASE2-083 — Validación: doseNumber inválido (0)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "patientId": {{pacienteId}},
+  "vaccineName": "Hepatitis B",
+  "doseNumber": 0,
+  "applicationDate": "2024-03-10"
+}
+
+###
+
+### HU-FASE2-083 — Validación: regla de negocio — dosis > total esquema (400)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "patientId": {{pacienteId}},
+  "vaccineName": "Hepatitis B",
+  "doseNumber": 5,
+  "totalSchemeDoses": 3,
+  "applicationDate": "2024-03-10"
+}
+
+###
+
+### HU-FASE2-083 — Validación: fecha de aplicación futura (400)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "patientId": {{pacienteId}},
+  "vaccineName": "Influenza",
+  "doseNumber": 1,
+  "applicationDate": "2099-01-01"
+}
+
+###
+
+### HU-FASE2-083 — Validación: próxima dosis anterior a aplicación (400)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "patientId": {{pacienteId}},
+  "vaccineName": "Sarampión",
+  "doseNumber": 1,
+  "applicationDate": "2024-03-10",
+  "nextDoseDate": "2024-01-01"
+}
+
+###
+
+### HU-FASE2-083 — Validación: paciente inexistente o de otra empresa (404)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "patientId": {{pacienteInexistenteId}},
+  "vaccineName": "COVID-19",
+  "doseNumber": 1,
+  "applicationDate": "2024-03-10"
+}
+
+###
+
+### HU-FASE2-083 — Validación: vía de administración inexistente (404)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "patientId": {{pacienteId}},
+  "vaccineName": "Hepatitis B",
+  "doseNumber": 1,
+  "applicationDate": "2024-03-10",
+  "administrationRouteId": {{viaInexistenteId}}
+}
+
+###
+
+### HU-FASE2-083 — Validación: ID inexistente al consultar (404)
+GET {{base}}/{{vacunaInexistenteId}}
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-083 — Validación: ID inexistente al actualizar (404)
+PUT {{base}}/{{vacunaInexistenteId}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "vaccineName": "Hepatitis B",
+  "doseNumber": 1,
+  "applicationDate": "2024-03-10"
+}
+
+###
+
+### HU-FASE2-083 — Validación: token faltante (401)
+POST {{base}}/list
+Content-Type: application/json
+
+{
+  "page": 0,
+  "rows": 10,
+  "search": "",
+  "order_by": "v.fecha_aplicacion",
+  "order": "DESC",
+  "params": {
+    "patientId": {{pacienteId}}
+  }
+}
+
+###
