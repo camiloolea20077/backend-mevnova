@@ -1,0 +1,399 @@
+@port = 9001
+@token = Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwidGlwb190b2tlbiI6IkFDQ0VTUyIsInVzdWFyaW9faWQiOjIsImVtcHJlc2FfaWQiOjQsInNlZGVfaWQiOjEsInVzZXJuYW1lIjoiYWRtaW5faG9zcGl0YWwiLCJyb2xlcyI6WyJTdXBlci1BZG1pbmlzdHJhZG9yIGRlbCBTaXN0ZW1hIl0sInBlcm1pc29zIjpbIkFjdHVhbGl6YXIgdGVyY2VybyIsIkFudWxhciBmYWN0dXJhIiwiQW51bGFyIG9yZGVuIGNsaW5pY2EiLCJBbnVsYXIgcHJlc2NyaXBjaW9uIiwiQXByb2JhciBmYWN0dXJhIiwiQXNpZ25hciBjaXRhIiwiQXNpZ25hciByb2xlcyBhIHVzdWFyaW9zIiwiQXRlbmRlciB1cmdlbmNpYXMiLCJDYW1iaWFyIGVzdGFkbyBkZSBhZG1pc2lvbiIsIkNhbmNlbGFyIGNpdGEiLCJDZXJyYXIgYWRtaXNpb24iLCJDZXJyYXIgYXRlbmNpb24gZGUgdXJnZW5jaWFzIiwiQ29uc3VsdGFyIGFkbWlzaW9uZXMiLCJDb25zdWx0YXIgY2FydGVyYSIsIkNvbnN1bHRhciB0ZXJjZXJvIiwiQ3JlYXIgcGFjaWVudGUiLCJDcmVhciB0ZXJjZXJvIiwiRGFyIGVncmVzbyBob3NwaXRhbGFyaW8iLCJFZGl0YXIgZmFjdHVyYSIsIkdlbmVyYXIgZGlzcG9uaWJpbGlkYWQiLCJHZW5lcmFyIGZhY3R1cmEiLCJHZW5lcmFyIG9yZGVuIGNsaW5pY2EiLCJHZW5lcmFyIHByZXNjcmlwY2lvbiIsIkdlbmVyYXIgUklQUyIsIkdlc3Rpb25hciBhZ2VuZGFzIiwiR2VzdGlvbmFyIGNhbGVuZGFyaW9zIiwiR2VzdGlvbmFyIGNhdGFsb2dvIGRlIHNlcnZpY2lvcyIsIkdlc3Rpb25hciBjZW50cm9zIGRlIGNvc3RvIiwiR2VzdGlvbmFyIGNvYmVydHVyYSBkZSBjb250cmF0byIsIkdlc3Rpb25hciBjb250YWN0b3MiLCJHZXN0aW9uYXIgY29udHJhdG9zIiwiR2VzdGlvbmFyIGNvbnRyYXRvcyBkZWwgcGFjaWVudGUiLCJHZXN0aW9uYXIgZGlyZWNjaW9uZXMiLCJHZXN0aW9uYXIgZW1wcmVzYXMiLCJHZXN0aW9uYXIgZ2xvc2FzIiwiR2VzdGlvbmFyIGxpc3RhIGRlIGVzcGVyYSIsIkdlc3Rpb25hciBwYWdhZG9yZXMiLCJHZXN0aW9uYXIgcGVybWlzb3MiLCJHZXN0aW9uYXIgcHJvZmVzaW9uYWxlcyBkZSBzYWx1ZCIsIkdlc3Rpb25hciByZWN1cnNvcyBmaXNpY29zIiwiR2VzdGlvbmFyIHJlbGFjaW9uZXMiLCJHZXN0aW9uYXIgcm9sZXMiLCJHZXN0aW9uYXIgc2VkZXMiLCJHZXN0aW9uYXIgc2VndXJpZGFkIHNvY2lhbCIsIkdlc3Rpb25hciBzZXJ2aWNpb3MgaGFiaWxpdGFkb3MiLCJHZXN0aW9uYXIgU0lTQkVOIiwiR2VzdGlvbmFyIHRhcmlmYXJpb3MiLCJHZXN0aW9uYXIgdGFyaWZhcyBkZSBjb250cmF0byIsIkdlc3Rpb25hciB1c3VhcmlvcyIsIkluYWN0aXZhciB0ZXJjZXJvIiwiUmFkaWNhciBmYWN0dXJhIiwiUmVhbGl6YXIgdHJpYWdlIiwiUmVjaWJpciBlbiBob3NwaXRhbGl6YWNpb24iLCJSZWNsYXNpZmljYXIgdHJpYWdlIiwiUmVnaXN0cmFyIGFkbWlzaW9uIiwiUmVnaXN0cmFyIGRpYWdub3N0aWNvIiwiUmVnaXN0cmFyIGV2b2x1Y2lvbiIsIlJlZ2lzdHJhciBub3RhIGRlIGluZ3Jlc28iLCJSZWdpc3RyYXIgcGFnbyIsIlJlcHJvZ3JhbWFyIGNpdGEiLCJSZXNldGVhciBjb250cmFzZW5hIiwiU29saWNpdGFyIGhvc3BpdGFsaXphY2lvbiIsIlRyYXNsYWRhciBhZ2VuZGEiLCJWZXIgYXVkaXRvcmlhIGRlIGVtcHJlc2EiLCJWZXIgYXVkaXRvcmlhIGdsb2JhbCIsIlZlciBjb2xhIGRlIHVyZ2VuY2lhcyIsIlZlciBvcmRlbmVzIGFjdGl2YXMiXSwianRpIjoiNDEzZjQ5NDQtYzUwNS00NzdjLWFlOWQtMTVhZGFiODY1YzhhIiwiaWF0IjoxNzc4NDUzNDA0LCJleHAiOjE3Nzg1Mzk4MDR9.KIkh7aX0OCMAIkvJbPM1-OjEKdEkrgZTX6H0ycQup_2HMRw8Hu2QuhP_hpwy3885OPN2nWqExENuvusgKvCwoQ
+
+@base = http://localhost:{{port}}/api/clinical-attachments
+
+@pacienteId = 5
+@atencionId = 1
+@profesionalId = 2
+@adjuntoId = 1
+@adjuntoConfidencialId = 2
+@adjuntoInexistenteId = 99999
+@pacienteInexistenteId = 99999
+@atencionInexistenteId = 99999
+@profesionalInexistenteId = 99999
+
+### HU-FASE2-092 CA1 — Subir adjunto: resultado de laboratorio
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "patientId": {{pacienteId}},
+  "encounterId": {{atencionId}},
+  "documentType": "RESULTADO_LABORATORIO",
+  "fileName": "Hemograma_2026-05-08.pdf",
+  "description": "Hemograma completo realizado en laboratorio externo.",
+  "fileUrl": "https://storage.mednova.local/attachments/HEM-2026-0008.pdf",
+  "mimeType": "application/pdf",
+  "sizeBytes": 248320,
+  "uploadingProfessionalId": {{profesionalId}},
+  "documentDate": "2026-05-08",
+  "isConfidential": false
+}
+
+###
+
+### HU-FASE2-092 CA1 — Subir adjunto: imagen diagnóstica (RX tórax)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "patientId": {{pacienteId}},
+  "encounterId": {{atencionId}},
+  "documentType": "IMAGEN_DIAGNOSTICA",
+  "fileName": "RX_Torax_PA_2026-05-09.jpg",
+  "description": "Radiografía de tórax proyección PA. Sin hallazgos patológicos.",
+  "fileUrl": "https://storage.mednova.local/attachments/RX-TOR-001.jpg",
+  "mimeType": "image/jpeg",
+  "sizeBytes": 1024000,
+  "uploadingProfessionalId": {{profesionalId}},
+  "documentDate": "2026-05-09"
+}
+
+###
+
+### HU-FASE2-092 CA1+CA3 — Subir adjunto confidencial (reporte de patología)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "patientId": {{pacienteId}},
+  "documentType": "REPORTE_PATOLOGIA",
+  "fileName": "Biopsia_2026-05-07.pdf",
+  "description": "Reporte de patología de biopsia. Información sensible.",
+  "fileUrl": "https://storage.mednova.local/attachments/BIO-2026-0001.pdf",
+  "mimeType": "application/pdf",
+  "sizeBytes": 102400,
+  "uploadingProfessionalId": {{profesionalId}},
+  "documentDate": "2026-05-07",
+  "isConfidential": true
+}
+
+###
+
+### HU-FASE2-092 — Subir ECG
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "patientId": {{pacienteId}},
+  "encounterId": {{atencionId}},
+  "documentType": "ECG",
+  "fileName": "ECG_12_derivaciones.pdf",
+  "fileUrl": "https://storage.mednova.local/attachments/ECG-2026-0003.pdf",
+  "mimeType": "application/pdf",
+  "uploadingProfessionalId": {{profesionalId}},
+  "documentDate": "2026-05-10"
+}
+
+###
+
+### HU-FASE2-092 — Subir foto clínica
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "patientId": {{pacienteId}},
+  "encounterId": {{atencionId}},
+  "documentType": "FOTO_CLINICA",
+  "fileName": "Lesion_cutanea.jpg",
+  "description": "Lesión en miembro inferior izquierdo, día 3 de evolución.",
+  "fileUrl": "https://storage.mednova.local/attachments/FOTO-2026-0010.jpg",
+  "mimeType": "image/jpeg",
+  "uploadingProfessionalId": {{profesionalId}},
+  "documentDate": "2026-05-10"
+}
+
+###
+
+### HU-FASE2-092 — Consultar adjunto por ID (no confidencial)
+GET {{base}}/{{adjuntoId}}
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-092 CA3 — Consultar adjunto confidencial (requiere HC_VER_ADJUNTOS_CONFIDENCIALES)
+GET {{base}}/{{adjuntoConfidencialId}}
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-092 CA2 — Listar todos los adjuntos del paciente
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 50,
+  "search": "",
+  "order_by": "a.created_at",
+  "order": "DESC",
+  "params": {
+    "patientId": {{pacienteId}}
+  }
+}
+
+###
+
+### HU-FASE2-092 CA2 — Filtrar por tipo IMAGEN_DIAGNOSTICA
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 50,
+  "search": "",
+  "order_by": "a.fecha_documento",
+  "order": "DESC",
+  "params": {
+    "patientId": {{pacienteId}},
+    "documentType": "IMAGEN_DIAGNOSTICA"
+  }
+}
+
+###
+
+### HU-FASE2-092 CA2 — Filtrar por rango de fecha del documento
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 50,
+  "search": "",
+  "order_by": "a.fecha_documento",
+  "order": "ASC",
+  "params": {
+    "patientId": {{pacienteId}},
+    "documentDateFrom": "2026-05-01",
+    "documentDateTo": "2026-05-31"
+  }
+}
+
+###
+
+### HU-FASE2-092 CA2 — Adjuntos de la atención
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 50,
+  "search": "",
+  "params": {
+    "encounterId": {{atencionId}}
+  }
+}
+
+###
+
+### HU-FASE2-092 CA2 — Búsqueda por nombre de archivo o descripción
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 20,
+  "search": "hemograma",
+  "params": {
+    "patientId": {{pacienteId}}
+  }
+}
+
+###
+
+### HU-FASE2-092 CA3 — Listar solo confidenciales (requiere permiso, oculta si no)
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 50,
+  "search": "",
+  "params": {
+    "patientId": {{pacienteId}},
+    "confidential": true
+  }
+}
+
+###
+
+### HU-FASE2-092 — Actualizar metadatos del adjunto
+PUT {{base}}/{{adjuntoId}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "documentType": "RESULTADO_LABORATORIO",
+  "fileName": "Hemograma_2026-05-08_REV.pdf",
+  "description": "Hemograma completo (versión revisada).",
+  "documentDate": "2026-05-08",
+  "isConfidential": false
+}
+
+###
+
+### HU-FASE2-092 CA3 — Marcar adjunto como confidencial
+PATCH {{base}}/{{adjuntoId}}/confidential
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "confidential": true
+}
+
+###
+
+### HU-FASE2-092 CA3 — Quitar marca de confidencialidad
+PATCH {{base}}/{{adjuntoId}}/confidential
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "confidential": false
+}
+
+###
+
+### HU-FASE2-092 — Eliminación lógica
+DELETE {{base}}/{{adjuntoId}}
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-092 — Validación: campo obligatorio (fileUrl faltante)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "patientId": {{pacienteId}},
+  "documentType": "OTRO",
+  "fileName": "archivo.pdf"
+}
+
+###
+
+### HU-FASE2-092 — Validación: tipo de documento fuera de catálogo (400)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "patientId": {{pacienteId}},
+  "documentType": "CONTRATO_INTERNO",
+  "fileName": "archivo.pdf",
+  "fileUrl": "https://storage.mednova.local/x.pdf"
+}
+
+###
+
+### HU-FASE2-092 — Validación: sizeBytes negativo (400)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "patientId": {{pacienteId}},
+  "documentType": "OTRO",
+  "fileName": "archivo.pdf",
+  "fileUrl": "https://storage.mednova.local/x.pdf",
+  "sizeBytes": -1
+}
+
+###
+
+### HU-FASE2-092 — Validación: paciente inexistente (404)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "patientId": {{pacienteInexistenteId}},
+  "documentType": "OTRO",
+  "fileName": "archivo.pdf",
+  "fileUrl": "https://storage.mednova.local/x.pdf"
+}
+
+###
+
+### HU-FASE2-092 — Validación: atención inexistente o cross-tenant (404)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "patientId": {{pacienteId}},
+  "encounterId": {{atencionInexistenteId}},
+  "documentType": "OTRO",
+  "fileName": "archivo.pdf",
+  "fileUrl": "https://storage.mednova.local/x.pdf"
+}
+
+###
+
+### HU-FASE2-092 — Validación: profesional inexistente (404)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "patientId": {{pacienteId}},
+  "documentType": "OTRO",
+  "fileName": "archivo.pdf",
+  "fileUrl": "https://storage.mednova.local/x.pdf",
+  "uploadingProfessionalId": {{profesionalInexistenteId}}
+}
+
+###
+
+### HU-FASE2-092 — Validación: ID inexistente al consultar (404)
+GET {{base}}/{{adjuntoInexistenteId}}
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-092 CA3 — Validación: editar confidencial sin permiso (404 silencioso)
+PUT {{base}}/{{adjuntoConfidencialId}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "documentType": "REPORTE_PATOLOGIA",
+  "fileName": "Biopsia_revisada.pdf",
+  "isConfidential": true
+}
+
+###
+
+### HU-FASE2-092 CA3 — Validación: eliminar confidencial sin permiso (404 silencioso)
+DELETE {{base}}/{{adjuntoConfidencialId}}
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-092 — Validación: token faltante (401)
+POST {{base}}/list
+Content-Type: application/json
+
+{
+  "page": 0,
+  "rows": 10,
+  "search": "",
+  "params": {
+    "patientId": {{pacienteId}}
+  }
+}
+
+###

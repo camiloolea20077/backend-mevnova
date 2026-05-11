@@ -1,0 +1,330 @@
+@port = 9001
+@token = Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwidGlwb190b2tlbiI6IkFDQ0VTUyIsInVzdWFyaW9faWQiOjIsImVtcHJlc2FfaWQiOjQsInNlZGVfaWQiOjEsInVzZXJuYW1lIjoiYWRtaW5faG9zcGl0YWwiLCJyb2xlcyI6WyJTdXBlci1BZG1pbmlzdHJhZG9yIGRlbCBTaXN0ZW1hIl0sInBlcm1pc29zIjpbIkFjdHVhbGl6YXIgdGVyY2VybyIsIkFudWxhciBmYWN0dXJhIiwiQW51bGFyIG9yZGVuIGNsaW5pY2EiLCJBbnVsYXIgcHJlc2NyaXBjaW9uIiwiQXByb2JhciBmYWN0dXJhIiwiQXNpZ25hciBjaXRhIiwiQXNpZ25hciByb2xlcyBhIHVzdWFyaW9zIiwiQXRlbmRlciB1cmdlbmNpYXMiLCJDYW1iaWFyIGVzdGFkbyBkZSBhZG1pc2lvbiIsIkNhbmNlbGFyIGNpdGEiLCJDZXJyYXIgYWRtaXNpb24iLCJDZXJyYXIgYXRlbmNpb24gZGUgdXJnZW5jaWFzIiwiQ29uc3VsdGFyIGFkbWlzaW9uZXMiLCJDb25zdWx0YXIgY2FydGVyYSIsIkNvbnN1bHRhciB0ZXJjZXJvIiwiQ3JlYXIgcGFjaWVudGUiLCJDcmVhciB0ZXJjZXJvIiwiRGFyIGVncmVzbyBob3NwaXRhbGFyaW8iLCJFZGl0YXIgZmFjdHVyYSIsIkdlbmVyYXIgZGlzcG9uaWJpbGlkYWQiLCJHZW5lcmFyIGZhY3R1cmEiLCJHZW5lcmFyIG9yZGVuIGNsaW5pY2EiLCJHZW5lcmFyIHByZXNjcmlwY2lvbiIsIkdlbmVyYXIgUklQUyIsIkdlc3Rpb25hciBhZ2VuZGFzIiwiR2VzdGlvbmFyIGNhbGVuZGFyaW9zIiwiR2VzdGlvbmFyIGNhdGFsb2dvIGRlIHNlcnZpY2lvcyIsIkdlc3Rpb25hciBjZW50cm9zIGRlIGNvc3RvIiwiR2VzdGlvbmFyIGNvYmVydHVyYSBkZSBjb250cmF0byIsIkdlc3Rpb25hciBjb250YWN0b3MiLCJHZXN0aW9uYXIgY29udHJhdG9zIiwiR2VzdGlvbmFyIGNvbnRyYXRvcyBkZWwgcGFjaWVudGUiLCJHZXN0aW9uYXIgZGlyZWNjaW9uZXMiLCJHZXN0aW9uYXIgZW1wcmVzYXMiLCJHZXN0aW9uYXIgZ2xvc2FzIiwiR2VzdGlvbmFyIGxpc3RhIGRlIGVzcGVyYSIsIkdlc3Rpb25hciBwYWdhZG9yZXMiLCJHZXN0aW9uYXIgcGVybWlzb3MiLCJHZXN0aW9uYXIgcHJvZmVzaW9uYWxlcyBkZSBzYWx1ZCIsIkdlc3Rpb25hciByZWN1cnNvcyBmaXNpY29zIiwiR2VzdGlvbmFyIHJlbGFjaW9uZXMiLCJHZXN0aW9uYXIgcm9sZXMiLCJHZXN0aW9uYXIgc2VkZXMiLCJHZXN0aW9uYXIgc2VndXJpZGFkIHNvY2lhbCIsIkdlc3Rpb25hciBzZXJ2aWNpb3MgaGFiaWxpdGFkb3MiLCJHZXN0aW9uYXIgU0lTQkVOIiwiR2VzdGlvbmFyIHRhcmlmYXJpb3MiLCJHZXN0aW9uYXIgdGFyaWZhcyBkZSBjb250cmF0byIsIkdlc3Rpb25hciB1c3VhcmlvcyIsIkluYWN0aXZhciB0ZXJjZXJvIiwiUmFkaWNhciBmYWN0dXJhIiwiUmVhbGl6YXIgdHJpYWdlIiwiUmVjaWJpciBlbiBob3NwaXRhbGl6YWNpb24iLCJSZWNsYXNpZmljYXIgdHJpYWdlIiwiUmVnaXN0cmFyIGFkbWlzaW9uIiwiUmVnaXN0cmFyIGRpYWdub3N0aWNvIiwiUmVnaXN0cmFyIGV2b2x1Y2lvbiIsIlJlZ2lzdHJhciBub3RhIGRlIGluZ3Jlc28iLCJSZWdpc3RyYXIgcGFnbyIsIlJlcHJvZ3JhbWFyIGNpdGEiLCJSZXNldGVhciBjb250cmFzZW5hIiwiU29saWNpdGFyIGhvc3BpdGFsaXphY2lvbiIsIlRyYXNsYWRhciBhZ2VuZGEiLCJWZXIgYXVkaXRvcmlhIGRlIGVtcHJlc2EiLCJWZXIgYXVkaXRvcmlhIGdsb2JhbCIsIlZlciBjb2xhIGRlIHVyZ2VuY2lhcyIsIlZlciBvcmRlbmVzIGFjdGl2YXMiXSwianRpIjoiNDEzZjQ5NDQtYzUwNS00NzdjLWFlOWQtMTVhZGFiODY1YzhhIiwiaWF0IjoxNzc4NDUzNDA0LCJleHAiOjE3Nzg1Mzk4MDR9.KIkh7aX0OCMAIkvJbPM1-OjEKdEkrgZTX6H0ycQup_2HMRw8Hu2QuhP_hpwy3885OPN2nWqExENuvusgKvCwoQ
+
+@base = http://localhost:{{port}}/api/discharge-summaries
+
+@admisionId = 3
+@admisionSinEgresoId = 2
+@profesionalId = 2
+@epicrisisId = 1
+@epicrisisFirmadaId = 2
+@epicrisisInexistenteId = 99999
+@admisionInexistenteId = 99999
+@profesionalInexistenteId = 99999
+
+### HU-FASE2-091 CA2 — Precarga estructurada desde la admisión egresada
+GET {{base}}/preload/{{admisionId}}
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-091 CA1 — Crear epicrisis al egreso (con datos precargados)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "admissionId": {{admisionId}},
+  "professionalId": {{profesionalId}},
+  "admissionReason": "Dolor abdominal súbito, distensión y signos de irritación peritoneal.",
+  "admissionDiagnosis": "K35.9 - Apendicitis aguda no especificada.",
+  "dischargeDiagnosis": "K35.3 - Apendicitis aguda con peritonitis localizada. Postquirúrgico inmediato sin complicaciones.",
+  "proceduresPerformed": "Apendicectomía laparoscópica. Lavado peritoneal.",
+  "evolutionSummary": "Paciente ingresó con cuadro de 24h. Estudios paraclínicos confirman apendicitis. Manejo quirúrgico exitoso. Evolución favorable, tolera vía oral, deambulación adecuada, sin signos de infección.",
+  "complications": "Ninguna.",
+  "followUpPlan": "Control por consulta externa de cirugía en 7 días. Retirar puntos al día 10.",
+  "dischargeMedications": "Acetaminofén 500mg c/8h x 5 días. Ibuprofeno 400mg c/8h x 5 días. Cefalexina 500mg c/6h x 7 días.",
+  "recommendations": "Reposo relativo por 7 días. Evitar esfuerzos. Mantener herida limpia y seca. Consulta inmediata por fiebre, dolor severo o signos de infección.",
+  "dietInstructions": "Dieta blanda por 3 días, luego dieta normal. Líquidos abundantes.",
+  "activityInstructions": "Reposo relativo 7 días. Caminar suave. Sin levantar peso > 5kg por 4 semanas.",
+  "nextControlDate": "2026-05-17"
+}
+
+###
+
+### HU-FASE2-091 CA1 — Crear epicrisis firmada en el mismo evento (CA3+CA4)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "admissionId": {{admisionId}},
+  "professionalId": {{profesionalId}},
+  "admissionReason": "Crisis hipertensiva.",
+  "admissionDiagnosis": "I10 - Hipertensión esencial.",
+  "dischargeDiagnosis": "I10 - HTA controlada al egreso. TA 130/85.",
+  "evolutionSummary": "Paciente estabilizado tras 48h. Buena respuesta a esquema antihipertensivo.",
+  "followUpPlan": "Control con medicina interna en 15 días. Continuar esquema actual.",
+  "dischargeMedications": "Losartán 50mg c/24h. Amlodipino 5mg c/24h.",
+  "recommendations": "Dieta baja en sal. Control diario de TA. Evitar tabaquismo y alcohol.",
+  "dietInstructions": "Hiposódica.",
+  "activityInstructions": "Actividad aeróbica 30 min diarios.",
+  "nextControlDate": "2026-05-25",
+  "signOnCreate": true,
+  "pdfUrl": "https://storage.mednova.local/epicrisis/EP-2026-0001.pdf"
+}
+
+###
+
+### HU-FASE2-091 — Consultar por ID (incluye datos completos)
+GET {{base}}/{{epicrisisId}}
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-091 — Listar epicrisis de la sede
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 20,
+  "search": "",
+  "order_by": "e.fecha_egreso",
+  "order": "DESC",
+  "params": {}
+}
+
+###
+
+### HU-FASE2-091 — Listar epicrisis pendientes de firma
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 50,
+  "search": "",
+  "order_by": "e.fecha_egreso",
+  "order": "ASC",
+  "params": {
+    "signed": false
+  }
+}
+
+###
+
+### HU-FASE2-091 — Listar epicrisis firmadas en un rango
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 50,
+  "search": "",
+  "order_by": "e.fecha_egreso",
+  "order": "DESC",
+  "params": {
+    "signed": true,
+    "dischargeFrom": "2026-05-01",
+    "dischargeTo": "2026-05-31"
+  }
+}
+
+###
+
+### HU-FASE2-091 — Búsqueda por número de admisión / diagnóstico
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 20,
+  "search": "apendicitis",
+  "params": {}
+}
+
+###
+
+### HU-FASE2-091 — Actualizar epicrisis (solo si NO está firmada)
+PUT {{base}}/{{epicrisisId}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "professionalId": {{profesionalId}},
+  "admissionReason": "Dolor abdominal súbito en FID.",
+  "admissionDiagnosis": "K35.9 - Apendicitis aguda.",
+  "dischargeDiagnosis": "K35.3 - Apendicitis aguda con peritonitis localizada.",
+  "proceduresPerformed": "Apendicectomía laparoscópica.",
+  "evolutionSummary": "Postquirúrgico sin complicaciones. Tolera vía oral.",
+  "followUpPlan": "Control con cirugía en 7 días. Retirar puntos día 10.",
+  "dischargeMedications": "Acetaminofén 500mg c/8h x 5 días.",
+  "recommendations": "Reposo. Mantener herida limpia. Consulta por signos de alarma.",
+  "dietInstructions": "Blanda por 3 días.",
+  "activityInstructions": "Reposo relativo 7 días.",
+  "nextControlDate": "2026-05-17",
+  "pdfUrl": "https://storage.mednova.local/epicrisis/EP-DRAFT.pdf"
+}
+
+###
+
+### HU-FASE2-091 CA3+CA4 — Firmar epicrisis (bloquea edición, guarda pdfUrl final)
+PATCH {{base}}/{{epicrisisId}}/sign
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "pdfUrl": "https://storage.mednova.local/epicrisis/EP-2026-0001-final.pdf"
+}
+
+###
+
+### HU-FASE2-091 — Firmar sin pdfUrl (la URL puede haberse guardado antes)
+PATCH {{base}}/{{epicrisisId}}/sign
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-091 — Eliminación lógica (solo si NO está firmada)
+DELETE {{base}}/{{epicrisisId}}
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-091 — Validación: campo obligatorio (recommendations faltante)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "admissionId": {{admisionId}},
+  "professionalId": {{profesionalId}},
+  "admissionReason": "Motivo",
+  "admissionDiagnosis": "Diag ingreso",
+  "dischargeDiagnosis": "Diag egreso",
+  "evolutionSummary": "Evolución",
+  "followUpPlan": "Seguimiento"
+}
+
+###
+
+### HU-FASE2-091 — Validación: admisión sin egreso (409 - regla de negocio)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "admissionId": {{admisionSinEgresoId}},
+  "professionalId": {{profesionalId}},
+  "admissionReason": "Motivo",
+  "admissionDiagnosis": "Ingreso",
+  "dischargeDiagnosis": "Egreso",
+  "evolutionSummary": "Evolución",
+  "followUpPlan": "Seguimiento",
+  "recommendations": "Recs"
+}
+
+###
+
+### HU-FASE2-091 — Validación: epicrisis duplicada para la admisión (409)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "admissionId": {{admisionId}},
+  "professionalId": {{profesionalId}},
+  "admissionReason": "Reintento",
+  "admissionDiagnosis": "Ingreso",
+  "dischargeDiagnosis": "Egreso",
+  "evolutionSummary": "Evolución",
+  "followUpPlan": "Seguimiento",
+  "recommendations": "Recs"
+}
+
+###
+
+### HU-FASE2-091 — Validación: admisión inexistente o de otra sede (404)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "admissionId": {{admisionInexistenteId}},
+  "professionalId": {{profesionalId}},
+  "admissionReason": "Motivo",
+  "admissionDiagnosis": "Ingreso",
+  "dischargeDiagnosis": "Egreso",
+  "evolutionSummary": "Evolución",
+  "followUpPlan": "Seguimiento",
+  "recommendations": "Recs"
+}
+
+###
+
+### HU-FASE2-091 — Validación: profesional inexistente (404)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "admissionId": {{admisionId}},
+  "professionalId": {{profesionalInexistenteId}},
+  "admissionReason": "Motivo",
+  "admissionDiagnosis": "Ingreso",
+  "dischargeDiagnosis": "Egreso",
+  "evolutionSummary": "Evolución",
+  "followUpPlan": "Seguimiento",
+  "recommendations": "Recs"
+}
+
+###
+
+### HU-FASE2-091 — Validación: ID inexistente al consultar (404)
+GET {{base}}/{{epicrisisInexistenteId}}
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-091 CA3 — Validación: editar epicrisis firmada (409)
+PUT {{base}}/{{epicrisisFirmadaId}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "professionalId": {{profesionalId}},
+  "admissionReason": "Intento",
+  "admissionDiagnosis": "Ingreso",
+  "dischargeDiagnosis": "Egreso",
+  "evolutionSummary": "Evolución",
+  "followUpPlan": "Seguimiento",
+  "recommendations": "Recs"
+}
+
+###
+
+### HU-FASE2-091 — Validación: refirmar epicrisis ya firmada (409)
+PATCH {{base}}/{{epicrisisFirmadaId}}/sign
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-091 — Validación: eliminar epicrisis firmada (409)
+DELETE {{base}}/{{epicrisisFirmadaId}}
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-091 — Validación: preload de admisión inexistente (404)
+GET {{base}}/preload/{{admisionInexistenteId}}
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-091 — Validación: token faltante (401)
+POST {{base}}/list
+Content-Type: application/json
+
+{
+  "page": 0,
+  "rows": 10,
+  "search": "",
+  "params": {}
+}
+
+###

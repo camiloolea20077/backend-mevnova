@@ -1,0 +1,505 @@
+@port = 9001
+@token = Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwidGlwb190b2tlbiI6IkFDQ0VTUyIsInVzdWFyaW9faWQiOjIsImVtcHJlc2FfaWQiOjQsInNlZGVfaWQiOjEsInVzZXJuYW1lIjoiYWRtaW5faG9zcGl0YWwiLCJyb2xlcyI6WyJTdXBlci1BZG1pbmlzdHJhZG9yIGRlbCBTaXN0ZW1hIl0sInBlcm1pc29zIjpbIkFjdHVhbGl6YXIgdGVyY2VybyIsIkFudWxhciBmYWN0dXJhIiwiQW51bGFyIG9yZGVuIGNsaW5pY2EiLCJBbnVsYXIgcHJlc2NyaXBjaW9uIiwiQXByb2JhciBmYWN0dXJhIiwiQXNpZ25hciBjaXRhIiwiQXNpZ25hciByb2xlcyBhIHVzdWFyaW9zIiwiQXRlbmRlciB1cmdlbmNpYXMiLCJDYW1iaWFyIGVzdGFkbyBkZSBhZG1pc2lvbiIsIkNhbmNlbGFyIGNpdGEiLCJDZXJyYXIgYWRtaXNpb24iLCJDZXJyYXIgYXRlbmNpb24gZGUgdXJnZW5jaWFzIiwiQ29uc3VsdGFyIGFkbWlzaW9uZXMiLCJDb25zdWx0YXIgY2FydGVyYSIsIkNvbnN1bHRhciB0ZXJjZXJvIiwiQ3JlYXIgcGFjaWVudGUiLCJDcmVhciB0ZXJjZXJvIiwiRGFyIGVncmVzbyBob3NwaXRhbGFyaW8iLCJFZGl0YXIgZmFjdHVyYSIsIkdlbmVyYXIgZGlzcG9uaWJpbGlkYWQiLCJHZW5lcmFyIGZhY3R1cmEiLCJHZW5lcmFyIG9yZGVuIGNsaW5pY2EiLCJHZW5lcmFyIHByZXNjcmlwY2lvbiIsIkdlbmVyYXIgUklQUyIsIkdlc3Rpb25hciBhZ2VuZGFzIiwiR2VzdGlvbmFyIGNhbGVuZGFyaW9zIiwiR2VzdGlvbmFyIGNhdGFsb2dvIGRlIHNlcnZpY2lvcyIsIkdlc3Rpb25hciBjZW50cm9zIGRlIGNvc3RvIiwiR2VzdGlvbmFyIGNvYmVydHVyYSBkZSBjb250cmF0byIsIkdlc3Rpb25hciBjb250YWN0b3MiLCJHZXN0aW9uYXIgY29udHJhdG9zIiwiR2VzdGlvbmFyIGNvbnRyYXRvcyBkZWwgcGFjaWVudGUiLCJHZXN0aW9uYXIgZGlyZWNjaW9uZXMiLCJHZXN0aW9uYXIgZW1wcmVzYXMiLCJHZXN0aW9uYXIgZ2xvc2FzIiwiR2VzdGlvbmFyIGxpc3RhIGRlIGVzcGVyYSIsIkdlc3Rpb25hciBwYWdhZG9yZXMiLCJHZXN0aW9uYXIgcGVybWlzb3MiLCJHZXN0aW9uYXIgcHJvZmVzaW9uYWxlcyBkZSBzYWx1ZCIsIkdlc3Rpb25hciByZWN1cnNvcyBmaXNpY29zIiwiR2VzdGlvbmFyIHJlbGFjaW9uZXMiLCJHZXN0aW9uYXIgcm9sZXMiLCJHZXN0aW9uYXIgc2VkZXMiLCJHZXN0aW9uYXIgc2VndXJpZGFkIHNvY2lhbCIsIkdlc3Rpb25hciBzZXJ2aWNpb3MgaGFiaWxpdGFkb3MiLCJHZXN0aW9uYXIgU0lTQkVOIiwiR2VzdGlvbmFyIHRhcmlmYXJpb3MiLCJHZXN0aW9uYXIgdGFyaWZhcyBkZSBjb250cmF0byIsIkdlc3Rpb25hciB1c3VhcmlvcyIsIkluYWN0aXZhciB0ZXJjZXJvIiwiUmFkaWNhciBmYWN0dXJhIiwiUmVhbGl6YXIgdHJpYWdlIiwiUmVjaWJpciBlbiBob3NwaXRhbGl6YWNpb24iLCJSZWNsYXNpZmljYXIgdHJpYWdlIiwiUmVnaXN0cmFyIGFkbWlzaW9uIiwiUmVnaXN0cmFyIGRpYWdub3N0aWNvIiwiUmVnaXN0cmFyIGV2b2x1Y2lvbiIsIlJlZ2lzdHJhciBub3RhIGRlIGluZ3Jlc28iLCJSZWdpc3RyYXIgcGFnbyIsIlJlcHJvZ3JhbWFyIGNpdGEiLCJSZXNldGVhciBjb250cmFzZW5hIiwiU29saWNpdGFyIGhvc3BpdGFsaXphY2lvbiIsIlRyYXNsYWRhciBhZ2VuZGEiLCJWZXIgYXVkaXRvcmlhIGRlIGVtcHJlc2EiLCJWZXIgYXVkaXRvcmlhIGdsb2JhbCIsIlZlciBjb2xhIGRlIHVyZ2VuY2lhcyIsIlZlciBvcmRlbmVzIGFjdGl2YXMiXSwianRpIjoiNDEzZjQ5NDQtYzUwNS00NzdjLWFlOWQtMTVhZGFiODY1YzhhIiwiaWF0IjoxNzc4NDUzNDA0LCJleHAiOjE3Nzg1Mzk4MDR9.KIkh7aX0OCMAIkvJbPM1-OjEKdEkrgZTX6H0ycQup_2HMRw8Hu2QuhP_hpwy3885OPN2nWqExENuvusgKvCwoQ
+
+@base = http://localhost:{{port}}/api/medication-administrations
+
+@atencionId = 1
+@otraAtencionId = 2
+@pacienteId = 5
+@profesionalId = 2
+@detallePrescripcionId = 1
+@dispensacionId = 2
+@loteId = 1
+@viaAdministracionId = 27
+@administracionId = 1
+@administracionAdministradaId = 2
+@administracionInexistenteId = 99999
+@detalleInexistenteId = 99999
+@atencionInexistenteId = 99999
+@pacienteInexistenteId = 99999
+@profesionalInexistenteId = 99999
+@loteInexistenteId = 99999
+
+### HU-FASE2-087 CA1 — Programar 8 dosis cada 8h (3 días) a partir de un detalle_prescripcion
+POST {{base}}/schedule
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "prescriptionDetailId": {{detallePrescripcionId}},
+  "encounterId": {{atencionId}},
+  "patientId": {{pacienteId}},
+  "professionalId": {{profesionalId}},
+  "firstDoseAt": "2026-05-10T08:00:00",
+  "intervalHours": 8,
+  "totalDoses": 9
+}
+
+###
+
+### HU-FASE2-087 CA1 — Programar 1 dosis única (STAT)
+POST {{base}}/schedule
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "prescriptionDetailId": {{detallePrescripcionId}},
+  "encounterId": {{atencionId}},
+  "patientId": {{pacienteId}},
+  "professionalId": {{profesionalId}},
+  "firstDoseAt": "2026-05-10T14:00:00",
+  "intervalHours": 24,
+  "totalDoses": 1
+}
+
+###
+
+### HU-FASE2-087 CA2 — Administrar dosis con trazabilidad de lote y dispensación
+PATCH {{base}}/{{administracionId}}/administer
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "administrationTime": "2026-05-10T08:05:00",
+  "administeredDose": 500.0,
+  "routeOfAdministrationId": {{viaAdministracionId}},
+  "dispensationId": {{dispensacionId}},
+  "loteId": {{loteId}},
+  "observations": "Paciente tolera bien la administración. Sin signos de reacción inmediata."
+}
+
+###
+
+### HU-FASE2-087 CA2 — Administrar dosis con reacción adversa registrada en el mismo evento
+PATCH {{base}}/{{administracionId}}/administer
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "administrationTime": "2026-05-10T16:00:00",
+  "administeredDose": 500.0,
+  "routeOfAdministrationId": {{viaAdministracionId}},
+  "dispensationId": {{dispensacionId}},
+  "loteId": {{loteId}},
+  "adverseReaction": "Brote cutáneo leve en antebrazo izquierdo a los 15 minutos.",
+  "observations": "Se suspende próxima dosis. Se notifica al médico tratante."
+}
+
+###
+
+### HU-FASE2-087 CA3 — Omitir dosis con motivo
+PATCH {{base}}/{{administracionId}}/omit
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "status": "OMITIDA",
+  "omissionReason": "Paciente en ayuno para procedimiento quirúrgico.",
+  "observations": "Se reprograma según indicación médica posterior al procedimiento."
+}
+
+###
+
+### HU-FASE2-087 CA3 — Rechazar dosis (paciente rechaza)
+PATCH {{base}}/{{administracionId}}/omit
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "status": "RECHAZADA",
+  "omissionReason": "Paciente rechaza la medicación, se le explican riesgos."
+}
+
+###
+
+### HU-FASE2-087 — Suspender dosis futura
+PATCH {{base}}/{{administracionId}}/suspend
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "reason": "Suspensión por orden médica - cambio de esquema."
+}
+
+###
+
+### HU-FASE2-087 CA4 — Registrar reacción adversa sobre dosis ya administrada
+PATCH {{base}}/{{administracionAdministradaId}}/adverse-reaction
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "adverseReaction": "Náuseas y vómito 1 hora después de la administración. Glasgow 15. TA estable.",
+  "observations": "Se reporta al médico tratante. Se administra antiemético."
+}
+
+###
+
+### HU-FASE2-087 — Consultar administración por ID
+GET {{base}}/{{administracionId}}
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-087 — Panel MAR: dosis pendientes de la atención
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 50,
+  "search": "",
+  "order_by": "a.fecha_programada",
+  "order": "ASC",
+  "params": {
+    "encounterId": {{atencionId}},
+    "onlyPending": true
+  }
+}
+
+###
+
+### HU-FASE2-087 — Panel MAR: cronología completa de la atención (todos los estados)
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 100,
+  "search": "",
+  "order_by": "a.fecha_programada",
+  "order": "ASC",
+  "params": {
+    "encounterId": {{atencionId}}
+  }
+}
+
+###
+
+### HU-FASE2-087 — Filtrar por estado ADMINISTRADA
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 50,
+  "search": "",
+  "order_by": "a.fecha_administracion",
+  "order": "DESC",
+  "params": {
+    "encounterId": {{atencionId}},
+    "status": "ADMINISTRADA"
+  }
+}
+
+###
+
+### HU-FASE2-087 — Filtrar dosis con reacción adversa (para revisión médica)
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 50,
+  "search": "",
+  "order_by": "a.fecha_administracion",
+  "order": "DESC",
+  "params": {
+    "patientId": {{pacienteId}},
+    "onlyWithAdverseReaction": true
+  }
+}
+
+###
+
+### HU-FASE2-087 — Filtrar por detalle de prescripción (trazabilidad de un medicamento)
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 50,
+  "search": "",
+  "order_by": "a.fecha_programada",
+  "order": "ASC",
+  "params": {
+    "prescriptionDetailId": {{detallePrescripcionId}}
+  }
+}
+
+###
+
+### HU-FASE2-087 — Filtrar por rango de fechas programadas (turno del día)
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 100,
+  "search": "",
+  "order_by": "a.fecha_programada",
+  "order": "ASC",
+  "params": {
+    "encounterId": {{atencionId}},
+    "scheduledFrom": "2026-05-10",
+    "scheduledTo": "2026-05-10"
+  }
+}
+
+###
+
+### HU-FASE2-087 — Búsqueda por texto (nombre medicamento u observación)
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 20,
+  "search": "paracetamol",
+  "order_by": "a.fecha_programada",
+  "order": "DESC",
+  "params": {
+    "patientId": {{pacienteId}}
+  }
+}
+
+###
+
+### HU-FASE2-087 — Eliminación lógica (solo dosis no administradas)
+DELETE {{base}}/{{administracionId}}
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-087 — Validación: campo obligatorio (intervalHours faltante)
+POST {{base}}/schedule
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "prescriptionDetailId": {{detallePrescripcionId}},
+  "encounterId": {{atencionId}},
+  "patientId": {{pacienteId}},
+  "professionalId": {{profesionalId}},
+  "firstDoseAt": "2026-05-10T08:00:00",
+  "totalDoses": 9
+}
+
+###
+
+### HU-FASE2-087 — Validación: intervalHours fuera de rango (400)
+POST {{base}}/schedule
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "prescriptionDetailId": {{detallePrescripcionId}},
+  "encounterId": {{atencionId}},
+  "patientId": {{pacienteId}},
+  "professionalId": {{profesionalId}},
+  "firstDoseAt": "2026-05-10T08:00:00",
+  "intervalHours": 200,
+  "totalDoses": 5
+}
+
+###
+
+### HU-FASE2-087 — Validación: totalDoses excede tope (400)
+POST {{base}}/schedule
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "prescriptionDetailId": {{detallePrescripcionId}},
+  "encounterId": {{atencionId}},
+  "patientId": {{pacienteId}},
+  "professionalId": {{profesionalId}},
+  "firstDoseAt": "2026-05-10T08:00:00",
+  "intervalHours": 8,
+  "totalDoses": 5000
+}
+
+###
+
+### HU-FASE2-087 — Validación: detalle de prescripción inexistente (404)
+POST {{base}}/schedule
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "prescriptionDetailId": {{detalleInexistenteId}},
+  "encounterId": {{atencionId}},
+  "patientId": {{pacienteId}},
+  "professionalId": {{profesionalId}},
+  "firstDoseAt": "2026-05-10T08:00:00",
+  "intervalHours": 8,
+  "totalDoses": 3
+}
+
+###
+
+### HU-FASE2-087 — Validación: atención inexistente o de otra sede (404)
+POST {{base}}/schedule
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "prescriptionDetailId": {{detallePrescripcionId}},
+  "encounterId": {{atencionInexistenteId}},
+  "patientId": {{pacienteId}},
+  "professionalId": {{profesionalId}},
+  "firstDoseAt": "2026-05-10T08:00:00",
+  "intervalHours": 8,
+  "totalDoses": 3
+}
+
+###
+
+### HU-FASE2-087 — Validación: atención no corresponde al paciente (400)
+POST {{base}}/schedule
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "prescriptionDetailId": {{detallePrescripcionId}},
+  "encounterId": {{otraAtencionId}},
+  "patientId": {{pacienteId}},
+  "professionalId": {{profesionalId}},
+  "firstDoseAt": "2026-05-10T08:00:00",
+  "intervalHours": 8,
+  "totalDoses": 3
+}
+
+###
+
+### HU-FASE2-087 — Validación: profesional inexistente (404)
+POST {{base}}/schedule
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "prescriptionDetailId": {{detallePrescripcionId}},
+  "encounterId": {{atencionId}},
+  "patientId": {{pacienteId}},
+  "professionalId": {{profesionalInexistenteId}},
+  "firstDoseAt": "2026-05-10T08:00:00",
+  "intervalHours": 8,
+  "totalDoses": 3
+}
+
+###
+
+### HU-FASE2-087 — Validación: ID inexistente al administrar (404)
+PATCH {{base}}/{{administracionInexistenteId}}/administer
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "administrationTime": "2026-05-10T08:05:00",
+  "administeredDose": 500.0,
+  "routeOfAdministrationId": {{viaAdministracionId}}
+}
+
+###
+
+### HU-FASE2-087 — Validación: lote inexistente al administrar (404)
+PATCH {{base}}/{{administracionId}}/administer
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "administrationTime": "2026-05-10T08:05:00",
+  "administeredDose": 500.0,
+  "loteId": {{loteInexistenteId}}
+}
+
+###
+
+### HU-FASE2-087 — Validación: administrar dosis ya administrada (409 - regla de negocio)
+PATCH {{base}}/{{administracionAdministradaId}}/administer
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "administrationTime": "2026-05-10T09:00:00",
+  "administeredDose": 500.0
+}
+
+###
+
+### HU-FASE2-087 — Validación: omitir dosis ya administrada (409)
+PATCH {{base}}/{{administracionAdministradaId}}/omit
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "status": "OMITIDA",
+  "omissionReason": "Intento de omitir una dosis ya administrada"
+}
+
+###
+
+### HU-FASE2-087 — Validación: status inválido en omit (400)
+PATCH {{base}}/{{administracionId}}/omit
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "status": "ANULADA",
+  "omissionReason": "Estado fuera de catálogo"
+}
+
+###
+
+### HU-FASE2-087 — Validación: motivo de omisión vacío (400)
+PATCH {{base}}/{{administracionId}}/omit
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "status": "OMITIDA",
+  "omissionReason": ""
+}
+
+###
+
+### HU-FASE2-087 — Validación: reacción adversa sobre dosis no ADMINISTRADA (409)
+PATCH {{base}}/{{administracionId}}/adverse-reaction
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "adverseReaction": "Intento de registrar reacción sobre dosis PROGRAMADA"
+}
+
+###
+
+### HU-FASE2-087 — Validación: eliminar dosis ADMINISTRADA (409)
+DELETE {{base}}/{{administracionAdministradaId}}
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-087 — Validación: token faltante (401)
+POST {{base}}/list
+Content-Type: application/json
+
+{
+  "page": 0,
+  "rows": 10,
+  "search": "",
+  "order_by": "a.fecha_programada",
+  "order": "ASC",
+  "params": {
+    "encounterId": {{atencionId}}
+  }
+}
+
+###

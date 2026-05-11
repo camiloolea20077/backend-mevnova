@@ -1,116 +1,104 @@
 @port = 9001
 @token = Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwidGlwb190b2tlbiI6IkFDQ0VTUyIsInVzdWFyaW9faWQiOjIsImVtcHJlc2FfaWQiOjQsInNlZGVfaWQiOjEsInVzZXJuYW1lIjoiYWRtaW5faG9zcGl0YWwiLCJyb2xlcyI6WyJTdXBlci1BZG1pbmlzdHJhZG9yIGRlbCBTaXN0ZW1hIl0sInBlcm1pc29zIjpbIkFjdHVhbGl6YXIgdGVyY2VybyIsIkFudWxhciBmYWN0dXJhIiwiQW51bGFyIG9yZGVuIGNsaW5pY2EiLCJBbnVsYXIgcHJlc2NyaXBjaW9uIiwiQXByb2JhciBmYWN0dXJhIiwiQXNpZ25hciBjaXRhIiwiQXNpZ25hciByb2xlcyBhIHVzdWFyaW9zIiwiQXRlbmRlciB1cmdlbmNpYXMiLCJDYW1iaWFyIGVzdGFkbyBkZSBhZG1pc2lvbiIsIkNhbmNlbGFyIGNpdGEiLCJDZXJyYXIgYWRtaXNpb24iLCJDZXJyYXIgYXRlbmNpb24gZGUgdXJnZW5jaWFzIiwiQ29uc3VsdGFyIGFkbWlzaW9uZXMiLCJDb25zdWx0YXIgY2FydGVyYSIsIkNvbnN1bHRhciB0ZXJjZXJvIiwiQ3JlYXIgcGFjaWVudGUiLCJDcmVhciB0ZXJjZXJvIiwiRGFyIGVncmVzbyBob3NwaXRhbGFyaW8iLCJFZGl0YXIgZmFjdHVyYSIsIkdlbmVyYXIgZGlzcG9uaWJpbGlkYWQiLCJHZW5lcmFyIGZhY3R1cmEiLCJHZW5lcmFyIG9yZGVuIGNsaW5pY2EiLCJHZW5lcmFyIHByZXNjcmlwY2lvbiIsIkdlbmVyYXIgUklQUyIsIkdlc3Rpb25hciBhZ2VuZGFzIiwiR2VzdGlvbmFyIGNhbGVuZGFyaW9zIiwiR2VzdGlvbmFyIGNhdGFsb2dvIGRlIHNlcnZpY2lvcyIsIkdlc3Rpb25hciBjZW50cm9zIGRlIGNvc3RvIiwiR2VzdGlvbmFyIGNvYmVydHVyYSBkZSBjb250cmF0byIsIkdlc3Rpb25hciBjb250YWN0b3MiLCJHZXN0aW9uYXIgY29udHJhdG9zIiwiR2VzdGlvbmFyIGNvbnRyYXRvcyBkZWwgcGFjaWVudGUiLCJHZXN0aW9uYXIgZGlyZWNjaW9uZXMiLCJHZXN0aW9uYXIgZW1wcmVzYXMiLCJHZXN0aW9uYXIgZ2xvc2FzIiwiR2VzdGlvbmFyIGxpc3RhIGRlIGVzcGVyYSIsIkdlc3Rpb25hciBwYWdhZG9yZXMiLCJHZXN0aW9uYXIgcGVybWlzb3MiLCJHZXN0aW9uYXIgcHJvZmVzaW9uYWxlcyBkZSBzYWx1ZCIsIkdlc3Rpb25hciByZWN1cnNvcyBmaXNpY29zIiwiR2VzdGlvbmFyIHJlbGFjaW9uZXMiLCJHZXN0aW9uYXIgcm9sZXMiLCJHZXN0aW9uYXIgc2VkZXMiLCJHZXN0aW9uYXIgc2VndXJpZGFkIHNvY2lhbCIsIkdlc3Rpb25hciBzZXJ2aWNpb3MgaGFiaWxpdGFkb3MiLCJHZXN0aW9uYXIgU0lTQkVOIiwiR2VzdGlvbmFyIHRhcmlmYXJpb3MiLCJHZXN0aW9uYXIgdGFyaWZhcyBkZSBjb250cmF0byIsIkdlc3Rpb25hciB1c3VhcmlvcyIsIkluYWN0aXZhciB0ZXJjZXJvIiwiUmFkaWNhciBmYWN0dXJhIiwiUmVhbGl6YXIgdHJpYWdlIiwiUmVjaWJpciBlbiBob3NwaXRhbGl6YWNpb24iLCJSZWNsYXNpZmljYXIgdHJpYWdlIiwiUmVnaXN0cmFyIGFkbWlzaW9uIiwiUmVnaXN0cmFyIGRpYWdub3N0aWNvIiwiUmVnaXN0cmFyIGV2b2x1Y2lvbiIsIlJlZ2lzdHJhciBub3RhIGRlIGluZ3Jlc28iLCJSZWdpc3RyYXIgcGFnbyIsIlJlcHJvZ3JhbWFyIGNpdGEiLCJSZXNldGVhciBjb250cmFzZW5hIiwiU29saWNpdGFyIGhvc3BpdGFsaXphY2lvbiIsIlRyYXNsYWRhciBhZ2VuZGEiLCJWZXIgYXVkaXRvcmlhIGRlIGVtcHJlc2EiLCJWZXIgYXVkaXRvcmlhIGdsb2JhbCIsIlZlciBjb2xhIGRlIHVyZ2VuY2lhcyIsIlZlciBvcmRlbmVzIGFjdGl2YXMiXSwianRpIjoiNDEzZjQ5NDQtYzUwNS00NzdjLWFlOWQtMTVhZGFiODY1YzhhIiwiaWF0IjoxNzc4NDUzNDA0LCJleHAiOjE3Nzg1Mzk4MDR9.KIkh7aX0OCMAIkvJbPM1-OjEKdEkrgZTX6H0ycQup_2HMRw8Hu2QuhP_hpwy3885OPN2nWqExENuvusgKvCwoQ
 
+@base = http://localhost:{{port}}/api/clinical-records
 
-@base = http://localhost:{{port}}/api/admissions
+@pacienteId = 5
+@pacienteInexistenteId = 99999
+@pacienteOtraEmpresaId = 88888
 
-### HU-020 — Registrar admisión de urgencias
-# tipo_admision_id=1 (URGENCIAS), origen_atencion_id=1 (Enfermedad General),
-# pagador_id=1, paciente_id=1
-POST {{base}}
-Content-Type: application/json
-Authorization: {{token}}
-
-{
-  "patientId": 6,
-  "admissionTypeId": 13,
-  "careOriginId": 17,
-  "payerId": 3,
-  "contractId": null,
-  "companionId": null,
-  "entryReason": "Paciente con dolor abdominal agudo en FID de 6 horas de evolución",
-  "observations": null
-}
-
-###
-
-### HU-020 — Registrar admisión de consulta externa
-POST {{base}}
-Content-Type: application/json
-Authorization: {{token}}
-
-{
-  "patientId": 5,
-  "admissionTypeId": 14,
-  "careOriginId": 24,
-  "payerId": 3,
-  "contractId": 2,
-  "companionId": null,
-  "entryReason": "Control mensual hipertensión arterial",
-  "observations": null
-}
-
-###
-
-### HU-022 — Consultar admisión por ID
-GET {{base}}/3
+### HU-FASE2-093 CA1+CA4 — Encabezado (datos demográficos + alergias destacadas)
+GET {{base}}/{{pacienteId}}/header
 Authorization: {{token}}
 
 ###
 
-### HU-022 — Listar admisiones activas de la sede (paginado)
-POST {{base}}/list
-Content-Type: application/json
+### HU-FASE2-093 — Pestaña Resumen (diagnósticos activos, medicación habitual, última atención, próxima cita)
+GET {{base}}/{{pacienteId}}/summary
 Authorization: {{token}}
-
-{
-  "page": 0,
-  "rows": 10,
-  "search": "",
-  "order_by": "a.fecha_admision",
-  "order": "DESC"
-}
 
 ###
 
-### HU-022 — Buscar admisión por nombre o número de documento
-POST {{base}}/list
-Content-Type: application/json
+### HU-FASE2-093 — Pestaña Episodios (admisiones con conteo y diagnósticos)
+GET {{base}}/{{pacienteId}}/episodes
 Authorization: {{token}}
-
-{
-  "page": 0,
-  "rows": 10,
-  "search": "García",
-  "order_by": "a.fecha_admision",
-  "order": "DESC"
-}
 
 ###
 
-### HU-023 — Cambiar estado de admisión a EN_ATENCION
-PATCH {{base}}/3/status
-Content-Type: application/json
+### HU-FASE2-093 — Pestaña Anamnesis (antecedentes, hábitos, vacunas, medicación)
+GET {{base}}/{{pacienteId}}/anamnesis
 Authorization: {{token}}
-
-{
-  "newStatusCode": "EN_ATENCION",
-  "observations": "Paciente pasa a atención médica"
-}
 
 ###
 
-### HU-023 — Cancelar admisión
-PATCH {{base}}/3/status
-Content-Type: application/json
+### HU-FASE2-093 — Pestaña Notas (cronología de notas de enfermería)
+GET {{base}}/{{pacienteId}}/notes
 Authorization: {{token}}
-
-{
-  "newStatusCode": "CANCELADO",
-  "observations": "Paciente se retira voluntariamente"
-}
 
 ###
 
-### HU-024 — Registrar egreso administrativo
-# Solo permitido si todas las atenciones están cerradas
-PATCH {{base}}/6/egreso
-Content-Type: application/json
+### HU-FASE2-093 — Pestaña Órdenes (histórico de órdenes clínicas)
+GET {{base}}/{{pacienteId}}/orders
 Authorization: {{token}}
 
-{
-  "dischargeType": "ALTA_VOLUNTARIA",
-  "observations": "Paciente solicita alta voluntaria, se educa sobre riesgos"
-}
+###
+
+### HU-FASE2-093 — Pestaña Medicamentos (prescripciones, dispensaciones, MAR)
+GET {{base}}/{{pacienteId}}/medications
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-093 — Pestaña Escalas (con evolución temporal)
+GET {{base}}/{{pacienteId}}/scales
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-093 — Pestaña Adjuntos (oculta confidenciales si no tiene permiso)
+GET {{base}}/{{pacienteId}}/attachments
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-093 CA5 — Línea de tiempo (eventos consolidados en orden cronológico)
+GET {{base}}/{{pacienteId}}/timeline
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-093 — Validación: paciente inexistente (404)
+GET {{base}}/{{pacienteInexistenteId}}/header
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-093 — Validación: paciente de otra empresa (404 - aislamiento)
+GET {{base}}/{{pacienteOtraEmpresaId}}/summary
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-093 CA2 — Validación: sin permiso HC_CONSULTAR_HISTORIA_CLINICA (403)
+# Usar un token cuyo rol NO incluya el permiso de consulta de HC.
+GET {{base}}/{{pacienteId}}/header
+Authorization: Bearer TOKEN_SIN_PERMISO_HC_CONSULTAR
+
+###
+
+### HU-FASE2-093 — Validación: token faltante (401)
+GET {{base}}/{{pacienteId}}/header
+
+###
+
+### HU-FASE2-093 — Validación: ID inexistente al consultar adjuntos (404)
+GET {{base}}/{{pacienteInexistenteId}}/attachments
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-093 — Validación: ID inexistente al consultar timeline (404)
+GET {{base}}/{{pacienteInexistenteId}}/timeline
+Authorization: {{token}}
 
 ###

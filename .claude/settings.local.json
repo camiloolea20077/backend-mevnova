@@ -21,7 +21,9 @@
       "PowerShell(.\\\\mvnw.cmd -q -DskipTests compile 2>&1 | Select-Object -Last 50)",
       "PowerShell(.\\\\mvnw.cmd -DskipTests compile 2>&1 | Select-Object -Last 80)",
       "PowerShell(.\\\\mvnw.cmd -DskipTests clean compile 2>&1 | Select-Object -Last 80)",
-      "PowerShell(.\\\\mvnw.cmd -DskipTests compile 2>&1 | Select-Object -Last 60)"
+      "PowerShell(.\\\\mvnw.cmd -DskipTests compile 2>&1 | Select-Object -Last 60)",
+      "Bash(./mvnw -q compile -DskipTests)",
+      "Bash(./mvnw clean *)"
     ]
   }
 }

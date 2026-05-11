@@ -1,0 +1,515 @@
+@port = 9001
+@token = Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwidGlwb190b2tlbiI6IkFDQ0VTUyIsInVzdWFyaW9faWQiOjIsImVtcHJlc2FfaWQiOjQsInNlZGVfaWQiOjEsInVzZXJuYW1lIjoiYWRtaW5faG9zcGl0YWwiLCJyb2xlcyI6WyJTdXBlci1BZG1pbmlzdHJhZG9yIGRlbCBTaXN0ZW1hIl0sInBlcm1pc29zIjpbIkFjdHVhbGl6YXIgdGVyY2VybyIsIkFudWxhciBmYWN0dXJhIiwiQW51bGFyIG9yZGVuIGNsaW5pY2EiLCJBbnVsYXIgcHJlc2NyaXBjaW9uIiwiQXByb2JhciBmYWN0dXJhIiwiQXNpZ25hciBjaXRhIiwiQXNpZ25hciByb2xlcyBhIHVzdWFyaW9zIiwiQXRlbmRlciB1cmdlbmNpYXMiLCJDYW1iaWFyIGVzdGFkbyBkZSBhZG1pc2lvbiIsIkNhbmNlbGFyIGNpdGEiLCJDZXJyYXIgYWRtaXNpb24iLCJDZXJyYXIgYXRlbmNpb24gZGUgdXJnZW5jaWFzIiwiQ29uc3VsdGFyIGFkbWlzaW9uZXMiLCJDb25zdWx0YXIgY2FydGVyYSIsIkNvbnN1bHRhciB0ZXJjZXJvIiwiQ3JlYXIgcGFjaWVudGUiLCJDcmVhciB0ZXJjZXJvIiwiRGFyIGVncmVzbyBob3NwaXRhbGFyaW8iLCJFZGl0YXIgZmFjdHVyYSIsIkdlbmVyYXIgZGlzcG9uaWJpbGlkYWQiLCJHZW5lcmFyIGZhY3R1cmEiLCJHZW5lcmFyIG9yZGVuIGNsaW5pY2EiLCJHZW5lcmFyIHByZXNjcmlwY2lvbiIsIkdlbmVyYXIgUklQUyIsIkdlc3Rpb25hciBhZ2VuZGFzIiwiR2VzdGlvbmFyIGNhbGVuZGFyaW9zIiwiR2VzdGlvbmFyIGNhdGFsb2dvIGRlIHNlcnZpY2lvcyIsIkdlc3Rpb25hciBjZW50cm9zIGRlIGNvc3RvIiwiR2VzdGlvbmFyIGNvYmVydHVyYSBkZSBjb250cmF0byIsIkdlc3Rpb25hciBjb250YWN0b3MiLCJHZXN0aW9uYXIgY29udHJhdG9zIiwiR2VzdGlvbmFyIGNvbnRyYXRvcyBkZWwgcGFjaWVudGUiLCJHZXN0aW9uYXIgZGlyZWNjaW9uZXMiLCJHZXN0aW9uYXIgZW1wcmVzYXMiLCJHZXN0aW9uYXIgZ2xvc2FzIiwiR2VzdGlvbmFyIGxpc3RhIGRlIGVzcGVyYSIsIkdlc3Rpb25hciBwYWdhZG9yZXMiLCJHZXN0aW9uYXIgcGVybWlzb3MiLCJHZXN0aW9uYXIgcHJvZmVzaW9uYWxlcyBkZSBzYWx1ZCIsIkdlc3Rpb25hciByZWN1cnNvcyBmaXNpY29zIiwiR2VzdGlvbmFyIHJlbGFjaW9uZXMiLCJHZXN0aW9uYXIgcm9sZXMiLCJHZXN0aW9uYXIgc2VkZXMiLCJHZXN0aW9uYXIgc2VndXJpZGFkIHNvY2lhbCIsIkdlc3Rpb25hciBzZXJ2aWNpb3MgaGFiaWxpdGFkb3MiLCJHZXN0aW9uYXIgU0lTQkVOIiwiR2VzdGlvbmFyIHRhcmlmYXJpb3MiLCJHZXN0aW9uYXIgdGFyaWZhcyBkZSBjb250cmF0byIsIkdlc3Rpb25hciB1c3VhcmlvcyIsIkluYWN0aXZhciB0ZXJjZXJvIiwiUmFkaWNhciBmYWN0dXJhIiwiUmVhbGl6YXIgdHJpYWdlIiwiUmVjaWJpciBlbiBob3NwaXRhbGl6YWNpb24iLCJSZWNsYXNpZmljYXIgdHJpYWdlIiwiUmVnaXN0cmFyIGFkbWlzaW9uIiwiUmVnaXN0cmFyIGRpYWdub3N0aWNvIiwiUmVnaXN0cmFyIGV2b2x1Y2lvbiIsIlJlZ2lzdHJhciBub3RhIGRlIGluZ3Jlc28iLCJSZWdpc3RyYXIgcGFnbyIsIlJlcHJvZ3JhbWFyIGNpdGEiLCJSZXNldGVhciBjb250cmFzZW5hIiwiU29saWNpdGFyIGhvc3BpdGFsaXphY2lvbiIsIlRyYXNsYWRhciBhZ2VuZGEiLCJWZXIgYXVkaXRvcmlhIGRlIGVtcHJlc2EiLCJWZXIgYXVkaXRvcmlhIGdsb2JhbCIsIlZlciBjb2xhIGRlIHVyZ2VuY2lhcyIsIlZlciBvcmRlbmVzIGFjdGl2YXMiXSwianRpIjoiNDEzZjQ5NDQtYzUwNS00NzdjLWFlOWQtMTVhZGFiODY1YzhhIiwiaWF0IjoxNzc4NDUzNDA0LCJleHAiOjE3Nzg1Mzk4MDR9.KIkh7aX0OCMAIkvJbPM1-OjEKdEkrgZTX6H0ycQup_2HMRw8Hu2QuhP_hpwy3885OPN2nWqExENuvusgKvCwoQ
+
+@base = http://localhost:{{port}}/api/nursing-notes
+
+@atencionId = 1
+@otraAtencionId = 2
+@pacienteId = 5
+@profesionalId = 2
+@notaId = 1
+@notaFirmadaId = 2
+@notaInexistenteId = 99999
+@atencionInexistenteId = 99999
+@pacienteInexistenteId = 99999
+@profesionalInexistenteId = 99999
+
+### HU-FASE2-086 — Crear nota de enfermería tipo INGRESO con signos vitales completos
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "encounterId": {{atencionId}},
+  "patientId": {{pacienteId}},
+  "professionalId": {{profesionalId}},
+  "noteType": "INGRESO",
+  "shift": "MANANA",
+  "content": "Paciente ingresa consciente, orientado en tiempo, espacio y persona. Refiere dolor abdominal EVA 7/10. Se acomoda en cama, se canaliza vía periférica No. 18 en MSI. Se aplica indicaciones médicas.",
+  "systolicBp": 120,
+  "diastolicBp": 80,
+  "heartRate": 88,
+  "respiratoryRate": 18,
+  "temperature": 36.7,
+  "oxygenSaturation": 97,
+  "glucometry": 95.0,
+  "painEva": 7
+}
+
+###
+
+### HU-FASE2-086 — Crear nota tipo EVOLUCION turno tarde
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "encounterId": {{atencionId}},
+  "patientId": {{pacienteId}},
+  "professionalId": {{profesionalId}},
+  "noteType": "EVOLUCION",
+  "shift": "TARDE",
+  "content": "Paciente refiere disminución del dolor a EVA 4/10 después de manejo analgésico. Tolera vía oral. Diuresis adecuada. Continúa con líquidos endovenosos y monitoreo.",
+  "systolicBp": 118,
+  "diastolicBp": 78,
+  "heartRate": 80,
+  "respiratoryRate": 16,
+  "temperature": 36.5,
+  "oxygenSaturation": 98,
+  "painEva": 4
+}
+
+###
+
+### HU-FASE2-086 — Crear nota tipo NOVEDAD (sin signos vitales)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "encounterId": {{atencionId}},
+  "patientId": {{pacienteId}},
+  "professionalId": {{profesionalId}},
+  "noteType": "NOVEDAD",
+  "shift": "NOCHE",
+  "content": "Familiar reporta caída del paciente al ir al baño sin asistencia. Se evalúa: sin pérdida de conciencia, sin signos de trauma. Se refuerza educación a familiar y paciente sobre uso de timbre y barandillas."
+}
+
+###
+
+### HU-FASE2-086 — Crear nota tipo ENTREGA_TURNO
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "encounterId": {{atencionId}},
+  "patientId": {{pacienteId}},
+  "professionalId": {{profesionalId}},
+  "noteType": "ENTREGA_TURNO",
+  "shift": "NOCHE",
+  "content": "Se entrega turno con paciente estable. Pendiente: glucometría 06:00, paracetamol 500mg c/8h vía oral, valoración por médico tratante en la mañana. Sin novedades durante el turno.",
+  "systolicBp": 115,
+  "diastolicBp": 75,
+  "heartRate": 78,
+  "respiratoryRate": 16,
+  "temperature": 36.4,
+  "oxygenSaturation": 98
+}
+
+###
+
+### HU-FASE2-086 — Crear nota POST_PROCEDIMIENTO firmada al crear
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "encounterId": {{atencionId}},
+  "patientId": {{pacienteId}},
+  "professionalId": {{profesionalId}},
+  "noteType": "POST_PROCEDIMIENTO",
+  "shift": "TARDE",
+  "content": "Paciente en post-operatorio inmediato de colecistectomía. Vigil, orientado. Herida quirúrgica con apósito limpio, seco. Drenaje serohemático escaso. Inicia esquema analgésico programado.",
+  "systolicBp": 110,
+  "diastolicBp": 70,
+  "heartRate": 92,
+  "respiratoryRate": 18,
+  "temperature": 37.0,
+  "oxygenSaturation": 96,
+  "painEva": 5,
+  "signOnCreate": true
+}
+
+###
+
+### HU-FASE2-086 — Consultar nota por ID
+GET {{base}}/{{notaId}}
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-086 — Listar notas de la atención (cronología por turno)
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 20,
+  "search": "",
+  "order_by": "n.fecha_nota",
+  "order": "DESC",
+  "params": {
+    "encounterId": {{atencionId}}
+  }
+}
+
+###
+
+### HU-FASE2-086 — Cronología completa del paciente
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 50,
+  "search": "",
+  "order_by": "n.fecha_nota",
+  "order": "DESC",
+  "params": {
+    "patientId": {{pacienteId}}
+  }
+}
+
+###
+
+### HU-FASE2-086 — Filtrar por tipo INGRESO
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 20,
+  "search": "",
+  "order_by": "n.fecha_nota",
+  "order": "DESC",
+  "params": {
+    "patientId": {{pacienteId}},
+    "noteType": "INGRESO"
+  }
+}
+
+###
+
+### HU-FASE2-086 — Filtrar por turno NOCHE
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 20,
+  "search": "",
+  "order_by": "n.fecha_nota",
+  "order": "DESC",
+  "params": {
+    "encounterId": {{atencionId}},
+    "shift": "NOCHE"
+  }
+}
+
+###
+
+### HU-FASE2-086 — Filtrar solo notas firmadas
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 20,
+  "search": "",
+  "order_by": "n.fecha_nota",
+  "order": "DESC",
+  "params": {
+    "encounterId": {{atencionId}},
+    "signed": true
+  }
+}
+
+###
+
+### HU-FASE2-086 — Filtrar solo notas pendientes de firma
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 20,
+  "search": "",
+  "order_by": "n.fecha_nota",
+  "order": "DESC",
+  "params": {
+    "encounterId": {{atencionId}},
+    "signed": false
+  }
+}
+
+###
+
+### HU-FASE2-086 — Filtrar por rango de fechas
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 50,
+  "search": "",
+  "order_by": "n.fecha_nota",
+  "order": "ASC",
+  "params": {
+    "patientId": {{pacienteId}},
+    "dateFrom": "2026-05-01",
+    "dateTo": "2026-05-31"
+  }
+}
+
+###
+
+### HU-FASE2-086 — Búsqueda por texto en contenido
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 20,
+  "search": "dolor",
+  "order_by": "n.fecha_nota",
+  "order": "DESC",
+  "params": {
+    "patientId": {{pacienteId}}
+  }
+}
+
+###
+
+### HU-FASE2-086 — Actualizar nota (solo si NO está firmada)
+PUT {{base}}/{{notaId}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "professionalId": {{profesionalId}},
+  "noteType": "EVOLUCION",
+  "shift": "TARDE",
+  "content": "Paciente refiere disminución del dolor a EVA 3/10. Tolera vía oral sin emesis. Deambulación asistida. Continúa con plan establecido.",
+  "systolicBp": 116,
+  "diastolicBp": 76,
+  "heartRate": 76,
+  "respiratoryRate": 16,
+  "temperature": 36.5,
+  "oxygenSaturation": 98,
+  "painEva": 3
+}
+
+###
+
+### HU-FASE2-086 — Firmar nota (bloquea edición)
+PATCH {{base}}/{{notaId}}/sign
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-086 — Inactivar nota
+PATCH {{base}}/{{notaId}}/deactivate
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-086 — Reactivar nota
+PATCH {{base}}/{{notaId}}/activate
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-086 — Eliminación lógica (solo si NO está firmada)
+DELETE {{base}}/{{notaId}}
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-086 — Validación: campo obligatorio (content faltante)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "encounterId": {{atencionId}},
+  "patientId": {{pacienteId}},
+  "professionalId": {{profesionalId}},
+  "noteType": "EVOLUCION",
+  "shift": "MANANA"
+}
+
+###
+
+### HU-FASE2-086 — Validación: tipo de nota inválido (400)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "encounterId": {{atencionId}},
+  "patientId": {{pacienteId}},
+  "professionalId": {{profesionalId}},
+  "noteType": "RESUMEN_GERENCIAL",
+  "shift": "MANANA",
+  "content": "Contenido cualquiera"
+}
+
+###
+
+### HU-FASE2-086 — Validación: turno inválido (400)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "encounterId": {{atencionId}},
+  "patientId": {{pacienteId}},
+  "professionalId": {{profesionalId}},
+  "noteType": "EVOLUCION",
+  "shift": "MEDIO_DIA",
+  "content": "Contenido"
+}
+
+###
+
+### HU-FASE2-086 — Validación: dolor EVA fuera de rango 0-10 (400)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "encounterId": {{atencionId}},
+  "patientId": {{pacienteId}},
+  "professionalId": {{profesionalId}},
+  "noteType": "EVOLUCION",
+  "shift": "MANANA",
+  "content": "Contenido",
+  "painEva": 15
+}
+
+###
+
+### HU-FASE2-086 — Validación: saturación de oxígeno > 100 (400)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "encounterId": {{atencionId}},
+  "patientId": {{pacienteId}},
+  "professionalId": {{profesionalId}},
+  "noteType": "EVOLUCION",
+  "shift": "MANANA",
+  "content": "Contenido",
+  "oxygenSaturation": 105
+}
+
+###
+
+### HU-FASE2-086 — Validación: paciente inexistente (404)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "encounterId": {{atencionId}},
+  "patientId": {{pacienteInexistenteId}},
+  "professionalId": {{profesionalId}},
+  "noteType": "EVOLUCION",
+  "content": "Contenido"
+}
+
+###
+
+### HU-FASE2-086 — Validación: atención inexistente o de otra sede (404)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "encounterId": {{atencionInexistenteId}},
+  "patientId": {{pacienteId}},
+  "professionalId": {{profesionalId}},
+  "noteType": "EVOLUCION",
+  "content": "Contenido"
+}
+
+###
+
+### HU-FASE2-086 — Validación: atención no corresponde al paciente (400)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "encounterId": {{otraAtencionId}},
+  "patientId": {{pacienteId}},
+  "professionalId": {{profesionalId}},
+  "noteType": "EVOLUCION",
+  "content": "Contenido"
+}
+
+###
+
+### HU-FASE2-086 — Validación: profesional inexistente (404)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "encounterId": {{atencionId}},
+  "patientId": {{pacienteId}},
+  "professionalId": {{profesionalInexistenteId}},
+  "noteType": "EVOLUCION",
+  "content": "Contenido"
+}
+
+###
+
+### HU-FASE2-086 — Validación: ID inexistente al consultar (404)
+GET {{base}}/{{notaInexistenteId}}
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-086 — Validación: nota firmada NO se edita (409)
+PUT {{base}}/{{notaFirmadaId}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "professionalId": {{profesionalId}},
+  "noteType": "EVOLUCION",
+  "shift": "MANANA",
+  "content": "Intento de edición de una nota ya firmada"
+}
+
+###
+
+### HU-FASE2-086 — Validación: nota firmada NO se elimina (409)
+DELETE {{base}}/{{notaFirmadaId}}
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-086 — Validación: refirmar nota ya firmada (409)
+PATCH {{base}}/{{notaFirmadaId}}/sign
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-086 — Validación: token faltante (401)
+POST {{base}}/list
+Content-Type: application/json
+
+{
+  "page": 0,
+  "rows": 10,
+  "search": "",
+  "order_by": "n.fecha_nota",
+  "order": "DESC",
+  "params": {
+    "patientId": {{pacienteId}}
+  }
+}
+
+###

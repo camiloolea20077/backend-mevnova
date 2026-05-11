@@ -1,0 +1,444 @@
+@port = 9001
+@token = Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwidGlwb190b2tlbiI6IkFDQ0VTUyIsInVzdWFyaW9faWQiOjIsImVtcHJlc2FfaWQiOjQsInNlZGVfaWQiOjEsInVzZXJuYW1lIjoiYWRtaW5faG9zcGl0YWwiLCJyb2xlcyI6WyJTdXBlci1BZG1pbmlzdHJhZG9yIGRlbCBTaXN0ZW1hIl0sInBlcm1pc29zIjpbIkFjdHVhbGl6YXIgdGVyY2VybyIsIkFudWxhciBmYWN0dXJhIiwiQW51bGFyIG9yZGVuIGNsaW5pY2EiLCJBbnVsYXIgcHJlc2NyaXBjaW9uIiwiQXByb2JhciBmYWN0dXJhIiwiQXNpZ25hciBjaXRhIiwiQXNpZ25hciByb2xlcyBhIHVzdWFyaW9zIiwiQXRlbmRlciB1cmdlbmNpYXMiLCJDYW1iaWFyIGVzdGFkbyBkZSBhZG1pc2lvbiIsIkNhbmNlbGFyIGNpdGEiLCJDZXJyYXIgYWRtaXNpb24iLCJDZXJyYXIgYXRlbmNpb24gZGUgdXJnZW5jaWFzIiwiQ29uc3VsdGFyIGFkbWlzaW9uZXMiLCJDb25zdWx0YXIgY2FydGVyYSIsIkNvbnN1bHRhciB0ZXJjZXJvIiwiQ3JlYXIgcGFjaWVudGUiLCJDcmVhciB0ZXJjZXJvIiwiRGFyIGVncmVzbyBob3NwaXRhbGFyaW8iLCJFZGl0YXIgZmFjdHVyYSIsIkdlbmVyYXIgZGlzcG9uaWJpbGlkYWQiLCJHZW5lcmFyIGZhY3R1cmEiLCJHZW5lcmFyIG9yZGVuIGNsaW5pY2EiLCJHZW5lcmFyIHByZXNjcmlwY2lvbiIsIkdlbmVyYXIgUklQUyIsIkdlc3Rpb25hciBhZ2VuZGFzIiwiR2VzdGlvbmFyIGNhbGVuZGFyaW9zIiwiR2VzdGlvbmFyIGNhdGFsb2dvIGRlIHNlcnZpY2lvcyIsIkdlc3Rpb25hciBjZW50cm9zIGRlIGNvc3RvIiwiR2VzdGlvbmFyIGNvYmVydHVyYSBkZSBjb250cmF0byIsIkdlc3Rpb25hciBjb250YWN0b3MiLCJHZXN0aW9uYXIgY29udHJhdG9zIiwiR2VzdGlvbmFyIGNvbnRyYXRvcyBkZWwgcGFjaWVudGUiLCJHZXN0aW9uYXIgZGlyZWNjaW9uZXMiLCJHZXN0aW9uYXIgZW1wcmVzYXMiLCJHZXN0aW9uYXIgZ2xvc2FzIiwiR2VzdGlvbmFyIGxpc3RhIGRlIGVzcGVyYSIsIkdlc3Rpb25hciBwYWdhZG9yZXMiLCJHZXN0aW9uYXIgcGVybWlzb3MiLCJHZXN0aW9uYXIgcHJvZmVzaW9uYWxlcyBkZSBzYWx1ZCIsIkdlc3Rpb25hciByZWN1cnNvcyBmaXNpY29zIiwiR2VzdGlvbmFyIHJlbGFjaW9uZXMiLCJHZXN0aW9uYXIgcm9sZXMiLCJHZXN0aW9uYXIgc2VkZXMiLCJHZXN0aW9uYXIgc2VndXJpZGFkIHNvY2lhbCIsIkdlc3Rpb25hciBzZXJ2aWNpb3MgaGFiaWxpdGFkb3MiLCJHZXN0aW9uYXIgU0lTQkVOIiwiR2VzdGlvbmFyIHRhcmlmYXJpb3MiLCJHZXN0aW9uYXIgdGFyaWZhcyBkZSBjb250cmF0byIsIkdlc3Rpb25hciB1c3VhcmlvcyIsIkluYWN0aXZhciB0ZXJjZXJvIiwiUmFkaWNhciBmYWN0dXJhIiwiUmVhbGl6YXIgdHJpYWdlIiwiUmVjaWJpciBlbiBob3NwaXRhbGl6YWNpb24iLCJSZWNsYXNpZmljYXIgdHJpYWdlIiwiUmVnaXN0cmFyIGFkbWlzaW9uIiwiUmVnaXN0cmFyIGRpYWdub3N0aWNvIiwiUmVnaXN0cmFyIGV2b2x1Y2lvbiIsIlJlZ2lzdHJhciBub3RhIGRlIGluZ3Jlc28iLCJSZWdpc3RyYXIgcGFnbyIsIlJlcHJvZ3JhbWFyIGNpdGEiLCJSZXNldGVhciBjb250cmFzZW5hIiwiU29saWNpdGFyIGhvc3BpdGFsaXphY2lvbiIsIlRyYXNsYWRhciBhZ2VuZGEiLCJWZXIgYXVkaXRvcmlhIGRlIGVtcHJlc2EiLCJWZXIgYXVkaXRvcmlhIGdsb2JhbCIsIlZlciBjb2xhIGRlIHVyZ2VuY2lhcyIsIlZlciBvcmRlbmVzIGFjdGl2YXMiXSwianRpIjoiNDEzZjQ5NDQtYzUwNS00NzdjLWFlOWQtMTVhZGFiODY1YzhhIiwiaWF0IjoxNzc4NDUzNDA0LCJleHAiOjE3Nzg1Mzk4MDR9.KIkh7aX0OCMAIkvJbPM1-OjEKdEkrgZTX6H0ycQup_2HMRw8Hu2QuhP_hpwy3885OPN2nWqExENuvusgKvCwoQ
+
+@base = http://localhost:{{port}}/api/clinical-scales
+
+@atencionId = 1
+@otraAtencionId = 2
+@pacienteId = 5
+@profesionalId = 2
+@escalaId = 1
+@escalaInexistenteId = 99999
+@atencionInexistenteId = 99999
+@pacienteInexistenteId = 99999
+@profesionalInexistenteId = 99999
+
+### HU-FASE2-089 CA1+CA3 — Aplicar escala GLASGOW (riesgo se calcula automáticamente)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "encounterId": {{atencionId}},
+  "patientId": {{pacienteId}},
+  "professionalId": {{profesionalId}},
+  "scaleType": "GLASGOW",
+  "totalScore": 7,
+  "interpretation": "Coma severo. Requiere manejo en UCI.",
+  "scaleDetail": {
+    "apertura_ocular": 1,
+    "respuesta_verbal": 2,
+    "respuesta_motora": 4
+  },
+  "observations": "Paciente con TCE severo, requiere intubación orotraqueal."
+}
+
+###
+
+### HU-FASE2-089 CA1 — Aplicar EVA (cálculo automático de riesgo)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "encounterId": {{atencionId}},
+  "patientId": {{pacienteId}},
+  "professionalId": {{profesionalId}},
+  "scaleType": "EVA",
+  "totalScore": 8,
+  "scaleDetail": {
+    "valor_referido": 8,
+    "ubicacion": "ABDOMINAL",
+    "tipo": "OPRESIVO"
+  },
+  "observations": "Dolor abdominal intenso post-quirúrgico."
+}
+
+###
+
+### HU-FASE2-089 CA1 — Aplicar BRADEN (riesgo por úlceras por presión)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "encounterId": {{atencionId}},
+  "patientId": {{pacienteId}},
+  "professionalId": {{profesionalId}},
+  "scaleType": "BRADEN",
+  "totalScore": 14,
+  "scaleDetail": {
+    "percepcion_sensorial": 3,
+    "humedad": 2,
+    "actividad": 2,
+    "movilidad": 2,
+    "nutricion": 3,
+    "roce_y_peligro_lesiones": 2
+  },
+  "observations": "Riesgo medio de UPP. Cambio de posición c/2h."
+}
+
+###
+
+### HU-FASE2-089 CA1 — Aplicar MORSE (riesgo de caídas)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "encounterId": {{atencionId}},
+  "patientId": {{pacienteId}},
+  "professionalId": {{profesionalId}},
+  "scaleType": "MORSE",
+  "totalScore": 55,
+  "scaleDetail": {
+    "antecedente_caidas": 25,
+    "diagnostico_secundario": 15,
+    "ayudas_ambulacion": 0,
+    "via_iv": 20,
+    "marcha": 10,
+    "estado_mental": 0
+  },
+  "observations": "Alto riesgo de caídas. Implementar medidas de seguridad."
+}
+
+###
+
+### HU-FASE2-089 — Aplicar BARTHEL (escala sin fórmula automática, riesgo manual)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "encounterId": {{atencionId}},
+  "patientId": {{pacienteId}},
+  "professionalId": {{profesionalId}},
+  "scaleType": "BARTHEL",
+  "totalScore": 40,
+  "risk": "ALTO",
+  "interpretation": "Dependencia grave en AVD.",
+  "scaleDetail": {
+    "comida": 5,
+    "lavado": 0,
+    "vestido": 5,
+    "arreglo": 0,
+    "deposiciones": 5,
+    "miccion": 10,
+    "uso_retrete": 5,
+    "trasferencias": 5,
+    "deambulacion": 5,
+    "escalones": 0
+  }
+}
+
+###
+
+### HU-FASE2-089 — Aplicar APGAR neonatal (escala sin riesgo automático)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "encounterId": {{atencionId}},
+  "patientId": {{pacienteId}},
+  "professionalId": {{profesionalId}},
+  "scaleType": "APGAR",
+  "totalScore": 9,
+  "risk": "BAJO",
+  "scaleDetail": {
+    "minuto_1": 8,
+    "minuto_5": 9,
+    "frecuencia_cardiaca": 2,
+    "esfuerzo_respiratorio": 2,
+    "tono_muscular": 1,
+    "respuesta_estimulo": 2,
+    "color_piel": 2
+  },
+  "observations": "Recién nacido con buen pronóstico."
+}
+
+###
+
+### HU-FASE2-089 — Consultar escala por ID (incluye detalle JSON)
+GET {{base}}/{{escalaId}}
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-089 CA2 — Evolución temporal de Glasgow (filtro por tipo + ORDER ASC)
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 50,
+  "search": "",
+  "order_by": "e.fecha_aplicacion",
+  "order": "ASC",
+  "params": {
+    "patientId": {{pacienteId}},
+    "scaleType": "GLASGOW"
+  }
+}
+
+###
+
+### HU-FASE2-089 CA2 — Evolución temporal de EVA (dolor seriado)
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 50,
+  "search": "",
+  "order_by": "e.fecha_aplicacion",
+  "order": "ASC",
+  "params": {
+    "patientId": {{pacienteId}},
+    "scaleType": "EVA"
+  }
+}
+
+###
+
+### HU-FASE2-089 — Todas las escalas aplicadas en la atención
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 50,
+  "search": "",
+  "order_by": "e.fecha_aplicacion",
+  "order": "DESC",
+  "params": {
+    "encounterId": {{atencionId}}
+  }
+}
+
+###
+
+### HU-FASE2-089 — Pacientes en riesgo MUY_ALTO o ALTO
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 50,
+  "search": "",
+  "order_by": "e.fecha_aplicacion",
+  "order": "DESC",
+  "params": {
+    "encounterId": {{atencionId}},
+    "risk": "ALTO"
+  }
+}
+
+###
+
+### HU-FASE2-089 — Escalas aplicadas en un rango de fechas
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 100,
+  "search": "",
+  "order_by": "e.fecha_aplicacion",
+  "order": "ASC",
+  "params": {
+    "patientId": {{pacienteId}},
+    "dateFrom": "2026-05-01",
+    "dateTo": "2026-05-31"
+  }
+}
+
+###
+
+### HU-FASE2-089 — Búsqueda por texto en interpretación / observaciones
+POST {{base}}/list
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "page": 0,
+  "rows": 20,
+  "search": "caidas",
+  "order_by": "e.fecha_aplicacion",
+  "order": "DESC",
+  "params": {
+    "patientId": {{pacienteId}}
+  }
+}
+
+###
+
+### HU-FASE2-089 — Corrección de captura (recalcula riesgo)
+PUT {{base}}/{{escalaId}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "professionalId": {{profesionalId}},
+  "totalScore": 13,
+  "interpretation": "Glasgow 13: TCE moderado. Vigilancia estrecha.",
+  "scaleDetail": {
+    "apertura_ocular": 3,
+    "respuesta_verbal": 4,
+    "respuesta_motora": 6
+  },
+  "observations": "Corrección: error en captura inicial. Recalculado tras evaluación."
+}
+
+###
+
+### HU-FASE2-089 — Eliminación lógica
+DELETE {{base}}/{{escalaId}}
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-089 — Validación: campo obligatorio (totalScore faltante)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "encounterId": {{atencionId}},
+  "patientId": {{pacienteId}},
+  "professionalId": {{profesionalId}},
+  "scaleType": "GLASGOW"
+}
+
+###
+
+### HU-FASE2-089 — Validación: tipo de escala fuera de catálogo (400)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "encounterId": {{atencionId}},
+  "patientId": {{pacienteId}},
+  "professionalId": {{profesionalId}},
+  "scaleType": "ESCALA_INVENTADA",
+  "totalScore": 5
+}
+
+###
+
+### HU-FASE2-089 — Validación: riesgo fuera del catálogo (400)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "encounterId": {{atencionId}},
+  "patientId": {{pacienteId}},
+  "professionalId": {{profesionalId}},
+  "scaleType": "BARTHEL",
+  "totalScore": 50,
+  "risk": "EXTREMO"
+}
+
+###
+
+### HU-FASE2-089 — Validación: paciente inexistente (404)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "encounterId": {{atencionId}},
+  "patientId": {{pacienteInexistenteId}},
+  "professionalId": {{profesionalId}},
+  "scaleType": "GLASGOW",
+  "totalScore": 15
+}
+
+###
+
+### HU-FASE2-089 — Validación: atención inexistente o de otra sede (404)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "encounterId": {{atencionInexistenteId}},
+  "patientId": {{pacienteId}},
+  "professionalId": {{profesionalId}},
+  "scaleType": "EVA",
+  "totalScore": 5
+}
+
+###
+
+### HU-FASE2-089 — Validación: atención no corresponde al paciente (400)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "encounterId": {{otraAtencionId}},
+  "patientId": {{pacienteId}},
+  "professionalId": {{profesionalId}},
+  "scaleType": "EVA",
+  "totalScore": 5
+}
+
+###
+
+### HU-FASE2-089 — Validación: profesional inexistente (404)
+POST {{base}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "encounterId": {{atencionId}},
+  "patientId": {{pacienteId}},
+  "professionalId": {{profesionalInexistenteId}},
+  "scaleType": "EVA",
+  "totalScore": 5
+}
+
+###
+
+### HU-FASE2-089 — Validación: ID inexistente al consultar (404)
+GET {{base}}/{{escalaInexistenteId}}
+Authorization: {{token}}
+
+###
+
+### HU-FASE2-089 — Validación: ID inexistente al actualizar (404)
+PUT {{base}}/{{escalaInexistenteId}}
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "professionalId": {{profesionalId}},
+  "totalScore": 15
+}
+
+###
+
+### HU-FASE2-089 — Validación: token faltante (401)
+POST {{base}}/list
+Content-Type: application/json
+
+{
+  "page": 0,
+  "rows": 10,
+  "search": "",
+  "order_by": "e.fecha_aplicacion",
+  "order": "DESC",
+  "params": {
+    "patientId": {{pacienteId}}
+  }
+}
+
+###
